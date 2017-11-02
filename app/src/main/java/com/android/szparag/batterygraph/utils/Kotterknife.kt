@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph
+package com.android.szparag.batterygraph.utils
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
@@ -77,7 +77,8 @@ public fun <V : View> DialogFragment.bindViews(vararg ids: Int)
     : ReadOnlyProperty<DialogFragment, List<V>> = required(ids, viewFinder)
 
 public fun <V : View> SupportDialogFragment.bindViews(vararg ids: Int)
-    : ReadOnlyProperty<SupportDialogFragment, List<V>> = required(ids, viewFinder)
+    : ReadOnlyProperty<SupportDialogFragment, List<V>> = required(ids,
+    viewFinder)
 
 public fun <V : View> Fragment.bindViews(vararg ids: Int)
     : ReadOnlyProperty<Fragment, List<V>> = required(ids, viewFinder)
@@ -101,7 +102,8 @@ public fun <V : View> DialogFragment.bindOptionalViews(vararg ids: Int)
     : ReadOnlyProperty<DialogFragment, List<V>> = optional(ids, viewFinder)
 
 public fun <V : View> SupportDialogFragment.bindOptionalViews(vararg ids: Int)
-    : ReadOnlyProperty<SupportDialogFragment, List<V>> = optional(ids, viewFinder)
+    : ReadOnlyProperty<SupportDialogFragment, List<V>> = optional(ids,
+    viewFinder)
 
 public fun <V : View> Fragment.bindOptionalViews(vararg ids: Int)
     : ReadOnlyProperty<Fragment, List<V>> = optional(ids, viewFinder)
@@ -134,7 +136,9 @@ private fun viewNotFound(id: Int, desc: KProperty<*>): Nothing =
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(id: Int, finder: T.(Int) -> View?)
-    = Lazy { t: T, desc -> t.finder(id) as V? ?: viewNotFound(id, desc) }
+    = Lazy { t: T, desc ->
+  t.finder(id) as V? ?: viewNotFound(id, desc)
+}
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> optional(id: Int, finder: T.(Int) -> View?)
@@ -142,7 +146,11 @@ private fun <T, V : View> optional(id: Int, finder: T.(Int) -> View?)
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> required(ids: IntArray, finder: T.(Int) -> View?)
-    = Lazy { t: T, desc -> ids.map { t.finder(it) as V? ?: viewNotFound(it, desc) } }
+    = Lazy { t: T, desc ->
+  ids.map {
+    t.finder(it) as V? ?: viewNotFound(it, desc)
+  }
+}
 
 @Suppress("UNCHECKED_CAST")
 private fun <T, V : View> optional(ids: IntArray, finder: T.(Int) -> View?)
