@@ -2,6 +2,7 @@ package com.android.szparag.batterygraph
 
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.os.BatteryManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -10,11 +11,13 @@ import android.widget.TextView
 class MainActivity : AppCompatActivity() {
 
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
+  private lateinit var batteryManager : BatteryManager
   private val textView1 : TextView by bindView(R.id.batteryActionsTextview)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    batteryManager = getSystemService(BatteryManager::class.java)
   }
 
   override fun onResume() {

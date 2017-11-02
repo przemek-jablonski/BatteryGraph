@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.BatteryManager
 import android.os.BatteryManager.*
 import android.os.Bundle
 import android.view.animation.ScaleAnimation
@@ -36,8 +37,7 @@ fun Bundle.mapToBatteryStatusEvent() = BatteryStatusEvent(
     batteryStatusInt = getInt(EXTRA_STATUS),
     batteryHealthInt = getInt(EXTRA_HEALTH),
     batteryPowerSourceInt = getInt(EXTRA_PLUGGED),
-    batteryPercentage = (getInt(EXTRA_LEVEL) / getInt(EXTRA_SCALE).toFloat()).toInt(),
-    batteryVoltage = getInt(EXTRA_VOLTAGE),
-    batteryTemperature = getInt(EXTRA_TEMPERATURE),
-    batteryCycleCount = getInt("charge_counter")
+    batteryPercentage = ((getInt(EXTRA_LEVEL) / getInt(EXTRA_SCALE).toFloat()) * 100f).toInt(),
+    batteryVoltage = getInt(EXTRA_VOLTAGE) / 1000f,
+    batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
 )

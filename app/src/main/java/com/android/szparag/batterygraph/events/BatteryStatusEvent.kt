@@ -8,20 +8,17 @@ data class BatteryStatusEvent(
     val batteryHealth: BatteryHealth,
     val batteryPowerSource: BatteryPowerSource,
     val batteryPercentage: Int,
-    val batteryVoltage: Int,
-    val batteryTemperature: Int,
-    val batteryCycleCount: Int
+    val batteryVoltage: Float,
+    val batteryTemperature: Int
 ) {
 
-  constructor(batteryStatusInt: Int, batteryHealthInt: Int, batteryPowerSourceInt: Int, batteryPercentage: Int,
-      batteryVoltage: Int, batteryTemperature: Int, batteryCycleCount: Int)
-      : this(
+  constructor(batteryStatusInt: Int, batteryHealthInt: Int, batteryPowerSourceInt: Int,
+      batteryPercentage: Int, batteryVoltage: Float, batteryTemperature: Int) : this(
       batteryStatus = BatteryStatus.fromInt(batteryStatusInt),
       batteryHealth = BatteryHealth.fromInt(batteryHealthInt),
       batteryPowerSource = BatteryPowerSource.fromInt(batteryPowerSourceInt),
       batteryPercentage = batteryPercentage,
       batteryVoltage = batteryVoltage,
-      batteryTemperature = batteryTemperature,
-      batteryCycleCount = batteryCycleCount
+      batteryTemperature = batteryTemperature
   )
 }
