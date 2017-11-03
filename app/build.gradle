@@ -62,4 +62,7 @@ dependencies {
     //  realm
     kapt 'io.realm:realm-annotations:3.5.0'
     kapt 'io.realm:realm-annotations-processor:3.5.0'
+
+    // timber
+    implementation 'com.jakewharton.timber:timber:4.6.0'
 }
