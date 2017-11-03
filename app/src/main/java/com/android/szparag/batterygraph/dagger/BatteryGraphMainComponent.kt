@@ -1,5 +1,6 @@
 package com.android.szparag.batterygraph.dagger
 
+import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -9,4 +10,5 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(BatteryGraphMainModule::class))
 interface BatteryGraphMainComponent {
+  fun inject(target: BatteryGraphChartActivity)
 }

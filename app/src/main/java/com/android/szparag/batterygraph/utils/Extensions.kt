@@ -27,7 +27,7 @@ fun Activity.createRegisteredBroadcastReceiver(
   return broadcastReceiver
 }
 
-fun BroadcastReceiver.unregisterReceiver(activity: Activity) {
+fun BroadcastReceiver.unregisterReceiverFromActivity(activity: Activity) {
   activity.unregisterReceiver(this)
 }
 

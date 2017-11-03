@@ -7,57 +7,66 @@ import android.widget.TextView
 import com.android.szparag.batterygraph.R.id
 import com.android.szparag.batterygraph.R.layout
 import com.android.szparag.batterygraph.base.views.BatteryGraphBaseActivity
+import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.bindView
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
-import com.android.szparag.batterygraph.utils.unregisterReceiver
+import com.android.szparag.batterygraph.utils.unregisterReceiverFromActivity
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.Subject
+import timber.log.Timber
 
-class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>() {
+class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), ChartView {
 
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
-  private val batteryStatusSubject by lazy { PublishSubject.create<BatteryStatusEvent>() }
+  private lateinit var batteryStatusSubject: Subject<BatteryStatusEvent>
   private val textView1: TextView by bindView(id.batteryActionsTextview)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     setContentView(layout.activity_main)
+    batteryStatusSubject = ReplaySubject.create<BatteryStatusEvent>()
+    DaggerGlobalScopeWrapper.getComponent(this).inject(this)
+  }
+
+  override fun onStart() {
+    super.onStart()
+    presenter.attach(this)
   }
 
   override fun onResume() {
     super.onResume()
-    registerBatteryStatusReceiver()
   }
 
   override fun onPause() {
     super.onPause()
-    unregisterBatteryStatusReceiver()
   }
 
-  private fun registerBatteryStatusReceiver() {
+  override fun onStop() {
+    super.onStop()
+    presenter.detach()
+  }
+
+  override fun renderBatteryStatus(batteryStatusEvent: BatteryStatusEvent) {
+    textView1.text = batteryStatusEvent.toString()
+  }
+
+  override fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent> = batteryStatusSubject
+
+  override fun registerBatteryStatusReceiver() {
     batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
         callback = { intent ->
-          val batteryStatusEvent = intent.extras.mapToBatteryStatusEvent()
-          textView1.text = batteryStatusEvent.toString()
-          batteryStatusSubject.onNext(batteryStatusEvent)
+          batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent())
         }
     )
   }
 
-  private fun unregisterBatteryStatusReceiver() {
-    batteryChangedActionReceiver.unregisterReceiver(this)
-  }
-
-  fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent> = batteryStatusSubject
-
-
-  //___________________
-
-  override fun subscribeUserBackButtonPressed(): Observable<Any> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  override fun unregisterBatteryStatusReceiver() {
+    batteryChangedActionReceiver.unregisterReceiverFromActivity(this)
   }
 
 }

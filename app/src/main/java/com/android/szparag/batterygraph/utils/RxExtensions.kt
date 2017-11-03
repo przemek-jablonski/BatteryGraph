@@ -149,6 +149,8 @@ fun <T> Observable<T>.computation() = this.subscribeOn(Schedulers.computation())
 
 fun Completable.computation() = this.subscribeOn(Schedulers.computation())
 
+fun ui() = AndroidSchedulers.mainThread()
+
 //yo dawg, i herd u like observabelz
 inline fun <E : RealmModel> RealmResults<E>.toObservable() = this.asObservable().toObservable()
 

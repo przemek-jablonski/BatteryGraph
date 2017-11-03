@@ -102,6 +102,6 @@ interface View {
 
 //  fun resolveStartupData()
 
-  fun subscribeUserBackButtonPressed(): Observable<Any>
+//  fun subscribeUserBackButtonPressed(): Observable<Any>
 
 }

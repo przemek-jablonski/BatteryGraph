@@ -22,7 +22,8 @@ abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) 
   override fun attach(view: V) {
     Log.d("asd","attach.action, view: $view")
     this.view = view
-    model.attach().subscribe { onAttached() }
+    model.attach().subscribe {}
+    onAttached()
   }
 
   @CallSuper override fun onAttached() {
