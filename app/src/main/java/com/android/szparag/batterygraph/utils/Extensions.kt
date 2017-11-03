@@ -39,3 +39,7 @@ fun Bundle.mapToBatteryStatusEvent() = BatteryStatusEvent(
     batteryVoltage = getInt(EXTRA_VOLTAGE) / 1000f,
     batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
 )
+
+fun invalidIntValue() = -1
+fun invalidLongValue() = -1L
+fun invalidFloatValue() = -1f
