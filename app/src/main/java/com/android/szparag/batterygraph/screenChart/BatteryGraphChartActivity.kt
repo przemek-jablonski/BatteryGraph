@@ -66,9 +66,7 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     Timber.d("registerBatteryStatusReceiver")
     batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-        callback = { intent ->
-          batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent())
-        }
+        callback = { intent -> batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent()) }
     )
   }
 
