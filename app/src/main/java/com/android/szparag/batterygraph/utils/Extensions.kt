@@ -5,7 +5,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.BatteryManager.*
+import android.os.BatteryManager.EXTRA_HEALTH
+import android.os.BatteryManager.EXTRA_LEVEL
+import android.os.BatteryManager.EXTRA_PLUGGED
+import android.os.BatteryManager.EXTRA_SCALE
+import android.os.BatteryManager.EXTRA_STATUS
+import android.os.BatteryManager.EXTRA_TEMPERATURE
+import android.os.BatteryManager.EXTRA_VOLTAGE
 import android.os.Bundle
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 

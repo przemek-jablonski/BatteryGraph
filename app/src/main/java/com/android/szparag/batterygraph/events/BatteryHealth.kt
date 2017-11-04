@@ -19,14 +19,14 @@ enum class BatteryHealth(val healthInt: Int) {
   companion object {
     @JvmStatic
     fun fromInt(healthInt: Int) = when (healthInt) {
-      GOOD.healthInt        -> GOOD
-      OVERHEAT.healthInt    -> OVERHEAT
-      DEAD.healthInt        -> DEAD
+      GOOD.healthInt -> GOOD
+      OVERHEAT.healthInt -> OVERHEAT
+      DEAD.healthInt -> DEAD
       OVERVOLTAGE.healthInt -> OVERVOLTAGE
-      FAILURE.healthInt     -> FAILURE
-      COLD.healthInt        -> COLD
-      UNKNOWN.healthInt     -> UNKNOWN
-      else                  -> UNKNOWN
+      FAILURE.healthInt -> FAILURE
+      COLD.healthInt -> COLD
+      UNKNOWN.healthInt -> UNKNOWN
+      else -> UNKNOWN
     }
   }
 }

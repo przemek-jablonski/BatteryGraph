@@ -3,7 +3,6 @@ package com.android.szparag.batterygraph.base.views
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.android.szparag.batterygraph.base.presenters.Presenter
 import timber.log.Timber
 import javax.inject.Inject

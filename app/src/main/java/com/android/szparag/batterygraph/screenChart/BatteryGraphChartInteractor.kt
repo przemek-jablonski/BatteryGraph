@@ -39,6 +39,7 @@ class BatteryGraphChartInteractor : ChartModel {
         }
     )
   }
+
   override fun detach(): Completable {
     Timber.d("detach")
     return Completable.create {
