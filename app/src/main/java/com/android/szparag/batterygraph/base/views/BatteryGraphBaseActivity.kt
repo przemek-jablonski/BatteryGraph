@@ -13,7 +13,6 @@ import javax.inject.Inject
  */
 abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(), View {
 
-//  override val logger by lazy { Logger.create(this::class.java, this.hashCode()) }
   @Inject lateinit open var presenter: P //todo: close and private this somehow
 
   @CallSuper
@@ -34,7 +33,7 @@ abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(),
     Timber.d("onStop")
   }
 
-
+  //todo this has to come back
 //  @CallSuper
 //  override fun setupViews() {
 //    Log.d("asd","setupViews")

@@ -17,7 +17,7 @@ fun Activity.createRegisteredBroadcastReceiver(
     vararg intentFilterActions: String, callback: (Intent) -> (Unit)): BroadcastReceiver {
   val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-      intent?.let(callback::invoke)
+      intent?.takeIf { intentFilterActions.contains(it.action) }?.let(callback::invoke)
     }
   }
   this.registerReceiver(
