@@ -9,10 +9,8 @@ import com.android.szparag.batterygraph.R.layout
 import com.android.szparag.batterygraph.base.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.services.BatteryGraphMonitoringService
 import com.android.szparag.batterygraph.utils.bindView
-import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
-import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
-import com.android.szparag.batterygraph.utils.unregisterReceiverFromActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
@@ -30,6 +28,7 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     setContentView(layout.activity_main)
     batteryStatusSubject = ReplaySubject.create<BatteryStatusEvent>()
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
+    startService(Intent(this, BatteryGraphMonitoringService::class.java))
   }
 
   override fun onStart() {
@@ -64,17 +63,15 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
 
   override fun registerBatteryStatusReceiver() {
     Timber.d("registerBatteryStatusReceiver")
-    batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
-        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-        callback = { intent ->
-          batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent())
-        }
-    )
+//    batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
+//        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
+//        callback = { intent -> batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent()) }
+//    )
   }
 
   override fun unregisterBatteryStatusReceiver() {
     Timber.d("unregisterBatteryStatusReceiver")
-    batteryChangedActionReceiver.unregisterReceiverFromActivity(this)
+//    batteryChangedActionReceiver.unregisterReceiverFromContext(this)
   }
 
 }

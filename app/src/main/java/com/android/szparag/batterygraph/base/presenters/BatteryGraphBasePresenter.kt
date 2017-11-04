@@ -1,7 +1,6 @@
 package com.android.szparag.batterygraph.base.presenters
 
 import android.support.annotation.CallSuper
-import android.util.Log
 import com.android.szparag.batterygraph.base.models.Model
 import com.android.szparag.batterygraph.base.views.View
 import com.android.szparag.batterygraph.utils.add
@@ -14,7 +13,7 @@ import timber.log.Timber
  */
 abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) : Presenter<V> {
 
-//  override val logger by lazy { Logger.create(this::class.java, this.hashCode()) }
+  //  override val logger by lazy { Logger.create(this::class.java, this.hashCode()) }
   override var view: V? = null
   override lateinit var viewDisposables: CompositeDisposable //todo: i can access this in implemented presenters, that's bad
   override lateinit var modelDisposables: CompositeDisposable
