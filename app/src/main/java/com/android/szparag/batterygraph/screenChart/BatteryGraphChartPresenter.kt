@@ -1,6 +1,7 @@
 package com.android.szparag.batterygraph.screenChart
 
 import com.android.szparag.batterygraph.base.presenters.BatteryGraphBasePresenter
+import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.ui
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
@@ -19,29 +20,28 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
     view?.subscribeForBatteryStatusChanged()
         ?.subscribeOn(ui())
         ?.observeOn(ui())
-        ?.doOnSubscribe {
-          Timber.d("onAttached.subscribeForBatteryStatusChanged.doOnSubscribe")
-        }
-        ?.subscribeBy(
-            onNext = { batteryStatusEvent ->
-              Timber.d("onAttached.subscribeForBatteryStatusChanged.onNext, batteryStatusEvent: $batteryStatusEvent")
-              view?.renderBatteryStatus(batteryStatusEvent)
-            }
-        )
+        ?.subscribe(this::onBatteryStatusChanged)
         .toViewDisposable()
   }
 
   override fun onBeforeDetached() {
     super.onBeforeDetached()
+    Timber.d("onBeforeDetached")
     view?.unregisterBatteryStatusReceiver()
   }
 
-  override fun subscribeViewUserEvents() {
+  override fun onBatteryStatusChanged(event: BatteryStatusEvent) {
+    Timber.d("onBatteryStatusChanged: event: $event")
+    model.insertBatteryEvent(event)
+  }
 
+  override fun subscribeViewUserEvents() {
+    Timber.d("subscribeViewUserEvents")
   }
 
   override fun subscribeModelEvents() {
-
+    Timber.d("subscribeModelEvents")
+    model.subscribeBatteryEvents().ui().subscribe { batteryStatusEvent -> view?.renderBatteryStatus(batteryStatusEvent) }
   }
 
 }
