@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">BatteryGraph</string>
+  <string name="service_notification_title">BatteryGraph</string>
+  <string name="service_notification_text">Periodically monitoring battery status</string>
 </resources>
