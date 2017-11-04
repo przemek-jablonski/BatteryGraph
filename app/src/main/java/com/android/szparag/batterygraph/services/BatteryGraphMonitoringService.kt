@@ -11,16 +11,29 @@ import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
+import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
+import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
+import com.android.szparag.batterygraph.screenChart.ChartModel
 import com.android.szparag.batterygraph.utils.asString
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
+import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
 import com.android.szparag.batterygraph.utils.toPendingIntent
+import com.android.szparag.batterygraph.utils.ui
 import com.android.szparag.batterygraph.utils.unregisterReceiverFromContext
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
+const val EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS = 5L
 
 class BatteryGraphMonitoringService : Service(), MonitoringService {
 
+  @Inject lateinit var model: ChartModel //todo this cant be chartmodel, more like MonitoringEventsInteractor or sth
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
+  private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
 
   override fun onBind(intent: Intent?): IBinder {
     Timber.d("onBind, intent: $intent")
@@ -30,15 +43,21 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   override fun onCreate() {
     super.onCreate()
     Timber.d("onCreate")
+    DaggerGlobalScopeWrapper.getComponent(this).inject(this)
     registerBatteryStatusReceiver()
+    subscribeBatteryStatusChanged()
     startServiceAsForegroundService()
   }
 
   override fun registerBatteryStatusReceiver() {
     Timber.d("registerBatteryStatusReceiver")
+    batteryChangedSubject = PublishSubject.create()
     batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-        callback = { intent -> Timber.w("registerBatteryStatusReceiver, intent: ${intent.asString()}") }
+        callback = { intent ->
+          Timber.d("batteryChangedActionReceiver.callback, intent: ${intent.asString()}")
+          batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
+        }
     )
   }
 
@@ -47,7 +66,23 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     batteryChangedActionReceiver.unregisterReceiverFromContext(this)
   }
 
+  private fun subscribeBatteryStatusChanged() {
+    Timber.d("subscribeBatteryStatusChanged")
+    batteryChangedSubject
+        .subscribeOn(ui())
+        .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
+        .observeOn(ui())
+        .subscribe(this::onBatteryStatusChanged)
+    //todo remember about disposing in ondestroy!
+  }
+
+  private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
+    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
+    model.insertBatteryEvent(batteryStatusEvent)
+  }
+
   private fun startServiceAsForegroundService() {
+    Timber.d("startServiceAsForegroundService")
     val backToAppIntent = Intent(this, BatteryGraphChartActivity::class.java)
         .toPendingIntent(context = this, requestCode = requestCode())
 
@@ -69,6 +104,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
           .setContentIntent(onClickIntent)
           .setSmallIcon(R.drawable.mock_icon)
           .build()
+          .also { Timber.d("createForegroundNotificationWithChannel, return: $it") }
 
 
   private fun createForegroundNotificationWithoutChannel(onClickIntent: PendingIntent) =
@@ -78,6 +114,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
           .setContentIntent(onClickIntent)
           .setSmallIcon(R.drawable.mock_icon)
           .build()
+          .also { Timber.d("createForegroundNotificationWithoutChannel, return: $it") }
 
   override fun onDestroy() {
     super.onDestroy()
