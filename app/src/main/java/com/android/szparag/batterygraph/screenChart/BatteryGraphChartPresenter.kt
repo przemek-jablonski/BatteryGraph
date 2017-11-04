@@ -4,7 +4,6 @@ import com.android.szparag.batterygraph.base.presenters.BatteryGraphBasePresente
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.ui
 import timber.log.Timber
-import java.util.concurrent.TimeUnit.SECONDS
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
@@ -15,13 +14,13 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
   override fun onAttached() {
     super.onAttached()
     Timber.d("onAttached")
-    view?.registerBatteryStatusReceiver()
-    view?.subscribeForBatteryStatusChanged()
-        ?.subscribeOn(ui())
-        ?.sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, SECONDS, true)
-        ?.observeOn(ui())
-        ?.subscribe(this::onBatteryStatusChanged)
-        .toViewDisposable()
+//    view?.registerBatteryStatusReceiver()
+//    view?.subscribeForBatteryStatusChanged()
+//        ?.subscribeOn(ui())
+//        ?.sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, SECONDS, true)
+//        ?.observeOn(ui())
+//        ?.subscribe(this::onBatteryStatusChanged)
+//        .toViewDisposable()
   }
 
   override fun onBeforeDetached() {

@@ -16,11 +16,11 @@ enum class BatteryPowerSource(val sourceInt: Int) {
   companion object {
     @JvmStatic
     fun fromInt(sourceInt: Int) = when (sourceInt) {
-      AC.sourceInt       -> AC
+      AC.sourceInt -> AC
       WIRELESS.sourceInt -> WIRELESS
-      USB.sourceInt      -> USB
-      BATTERY.sourceInt  -> BATTERY
-      else               -> BATTERY
+      USB.sourceInt -> USB
+      BATTERY.sourceInt -> BATTERY
+      else -> BATTERY
     }
   }
 }

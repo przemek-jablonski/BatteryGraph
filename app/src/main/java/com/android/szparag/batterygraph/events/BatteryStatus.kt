@@ -17,12 +17,12 @@ enum class BatteryStatus(val statusInt: Int) {
   companion object {
     @JvmStatic
     fun fromInt(statusInt: Int) = when (statusInt) {
-      FULL.statusInt         -> FULL
+      FULL.statusInt -> FULL
       NOT_CHARGING.statusInt -> NOT_CHARGING
-      DISCHARGING.statusInt  -> DISCHARGING
-      CHARGING.statusInt     -> CHARGING
-      UNKNOWN.statusInt      -> UNKNOWN
-      else                   -> UNKNOWN
+      DISCHARGING.statusInt -> DISCHARGING
+      CHARGING.statusInt -> CHARGING
+      UNKNOWN.statusInt -> UNKNOWN
+      else -> UNKNOWN
     }
   }
 }

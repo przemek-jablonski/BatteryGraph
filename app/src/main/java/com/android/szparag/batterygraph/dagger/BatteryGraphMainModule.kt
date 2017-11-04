@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Module
 class BatteryGraphMainModule(private val applicationContext: Context) {
 
-  @Provides fun providesChartPresenter(chartModel: ChartModel) : ChartPresenter = BatteryGraphChartPresenter(chartModel)
+  @Provides fun providesChartPresenter(chartModel: ChartModel): ChartPresenter = BatteryGraphChartPresenter(chartModel)
 
   @Provides @Singleton fun providesChartModel(): ChartModel = BatteryGraphChartInteractor()
 
