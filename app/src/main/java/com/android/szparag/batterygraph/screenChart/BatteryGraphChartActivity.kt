@@ -34,39 +34,45 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
 
   override fun onStart() {
     super.onStart()
+    Timber.d("onStart")
     presenter.attach(this)
   }
 
   override fun onResume() {
+    Timber.d("onResume")
     super.onResume()
   }
 
   override fun onPause() {
+    Timber.d("onPause")
     super.onPause()
   }
 
   override fun onStop() {
     super.onStop()
+    Timber.d("onStop")
     presenter.detach()
   }
 
   override fun renderBatteryStatus(batteryStatusEvent: BatteryStatusEvent) {
+    Timber.d("renderBatteryStatus, batteryStatusEvent: $batteryStatusEvent")
     textView1.text = batteryStatusEvent.toString()
   }
 
   override fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent> = batteryStatusSubject
 
   override fun registerBatteryStatusReceiver() {
+    Timber.d("registerBatteryStatusReceiver")
     batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
         callback = { intent ->
-          Timber.d("registerBatteryStatusReceiver, intent: $intent")
           batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent())
         }
     )
   }
 
   override fun unregisterBatteryStatusReceiver() {
+    Timber.d("unregisterBatteryStatusReceiver")
     batteryChangedActionReceiver.unregisterReceiverFromActivity(this)
   }
 

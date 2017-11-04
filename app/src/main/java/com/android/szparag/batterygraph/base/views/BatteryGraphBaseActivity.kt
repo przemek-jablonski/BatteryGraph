@@ -5,6 +5,7 @@ import android.support.annotation.CallSuper
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.android.szparag.batterygraph.base.presenters.Presenter
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -18,19 +19,19 @@ abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(),
   @CallSuper
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    Log.d("asd","onCreate, bundle: $savedInstanceState")
+    Timber.d("onCreate, savedInstanceState: $savedInstanceState")
   }
 
   @CallSuper
   override fun onStart() {
     super.onStart()
-    Log.d("asd","onStart")
+    Timber.d("onStart")
   }
 
   @CallSuper
   override fun onStop() {
     super.onStop()
-    Log.d("asd","onStop")
+    Timber.d("onStop")
   }
 
 

@@ -7,6 +7,7 @@ import com.android.szparag.batterygraph.base.views.View
 import com.android.szparag.batterygraph.utils.add
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import timber.log.Timber
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
@@ -20,14 +21,14 @@ abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) 
 
   //todo: logger creation is probably heavy, move to another thread
   override fun attach(view: V) {
-    Log.d("asd","attach.action, view: $view")
+    Timber.d("attach, view: $view")
     this.view = view
     model.attach().subscribe {}
     onAttached()
   }
 
   @CallSuper override fun onAttached() {
-    Log.d("asd","onAttached")
+    Timber.d("onAttached")
     viewDisposables = CompositeDisposable()
     modelDisposables = CompositeDisposable()
     subscribeModelEvents()
@@ -38,13 +39,13 @@ abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) 
 
 
   override final fun detach() {
-    Log.d("asd","detach")
+    Timber.d("detach")
     onBeforeDetached()
     view = null
   }
 
   @CallSuper override fun onBeforeDetached() {
-    Log.d("asd","onBeforeDetached")
+    Timber.d("onBeforeDetached")
     viewDisposables.clear()
     modelDisposables.clear()
     model.detach()
@@ -65,12 +66,12 @@ abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) 
 
 
   fun Disposable?.toViewDisposable() {
-    Log.d("asd","toViewDisposable: viewDisposables: $viewDisposables, disposed: ${viewDisposables.isDisposed}")
+    Timber.d("toViewDisposable, viewDisposables: $viewDisposables, disposed: ${viewDisposables.isDisposed}")
     viewDisposables.takeIf { !it.isDisposed }?.add(this)
   }
 
   fun Disposable?.toModelDisposable() {
-    Log.d("asd","toModelDisposable: modelDisposables: $modelDisposables, disposed: ${modelDisposables.isDisposed}")
+    Timber.d("toModelDisposable, viewDisposables: $viewDisposables, disposed: ${viewDisposables.isDisposed}")
     modelDisposables.takeIf { !it.isDisposed }?.add(this)
   }
 }

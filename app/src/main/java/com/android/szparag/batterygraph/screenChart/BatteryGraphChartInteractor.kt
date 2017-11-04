@@ -9,24 +9,30 @@ import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.Sort.ASCENDING
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
  */
+
+
 class BatteryGraphChartInteractor : ChartModel {
 
   private lateinit var realm: Realm
 
   override fun attach(): Completable {
+    Timber.d("attach")
     return Completable.create {
-      Timber.d("attach")
       realm = Realm.getDefaultInstance()
+      Timber.d("attach.create")
     }
   }
 
   override fun detach(): Completable {
+    Timber.d("detach")
     return Completable.create {
       realm.close()
+      Timber.d("detach.create")
     }
   }
 

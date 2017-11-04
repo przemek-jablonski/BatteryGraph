@@ -3,9 +3,8 @@ package com.android.szparag.batterygraph.screenChart
 import com.android.szparag.batterygraph.base.presenters.BatteryGraphBasePresenter
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.ui
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
+import java.util.concurrent.TimeUnit.SECONDS
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
@@ -19,6 +18,7 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
     view?.registerBatteryStatusReceiver()
     view?.subscribeForBatteryStatusChanged()
         ?.subscribeOn(ui())
+        ?.sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, SECONDS, true)
         ?.observeOn(ui())
         ?.subscribe(this::onBatteryStatusChanged)
         .toViewDisposable()
@@ -31,7 +31,7 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
   }
 
   override fun onBatteryStatusChanged(event: BatteryStatusEvent) {
-    Timber.d("onBatteryStatusChanged: event: $event")
+    Timber.d("onBatteryStatusChanged, event: $event")
     model.insertBatteryEvent(event)
   }
 

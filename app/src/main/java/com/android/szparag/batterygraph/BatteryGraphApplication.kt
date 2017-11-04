@@ -6,9 +6,11 @@ import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 class BatteryGraphApplication : Application() {
+
   override fun onCreate() {
     super.onCreate()
     Timber.plant(DebugTree())
+    Timber.d("onCreate")
     Realm.init(this)
   }
 
