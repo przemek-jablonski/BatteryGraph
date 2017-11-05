@@ -13,6 +13,6 @@ interface ChartModel : Model {
 
   fun insertBatteryEvent(batteryStatusEvent: BatteryStatusEvent)
 
-  fun subscribeBatteryEvents(): Observable<BatteryStatusEvent>
+  fun subscribeBatteryEvents(): Observable<List<BatteryStatusEvent>>
 
 }
