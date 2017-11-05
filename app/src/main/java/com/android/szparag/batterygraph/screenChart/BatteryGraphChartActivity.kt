@@ -1,6 +1,5 @@
 package com.android.szparag.batterygraph.screenChart
 
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -11,9 +10,6 @@ import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.services.BatteryGraphMonitoringService
 import com.android.szparag.batterygraph.utils.bindView
-import io.reactivex.Observable
-import io.reactivex.subjects.ReplaySubject
-import io.reactivex.subjects.Subject
 import timber.log.Timber
 
 class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), ChartView {
@@ -55,4 +51,5 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     Timber.d("renderBatteryStatus, batteryStatusEvent: $batteryStatusEvent")
     textView1.text = batteryStatusEvent.toString()
   }
+
 }
