@@ -22,7 +22,8 @@ import timber.log.Timber
 
 fun Context.createRegisteredBroadcastReceiver(
     vararg intentFilterActions: String, callback: (Intent) -> (Unit)): BroadcastReceiver {
-  Timber.d("createRegisteredBroadcastReceiver, intentFilterActions: $intentFilterActions, callback: $callback, context: $this")
+  Timber.d(
+      "createRegisteredBroadcastReceiver, intentFilterActions: $intentFilterActions, callback: $callback, context: $this")
   val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       intent?.takeIf { intentFilterActions.contains(it.action) }?.let(callback::invoke)
@@ -66,4 +67,16 @@ fun Bundle?.asString(stringBuilder: StringBuilder): StringBuilder {
   }
   stringBuilder.delete(stringBuilder.length - 2, stringBuilder.length - 1).append("]")
   return stringBuilder
+}
+
+fun <E : Any> Collection<E>.safeLast() = when (this) {
+  is List -> if (isEmpty()) null else this[this.lastIndex]
+  else    -> {
+    val iterator = iterator()
+    if (!iterator.hasNext()) null
+    var last = iterator.next()
+    while (iterator.hasNext())
+      last = iterator.next()
+    last
+  }
 }
