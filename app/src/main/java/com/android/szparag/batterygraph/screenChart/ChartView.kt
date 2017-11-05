@@ -11,7 +11,5 @@ interface ChartView : View {
 
   fun renderBatteryStatus(batteryStatusEvent: BatteryStatusEvent)
 
-  fun registerBatteryStatusReceiver()
-  fun unregisterBatteryStatusReceiver()
   fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent>
 }
