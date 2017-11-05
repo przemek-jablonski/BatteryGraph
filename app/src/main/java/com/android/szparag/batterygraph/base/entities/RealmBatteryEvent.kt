@@ -19,13 +19,13 @@ import io.realm.annotations.RealmClass
 ) : RealmObject() {
 
   fun toBatteryStatusEvent() = BatteryStatusEvent(
-      batteryStatus, batteryHealth, batteryPowerSource, batteryPercentage, batteryVoltage, batteryTemperature
+      unixTimestamp, batteryStatus, batteryHealth, batteryPowerSource, batteryPercentage, batteryVoltage, batteryTemperature
   )
 
 }
 
-fun BatteryStatusEvent.toRealmEvent(unixTimestamp: Long) = RealmBatteryEvent(
-    unixTimestamp = unixTimestamp,
+fun BatteryStatusEvent.toRealmEvent() = RealmBatteryEvent(
+    unixTimestamp = eventUnixTimestamp,
     batteryStatus = batteryStatus.statusInt,
     batteryHealth = batteryHealth.healthInt,
     batteryPowerSource = batteryPowerSource.sourceInt,
