@@ -2,6 +2,7 @@ package com.android.szparag.batterygraph.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.map
 import com.android.szparag.batterygraph.utils.safeLast
@@ -15,17 +16,25 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr), ChartWidget<BatteryStatusEvent> {
 
+  var dataEntries: List<Entry>? = null
+  var lineDataSet: LineDataSet? = null
+
   init {
     isScaleYEnabled = false
     isDoubleTapToZoomEnabled = false
-    dragDecelerationFrictionCoef = 0.5f
+    dragDecelerationFrictionCoef = 0.75f
+
+    xAxis.setAvoidFirstLastClipping(true)
+    isLogEnabled = true
+
   }
 
   fun setDataList(data: List<BatteryStatusEvent>) {
     Timber.d("setDataList, data.size: ${data.size}, data.last: ${data.safeLast()}")
     if (data.isEmpty()) return
-    val dataEntriesList = dataListToEntryList(data)
-    val lineDataSet = LineDataSet(dataEntriesList, "BatteryPercentage") //todo literal
+    dataEntries = dataListToEntryList(data)
+    Timber.d("setDataList, entries.size: ${dataEntries?.size}, entries.last: ${dataEntries?.safeLast()}")
+    lineDataSet = LineDataSet(dataEntries, "BatteryPercentage") //todo literal
     stylizeLineDataSet(lineDataSet)
     val lineData = LineData(lineDataSet)
     stylizeLineData(lineData)
@@ -35,19 +44,32 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   private fun dataListToEntryList(dataList: List<BatteryStatusEvent>) =
       dataList.map({ data -> Entry(data.eventUnixTimestamp.toFloat(), data.batteryPercentage.toFloat()) }, dataList.size)
 
-  private fun stylizeLineDataSet(lineDataSet: LineDataSet) {
-    Timber.d("stylizeLineDataSet")
+  private fun stylizeLineDataSet(lineDataSet: LineDataSet?) {
+    Timber.d("stylizeLineDataSet, lineDataSet: $lineDataSet")
+    lineDataSet?.let {
+      it.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+
+      it.setDrawFilled(true)
+      it.fillColor = resources.getColor(R.color.colorPrimaryDark)
+      it.fillAlpha = 185
+
+      it.lineWidth = 2f
+      it.color = resources.getColor(R.color.colorAccent)
+
+      it.setCircleColor(resources.getColor(R.color.colorAccentAlpha))
+      it.circleRadius = 5f
+
+
+    }
   }
 
-  private fun stylizeLineData(lineData: LineData) {
-    Timber.d("stylizeLineData")
+  private fun stylizeLineData(lineData: LineData?) {
+    Timber.d("stylizeLineData, lineData: $lineData")
   }
 
-  private fun applyDataToChart(lineData: LineData) {
-    Timber.d("applyDataToChart")
+  private fun applyDataToChart(lineData: LineData?) {
+    Timber.d("applyDataToChart, lineData: $lineData")
     data = lineData
-    data.notifyDataChanged()
-    notifyDataSetChanged()
     invalidate()
   }
 
