@@ -32,7 +32,12 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
 
   override fun subscribeModelEvents() {
     Timber.d("subscribeModelEvents")
-    model.subscribeBatteryEvents().ui().subscribe { batteryStatusEvent -> view?.renderBatteryStatus(batteryStatusEvent) }
+    model.subscribeBatteryEvents()
+        .ui()
+        .subscribe { batteryStatusEvent ->
+          Timber.d("subscribeModelEvents.subscription.onNext: event: $batteryStatusEvent")
+      view?.renderBatteryStatus(batteryStatusEvent)
+    }
   }
 
 }
