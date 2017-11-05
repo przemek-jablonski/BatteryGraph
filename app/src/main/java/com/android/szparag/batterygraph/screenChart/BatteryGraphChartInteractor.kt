@@ -3,9 +3,11 @@ package com.android.szparag.batterygraph.screenChart
 import com.android.szparag.batterygraph.base.entities.RealmBatteryEvent
 import com.android.szparag.batterygraph.base.entities.toRealmEvent
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.utils.safeLast
 import com.android.szparag.batterygraph.utils.toObservable
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.toObservable
 import io.realm.Realm
 import io.realm.RealmChangeListener
 import io.realm.Sort.ASCENDING
@@ -58,7 +60,7 @@ class BatteryGraphChartInteractor : ChartModel {
   override fun subscribeBatteryEvents(): Observable<BatteryStatusEvent> {
     Timber.i("subscribeBatteryEvents")
     return realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp",
-        ASCENDING).toObservable().map { it.last().toBatteryStatusEvent() }
+        ASCENDING).map(RealmBatteryEvent::toBatteryStatusEvent).toObservable()
   }
 
 

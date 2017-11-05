@@ -14,19 +14,11 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
   override fun onAttached() {
     super.onAttached()
     Timber.d("onAttached")
-//    view?.registerBatteryStatusReceiver()
-//    view?.subscribeForBatteryStatusChanged()
-//        ?.subscribeOn(ui())
-//        ?.sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, SECONDS, true)
-//        ?.observeOn(ui())
-//        ?.subscribe(this::onBatteryStatusChanged)
-//        .toViewDisposable()
   }
 
   override fun onBeforeDetached() {
     super.onBeforeDetached()
     Timber.d("onBeforeDetached")
-    view?.unregisterBatteryStatusReceiver()
   }
 
   override fun onBatteryStatusChanged(event: BatteryStatusEvent) {
