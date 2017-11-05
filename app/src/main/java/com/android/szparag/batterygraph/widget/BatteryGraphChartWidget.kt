@@ -7,6 +7,8 @@ import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.map
 import com.android.szparag.batterygraph.utils.safeLast
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -20,13 +22,12 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   var lineDataSet: LineDataSet? = null
 
   init {
+    isLogEnabled = true
     isScaleYEnabled = false
     isDoubleTapToZoomEnabled = false
     dragDecelerationFrictionCoef = 0.75f
-
-    xAxis.setAvoidFirstLastClipping(true)
-    isLogEnabled = true
-
+    stylizeXAxis(xAxis)
+    stylizeYAxis(axisLeft)
   }
 
   fun setDataList(data: List<BatteryStatusEvent>) {
@@ -47,19 +48,18 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   private fun stylizeLineDataSet(lineDataSet: LineDataSet?) {
     Timber.d("stylizeLineDataSet, lineDataSet: $lineDataSet")
     lineDataSet?.let {
+      //  smoothing
       it.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-
+      // chart filling
       it.setDrawFilled(true)
       it.fillColor = resources.getColor(R.color.colorPrimaryDark)
       it.fillAlpha = 185
-
+      //  lines width and colour
       it.lineWidth = 2f
       it.color = resources.getColor(R.color.colorAccent)
-
+      //  data circles colours
       it.setCircleColor(resources.getColor(R.color.colorAccentAlpha))
       it.circleRadius = 5f
-
-
     }
   }
 
@@ -71,6 +71,14 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     Timber.d("applyDataToChart, lineData: $lineData")
     data = lineData
     invalidate()
+  }
+
+  private fun stylizeXAxis(xAxis: XAxis) {
+    xAxis.setAvoidFirstLastClipping(true)
+  }
+
+  private fun stylizeYAxis(yAxis: YAxis) {
+
   }
 
 }
