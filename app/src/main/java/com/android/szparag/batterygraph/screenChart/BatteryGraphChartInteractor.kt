@@ -53,10 +53,12 @@ class BatteryGraphChartInteractor : ChartModel {
     }
   }
 
-  override fun subscribeBatteryEvents(): Observable<BatteryStatusEvent> {
+  override fun subscribeBatteryEvents(): Observable<List<BatteryStatusEvent>> {
     Timber.i("subscribeBatteryEvents, thread: ${Thread.currentThread()}")
-    return realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp",
-        ASCENDING).toObservable().map { results -> results.last().toBatteryStatusEvent() }
+    return realm.where(RealmBatteryEvent::class.java)
+        .findAllSorted("unixTimestamp", ASCENDING)
+        .toObservable()
+        .map { results -> results.map { it.toBatteryStatusEvent() } }
   }
 
 

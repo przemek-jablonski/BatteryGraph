@@ -1,6 +1,8 @@
 package com.android.szparag.batterygraph.services
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -34,6 +36,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   @Inject lateinit var model: ChartModel //todo this cant be chartmodel, more like MonitoringEventsInteractor or sth
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
   private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
+  private var notificationChannel: NotificationChannel? = null
 
   override fun onBind(intent: Intent?): IBinder {
     Timber.d("onBind, intent: $intent")
@@ -76,11 +79,6 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     //todo remember about disposing in ondestroy!
   }
 
-  private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
-    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
-    model.insertBatteryEvent(batteryStatusEvent)
-  }
-
   private fun startServiceAsForegroundService() {
     Timber.d("startServiceAsForegroundService")
     val backToAppIntent = Intent(this, BatteryGraphChartActivity::class.java)
@@ -88,12 +86,22 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
 
     startForeground(
         requestCode(),
-        if (VERSION.SDK_INT >= VERSION_CODES.O)
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+          createNotificationChannel()
           createForegroundNotificationWithChannel(backToAppIntent)
-        else
+        } else
           createForegroundNotificationWithoutChannel(backToAppIntent)
     )
+  }
 
+  @RequiresApi(VERSION_CODES.O)
+  private fun createNotificationChannel() {
+    Timber.d("createNotificationChannel")
+    if (notificationChannel == null)
+      notificationChannel = NotificationChannel(
+          notificationChannelId(),
+          getText(R.string.service_notification_channel_name),
+          NotificationManager.IMPORTANCE_DEFAULT)
   }
 
   @RequiresApi(VERSION_CODES.O)
@@ -116,9 +124,16 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
           .build()
           .also { Timber.d("createForegroundNotificationWithoutChannel, return: $it") }
 
+
+  private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
+    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
+    model.insertBatteryEvent(batteryStatusEvent)
+  }
+
   override fun onDestroy() {
     super.onDestroy()
     Timber.d("onDestroy")
+    //todo think about proper disposing
     unregisterBatteryStatusReceiver()
   }
 

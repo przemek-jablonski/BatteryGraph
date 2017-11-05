@@ -34,10 +34,10 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
     Timber.d("subscribeModelEvents")
     model.subscribeBatteryEvents()
         .ui()
-        .subscribe { batteryStatusEvent ->
-          Timber.d("subscribeModelEvents.subscription.onNext: event: $batteryStatusEvent")
-      view?.renderBatteryStatus(batteryStatusEvent)
-    }
+        .subscribe { eventList ->
+          Timber.d("subscribeModelEvents.subscription.onNext: list: $eventList")
+          if (eventList.isNotEmpty()) view?.renderBatteryStatus(eventList.last())
+        }
   }
 
 }
