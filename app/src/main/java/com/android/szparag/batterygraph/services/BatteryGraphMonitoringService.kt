@@ -61,10 +61,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     batteryChangedSubject = PublishSubject.create()
     batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-        callback = { intent ->
-          Timber.d("batteryChangedActionReceiver.callback, intent: ${intent.asString()}")
-          batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
-        }
+        callback = this::onBatteryStatusIntentReceived
     )
   }
 
@@ -130,9 +127,13 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
           .build()
           .also { Timber.d("createForegroundNotificationWithoutChannel, return: $it") }
 
+  private fun onBatteryStatusIntentReceived(intent: Intent) {
+    Timber.v("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
+    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(System.currentTimeMillis())) //todo: currenttimemillis
+  }
 
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
-    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
+    Timber.v("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
     model.insertBatteryEvent(batteryStatusEvent)
   }
 

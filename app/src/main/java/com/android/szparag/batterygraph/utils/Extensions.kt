@@ -14,6 +14,7 @@ import android.os.BatteryManager.EXTRA_TEMPERATURE
 import android.os.BatteryManager.EXTRA_VOLTAGE
 import android.os.Bundle
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.UnixTimestamp
 import timber.log.Timber
 
 /**
@@ -37,7 +38,8 @@ fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
   context.unregisterReceiver(this)
 }
 
-fun Bundle.mapToBatteryStatusEvent() = BatteryStatusEvent(
+fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStatusEvent(
+    eventUnixTimestamp = unixTimestamp,
     batteryStatusInt = getInt(EXTRA_STATUS),
     batteryHealthInt = getInt(EXTRA_HEALTH),
     batteryPowerSourceInt = getInt(EXTRA_PLUGGED),
@@ -71,7 +73,7 @@ fun Bundle?.asString(stringBuilder: StringBuilder): StringBuilder {
 
 fun <E : Any> Collection<E>.safeLast() = when (this) {
   is List -> if (isEmpty()) null else this[this.lastIndex]
-  else    -> {
+  else -> {
     val iterator = iterator()
     if (!iterator.hasNext()) null
     var last = iterator.next()
@@ -80,3 +82,9 @@ fun <E : Any> Collection<E>.safeLast() = when (this) {
     last
   }
 }
+
+inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int): List<R> {
+  return mapTo(ArrayList<R>(initialCapacity), transform)
+}
+
+fun <T : Any> List<T>.safeLast() = if (!isEmpty()) this[lastIndex] else null

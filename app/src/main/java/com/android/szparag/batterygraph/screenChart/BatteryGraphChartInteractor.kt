@@ -3,6 +3,7 @@ package com.android.szparag.batterygraph.screenChart
 import com.android.szparag.batterygraph.base.entities.RealmBatteryEvent
 import com.android.szparag.batterygraph.base.entities.toRealmEvent
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.utils.safeLast
 import com.android.szparag.batterygraph.utils.toObservable
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -31,9 +32,8 @@ class BatteryGraphChartInteractor : ChartModel {
   private fun setupDebugRealmListener() {
     Timber.d("setupDebugRealmListener, thread: ${Thread.currentThread()}")
     realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener(
-        { realmResultsBatteryChanged ->
-          Timber.v("debugRealmListener.size: ${realmResultsBatteryChanged.size}")
-          Timber.v("debugRealmListener.last: ${realmResultsBatteryChanged.last()}")
+        { events ->
+          Timber.v("debugRealmListener.callback, events.size: ${events.size}, events.last: ${events.safeLast()}")
         }
     )
   }
@@ -49,7 +49,7 @@ class BatteryGraphChartInteractor : ChartModel {
   override fun insertBatteryEvent(batteryStatusEvent: BatteryStatusEvent) {
     realm.executeTransaction { realm ->
       Timber.i("insertBatteryEvent, batteryStatusEvent: $batteryStatusEvent, realm: $realm, thread: ${Thread.currentThread()}")
-      realm.insert(batteryStatusEvent.toRealmEvent(System.currentTimeMillis())) //todo System.currentTimeMillis()
+      realm.insert(batteryStatusEvent.toRealmEvent())
     }
   }
 
