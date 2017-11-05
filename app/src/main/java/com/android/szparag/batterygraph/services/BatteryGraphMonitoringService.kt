@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -36,6 +37,9 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   @Inject lateinit var model: ChartModel //todo this cant be chartmodel, more like MonitoringEventsInteractor or sth
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
   private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
+  private val notificationManager: NotificationManager by lazy {
+    applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+  }
   private var notificationChannel: NotificationChannel? = null
 
   override fun onBind(intent: Intent?): IBinder {
@@ -97,11 +101,13 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   @RequiresApi(VERSION_CODES.O)
   private fun createNotificationChannel() {
     Timber.d("createNotificationChannel")
-    if (notificationChannel == null)
+    if (notificationChannel == null) {
       notificationChannel = NotificationChannel(
           notificationChannelId(),
           getText(R.string.service_notification_channel_name),
           NotificationManager.IMPORTANCE_DEFAULT)
+      notificationManager.createNotificationChannel(notificationChannel)
+    }
   }
 
   @RequiresApi(VERSION_CODES.O)
@@ -145,5 +151,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   private fun requestCode() = Math.abs(this.packageName.hashCode())
 
   private fun notificationChannelId() = requestCode().toString()
+
+  private fun notificationId() = requestCode()
 
 }
