@@ -61,17 +61,4 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
 
   override fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent> = batteryStatusSubject
 
-  override fun registerBatteryStatusReceiver() {
-    Timber.d("registerBatteryStatusReceiver")
-//    batteryChangedActionReceiver = createRegisteredBroadcastReceiver(
-//        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-//        callback = { intent -> batteryStatusSubject.onNext(intent.extras.mapToBatteryStatusEvent()) }
-//    )
-  }
-
-  override fun unregisterBatteryStatusReceiver() {
-    Timber.d("unregisterBatteryStatusReceiver")
-//    batteryChangedActionReceiver.unregisterReceiverFromContext(this)
-  }
-
 }
