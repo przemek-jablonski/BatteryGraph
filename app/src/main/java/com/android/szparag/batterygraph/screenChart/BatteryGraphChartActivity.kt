@@ -18,15 +18,12 @@ import timber.log.Timber
 
 class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), ChartView {
 
-  private lateinit var batteryChangedActionReceiver: BroadcastReceiver
-  private lateinit var batteryStatusSubject: Subject<BatteryStatusEvent>
   private val textView1: TextView by bindView(id.batteryActionsTextview)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     setContentView(layout.activity_main)
-    batteryStatusSubject = ReplaySubject.create<BatteryStatusEvent>()
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
     startService(Intent(this, BatteryGraphMonitoringService::class.java))
   }
@@ -58,7 +55,4 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     Timber.d("renderBatteryStatus, batteryStatusEvent: $batteryStatusEvent")
     textView1.text = batteryStatusEvent.toString()
   }
-
-  override fun subscribeForBatteryStatusChanged(): Observable<BatteryStatusEvent> = batteryStatusSubject
-
 }
