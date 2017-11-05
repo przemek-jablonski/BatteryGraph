@@ -1,7 +1,7 @@
 package com.android.szparag.batterygraph.screenChart
 
 import com.android.szparag.batterygraph.base.presenters.BatteryGraphBasePresenter
-import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.utils.safeLast
 import com.android.szparag.batterygraph.utils.ui
 import timber.log.Timber
 
@@ -21,18 +21,18 @@ class BatteryGraphChartPresenter(model: ChartModel) : BatteryGraphBasePresenter<
     Timber.d("onBeforeDetached")
   }
 
-  override fun onBatteryStatusChanged(event: BatteryStatusEvent) {
-    Timber.d("onBatteryStatusChanged, event: $event")
-    model.insertBatteryEvent(event)
-  }
-
   override fun subscribeViewUserEvents() {
     Timber.d("subscribeViewUserEvents")
   }
 
   override fun subscribeModelEvents() {
     Timber.d("subscribeModelEvents")
-    model.subscribeBatteryEvents().ui().subscribe { batteryStatusEvent -> view?.renderBatteryStatus(batteryStatusEvent) }
+    model.subscribeBatteryEvents()
+        .ui()
+        .subscribe { events ->
+          Timber.d("subscribeModelEvents.subscription.onNext: events.size: ${events.size}, events.last: ${events.safeLast()}")
+          view?.renderBatteryStatuses(events)
+        }
   }
 
 }
