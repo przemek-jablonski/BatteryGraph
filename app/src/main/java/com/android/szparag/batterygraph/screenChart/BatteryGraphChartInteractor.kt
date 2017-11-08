@@ -48,7 +48,8 @@ class BatteryGraphChartInteractor : ChartModel {
 
   override fun insertBatteryEvent(batteryStatusEvent: BatteryStatusEvent) {
     realm.executeTransaction { realm ->
-      Timber.i("insertBatteryEvent, batteryStatusEvent: $batteryStatusEvent, realm: $realm, thread: ${Thread.currentThread()}")
+      Timber.i(
+          "insertBatteryEvent, batteryStatusEvent: $batteryStatusEvent, realm: $realm, thread: ${Thread.currentThread()}")
       realm.insert(batteryStatusEvent.toRealmEvent())
     }
   }
@@ -58,8 +59,11 @@ class BatteryGraphChartInteractor : ChartModel {
     return realm.where(RealmBatteryEvent::class.java)
         .findAllSorted("unixTimestamp", ASCENDING)
         .toObservable()
-        .map { results -> results.map { it.toBatteryStatusEvent() } }
+        .map { results -> results.map(RealmBatteryEvent::toBatteryStatusEvent) }
   }
-
+//
+//  private fun calculateRelativeUnixTimestamp(batteryStatusEvent: BatteryStatusEvent,
+//      previousRealmBatteryEvent: RealmBatteryEvent?) {
+//  }
 
 }
