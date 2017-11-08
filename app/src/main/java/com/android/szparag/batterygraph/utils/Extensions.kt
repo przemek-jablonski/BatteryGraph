@@ -88,3 +88,11 @@ inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int): Li
 }
 
 fun <T : Any> List<T>.safeLast() = if (!isEmpty()) this[lastIndex] else null
+
+fun getUnixTimestampMillis() = System.currentTimeMillis() //todo: currenttimemillis
+
+fun getUnixTimestampSecs() = (getUnixTimestampMillis() / 1000f).toLong()
+
+private const val BGUnixTimestampOrigin = 1510099200
+
+fun getBGUnixTimestampSecs() = getUnixTimestampSecs() - BGUnixTimestampOrigin

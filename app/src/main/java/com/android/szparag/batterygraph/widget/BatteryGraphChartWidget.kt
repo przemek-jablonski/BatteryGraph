@@ -25,7 +25,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     isLogEnabled = true
     isScaleYEnabled = false
     isDoubleTapToZoomEnabled = false
-    dragDecelerationFrictionCoef = 0.75f
+    dragDecelerationFrictionCoef = 0.83f
     stylizeXAxis(xAxis)
     stylizeYAxis(axisLeft)
   }
@@ -74,7 +74,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   }
 
   private fun stylizeXAxis(xAxis: XAxis) {
-    xAxis.setAvoidFirstLastClipping(true)
+//    xAxis.setAvoidFirstLastClipping(true)
   }
 
   private fun stylizeYAxis(yAxis: YAxis) {
