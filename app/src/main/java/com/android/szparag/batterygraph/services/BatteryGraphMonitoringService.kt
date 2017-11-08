@@ -20,6 +20,7 @@ import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
 import com.android.szparag.batterygraph.screenChart.ChartModel
 import com.android.szparag.batterygraph.utils.asString
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
+import com.android.szparag.batterygraph.utils.getUnixTimestampSecs
 import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
 import com.android.szparag.batterygraph.utils.toPendingIntent
 import com.android.szparag.batterygraph.utils.ui
@@ -129,7 +130,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
 
   private fun onBatteryStatusIntentReceived(intent: Intent) {
     Timber.v("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
-    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(System.currentTimeMillis())) //todo: currenttimemillis
+    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(getUnixTimestampSecs()))
   }
 
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {

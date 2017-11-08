@@ -8,6 +8,7 @@ typealias UnixTimestamp = Long
 
 data class BatteryStatusEvent(
     val eventUnixTimestamp: UnixTimestamp,
+    val eventRelativeUnixTimestamp: Int,
     val batteryStatus: BatteryStatus,
     val batteryHealth: BatteryHealth,
     val batteryPowerSource: BatteryPowerSource,
@@ -16,9 +17,10 @@ data class BatteryStatusEvent(
     val batteryTemperature: Int
 ) {
 
-  constructor(eventUnixTimestamp: UnixTimestamp, batteryStatusInt: Int, batteryHealthInt: Int, batteryPowerSourceInt: Int,
-      batteryPercentage: Int, batteryVoltage: Float, batteryTemperature: Int) : this(
+  constructor(eventUnixTimestamp: UnixTimestamp, eventRelativeUnixTimestamp: Int, batteryStatusInt: Int, batteryHealthInt: Int,
+      batteryPowerSourceInt: Int, batteryPercentage: Int, batteryVoltage: Float, batteryTemperature: Int) : this(
       eventUnixTimestamp = eventUnixTimestamp,
+      eventRelativeUnixTimestamp = eventRelativeUnixTimestamp,
       batteryStatus = BatteryStatus.fromInt(batteryStatusInt),
       batteryHealth = BatteryHealth.fromInt(batteryHealthInt),
       batteryPowerSource = BatteryPowerSource.fromInt(batteryPowerSourceInt),
