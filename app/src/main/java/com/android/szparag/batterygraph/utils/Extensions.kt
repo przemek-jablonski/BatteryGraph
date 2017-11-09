@@ -83,8 +83,15 @@ fun <E : Any> Collection<E>.safeLast() = when (this) {
   }
 }
 
-inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int): List<R> {
-  return mapTo(ArrayList<R>(initialCapacity), transform)
-}
+inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int) =
+    mapTo(ArrayList<R>(initialCapacity), transform)
 
 fun <T : Any> List<T>.safeLast() = if (!isEmpty()) this[lastIndex] else null
+
+fun getUnixTimestampMillis() = System.currentTimeMillis() //todo: currenttimemillis
+
+fun getUnixTimestampSecs() = getUnixTimestampMillis() / 1000L
+
+private const val BGUnixTimestampOrigin = 1510099200
+
+fun getBGUnixTimestampSecs() = getUnixTimestampSecs() - BGUnixTimestampOrigin
