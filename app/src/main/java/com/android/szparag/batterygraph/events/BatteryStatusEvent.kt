@@ -16,8 +16,8 @@ data class BatteryStatusEvent(
     val batteryTemperature: Int
 ) {
 
-  constructor(eventUnixTimestamp: UnixTimestamp, batteryStatusInt: Int, batteryHealthInt: Int, batteryPowerSourceInt: Int,
-      batteryPercentage: Int, batteryVoltage: Float, batteryTemperature: Int) : this(
+  constructor(eventUnixTimestamp: UnixTimestamp, batteryStatusInt: Int, batteryHealthInt: Int,
+      batteryPowerSourceInt: Int, batteryPercentage: Int, batteryVoltage: Float, batteryTemperature: Int) : this(
       eventUnixTimestamp = eventUnixTimestamp,
       batteryStatus = BatteryStatus.fromInt(batteryStatusInt),
       batteryHealth = BatteryHealth.fromInt(batteryHealthInt),
