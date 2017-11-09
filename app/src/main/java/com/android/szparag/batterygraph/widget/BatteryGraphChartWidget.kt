@@ -7,12 +7,15 @@ import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.utils.map
 import com.android.szparag.batterygraph.utils.safeLast
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.PercentFormatter
 import timber.log.Timber
+import java.text.DecimalFormat
 
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -23,11 +26,10 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
 
   init {
     isLogEnabled = true
-    isScaleYEnabled = false
-    isDoubleTapToZoomEnabled = false
-    dragDecelerationFrictionCoef = 0.83f
+    stylizeChart()
     stylizeXAxis(xAxis)
-    stylizeYAxis(axisLeft)
+    stylizeYLeftAxis(axisLeft)
+    stylizeYRightAxis(axisRight)
   }
 
   fun setDataList(data: List<BatteryStatusEvent>) {
@@ -73,12 +75,30 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     invalidate()
   }
 
+  private fun stylizeChart() {
+    isScaleYEnabled = false
+    isDoubleTapToZoomEnabled = false
+    dragDecelerationFrictionCoef = 0.83f
+    setDrawBorders(false)
+    isKeepPositionOnRotation = true
+    setMaxVisibleValueCount(0)
+  }
+
   private fun stylizeXAxis(xAxis: XAxis) {
 //    xAxis.setAvoidFirstLastClipping(true)
   }
 
-  private fun stylizeYAxis(yAxis: YAxis) {
+  private fun stylizeYLeftAxis(yAxis: YAxis) {
+    yAxis.axisMinimum = 0f
+    yAxis.axisMaximum = 100f
+    yAxis.gridLineWidth = 0.5f
+    yAxis.valueFormatter = PercentFormatter(DecimalFormat("###,###,##0"))
+    yAxis.setDrawAxisLine(false)
+    yAxis.setLabelCount(6, true)
+  }
 
+  private fun stylizeYRightAxis(yAxis: YAxis) {
+    yAxis.isEnabled = false
   }
 
 }
