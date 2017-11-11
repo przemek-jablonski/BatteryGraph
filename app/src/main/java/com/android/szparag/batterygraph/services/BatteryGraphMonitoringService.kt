@@ -16,13 +16,15 @@ import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
 import com.android.szparag.batterygraph.screenChart.ChartModel
 import com.android.szparag.batterygraph.utils.asString
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.utils.getBGUnixTimestampSecs
-import com.android.szparag.batterygraph.utils.getUnixTimestampSecs
 import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
+import com.android.szparag.batterygraph.utils.mapToDevicePowerEvent
+import com.android.szparag.batterygraph.utils.mapToDevicePowerEventApiN
 import com.android.szparag.batterygraph.utils.toPendingIntent
 import com.android.szparag.batterygraph.utils.ui
 import com.android.szparag.batterygraph.utils.unregisterReceiverFromContext
@@ -39,6 +41,8 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   @Inject lateinit var model: ChartModel //todo this cant be chartmodel, more like MonitoringEventsInteractor or sth
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
   private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
+  private lateinit var devicePowerActionReceiver: BroadcastReceiver
+  private lateinit var devicePowerSubject: Subject<DevicePowerEvent>
   private val notificationManager: NotificationManager by lazy {
     applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   }
@@ -54,6 +58,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     Timber.d("onCreate")
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
     registerBatteryStatusReceiver()
+    registerDevicePowerReceiver()
     subscribeBatteryStatusChanged()
     startServiceAsForegroundService()
   }
@@ -65,6 +70,24 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
         callback = this::onBatteryStatusIntentReceived
     )
+  }
+
+  override fun registerDevicePowerReceiver() {
+    Timber.d("registerDevicePowerReceiver")
+    devicePowerSubject = PublishSubject.create()
+    val intentFilterActions = arrayOf(
+        if (VERSION.SDK_INT >= VERSION_CODES.N) Intent.ACTION_LOCKED_BOOT_COMPLETED else Intent.ACTION_BOOT_COMPLETED,
+        Intent.ACTION_SHUTDOWN
+    )
+    devicePowerActionReceiver = createRegisteredBroadcastReceiver(
+        intentFilterActions = *intentFilterActions,
+        callback = this::onDevicePowerIntentReceived
+    )
+  }
+
+  override fun unregisterDevicePowerReceiver() {
+    Timber.d("unregisterDevicePowerReceiver")
+    devicePowerActionReceiver.unregisterReceiverFromContext(this)
   }
 
   override fun unregisterBatteryStatusReceiver() {
@@ -132,6 +155,13 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   private fun onBatteryStatusIntentReceived(intent: Intent) {
     Timber.v("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
     batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(getBGUnixTimestampSecs()))
+  }
+
+  private fun onDevicePowerIntentReceived(intent: Intent) {
+    Timber.d("onDevicePowerIntentReceived, intent: ${intent.asString()}")
+    devicePowerSubject.onNext(
+        if (VERSION.SDK_INT >= VERSION_CODES.N) intent.mapToDevicePowerEventApiN(getBGUnixTimestampSecs()) else intent
+            .mapToDevicePowerEvent(getBGUnixTimestampSecs()))
   }
 
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {

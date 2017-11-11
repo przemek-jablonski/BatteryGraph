@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_BOOT_COMPLETED
+import android.content.Intent.ACTION_LOCKED_BOOT_COMPLETED
 import android.content.IntentFilter
 import android.os.BatteryManager.EXTRA_HEALTH
 import android.os.BatteryManager.EXTRA_LEVEL
@@ -12,8 +14,11 @@ import android.os.BatteryManager.EXTRA_SCALE
 import android.os.BatteryManager.EXTRA_STATUS
 import android.os.BatteryManager.EXTRA_TEMPERATURE
 import android.os.BatteryManager.EXTRA_VOLTAGE
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.events.UnixTimestamp
 import timber.log.Timber
 
@@ -46,6 +51,16 @@ fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStatus
     batteryPercentage = ((getInt(EXTRA_LEVEL) / getInt(EXTRA_SCALE).toFloat()) * 100f).toInt(),
     batteryVoltage = getInt(EXTRA_VOLTAGE) / 1000f,
     batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
+)
+
+
+fun Intent.mapToDevicePowerEvent(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
+    deviceOn = this.action == ACTION_BOOT_COMPLETED
+)
+
+@RequiresApi(Build.VERSION_CODES.N)
+fun Intent.mapToDevicePowerEventApiN(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
+    deviceOn = this.action == ACTION_LOCKED_BOOT_COMPLETED || this.action == ACTION_BOOT_COMPLETED
 )
 
 fun invalidIntValue() = -1
