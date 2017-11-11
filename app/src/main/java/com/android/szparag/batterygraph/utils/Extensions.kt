@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.content.Intent.ACTION_LOCKED_BOOT_COMPLETED
 import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.BatteryManager.EXTRA_HEALTH
 import android.os.BatteryManager.EXTRA_LEVEL
 import android.os.BatteryManager.EXTRA_PLUGGED
@@ -18,6 +19,8 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.ConnectivityNetworkType
+import com.android.szparag.batterygraph.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.events.UnixTimestamp
 import timber.log.Timber
@@ -52,6 +55,14 @@ fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStatus
     batteryVoltage = getInt(EXTRA_VOLTAGE) / 1000f,
     batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
 )
+
+fun ConnectivityManager.mapToConnectivityEvent() = activeNetworkInfo?.let { network ->
+  ConnectivityStateEvent(
+      networkType = ConnectivityNetworkType.fromInt(network.type),
+      networkState = network.detailedState,
+      networkStateReason = network.reason
+  )
+} ?: ConnectivityStateEvent()
 
 
 fun Intent.mapToDevicePowerEvent(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
