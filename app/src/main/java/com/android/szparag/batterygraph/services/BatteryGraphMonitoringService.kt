@@ -17,6 +17,7 @@ import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
 import com.android.szparag.batterygraph.screenChart.ChartModel
@@ -24,6 +25,7 @@ import com.android.szparag.batterygraph.utils.asString
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.utils.getBGUnixTimestampSecs
 import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
+import com.android.szparag.batterygraph.utils.mapToConnectivityEvent
 import com.android.szparag.batterygraph.utils.mapToDevicePowerEvent
 import com.android.szparag.batterygraph.utils.mapToDevicePowerEventApiN
 import com.android.szparag.batterygraph.utils.toPendingIntent
@@ -45,7 +47,8 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   private lateinit var devicePowerActionReceiver: BroadcastReceiver
   private lateinit var devicePowerSubject: Subject<DevicePowerEvent>
   private lateinit var connectivityActionReceiver: BroadcastReceiver
-  private lateinit var connectivitySubject: Subject<DevicePowerEvent>
+  private lateinit var connectivityManager: ConnectivityManager
+  private lateinit var connectivitySubject: Subject<ConnectivityStateEvent>
   private val notificationManager: NotificationManager by lazy {
     applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   }
@@ -92,15 +95,16 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   override fun registerConnectivityReceiver() {
     Timber.d("registerConnectivityReceiver")
     connectivitySubject = PublishSubject.create()
+    connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     connectivityActionReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = ConnectivityManager.CONNECTIVITY_ACTION,
-        callback = this::onConnectivityIntentReceived
+        callback = { intent -> onConnectivityIntentReceived(intent, connectivityManager) }
     )
   }
 
   override fun unregisterConnectivityReceiver() {
     Timber.d("unregisterConnectivityReceiver")
-
+    connectivityActionReceiver.unregisterReceiverFromContext(this)
   }
 
   override fun unregisterDevicePowerReceiver() {
@@ -182,9 +186,9 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
             .mapToDevicePowerEvent(getBGUnixTimestampSecs()))
   }
 
-  private fun onConnectivityIntentReceived(intent: Intent) {
-    Timber.d("onConnectivityIntentReceived, intent: ${intent.asString()}")
-
+  private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
+    Timber.d("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
+    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
   }
 
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
