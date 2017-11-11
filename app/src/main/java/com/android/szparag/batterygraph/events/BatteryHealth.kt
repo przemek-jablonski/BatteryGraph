@@ -1,5 +1,6 @@
 package com.android.szparag.batterygraph.events
 
+//todo android dependency here, remove it from here (to some extensions or something)
 import android.os.BatteryManager
 
 /**

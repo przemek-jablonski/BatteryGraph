@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.IBinder
@@ -16,6 +17,7 @@ import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
 import com.android.szparag.batterygraph.screenChart.ChartModel
@@ -23,6 +25,7 @@ import com.android.szparag.batterygraph.utils.asString
 import com.android.szparag.batterygraph.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.utils.getBGUnixTimestampSecs
 import com.android.szparag.batterygraph.utils.mapToBatteryStatusEvent
+import com.android.szparag.batterygraph.utils.mapToConnectivityEvent
 import com.android.szparag.batterygraph.utils.mapToDevicePowerEvent
 import com.android.szparag.batterygraph.utils.mapToDevicePowerEventApiN
 import com.android.szparag.batterygraph.utils.toPendingIntent
@@ -43,6 +46,9 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
   private lateinit var devicePowerActionReceiver: BroadcastReceiver
   private lateinit var devicePowerSubject: Subject<DevicePowerEvent>
+  private lateinit var connectivityActionReceiver: BroadcastReceiver
+  private lateinit var connectivityManager: ConnectivityManager
+  private lateinit var connectivitySubject: Subject<ConnectivityStateEvent>
   private val notificationManager: NotificationManager by lazy {
     applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
   }
@@ -59,6 +65,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
     registerBatteryStatusReceiver()
     registerDevicePowerReceiver()
+    registerConnectivityReceiver()
     subscribeBatteryStatusChanged()
     startServiceAsForegroundService()
   }
@@ -83,6 +90,21 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         intentFilterActions = *intentFilterActions,
         callback = this::onDevicePowerIntentReceived
     )
+  }
+
+  override fun registerConnectivityReceiver() {
+    Timber.d("registerConnectivityReceiver")
+    connectivitySubject = PublishSubject.create()
+    connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    connectivityActionReceiver = createRegisteredBroadcastReceiver(
+        intentFilterActions = ConnectivityManager.CONNECTIVITY_ACTION,
+        callback = { intent -> onConnectivityIntentReceived(intent, connectivityManager) }
+    )
+  }
+
+  override fun unregisterConnectivityReceiver() {
+    Timber.d("unregisterConnectivityReceiver")
+    connectivityActionReceiver.unregisterReceiverFromContext(this)
   }
 
   override fun unregisterDevicePowerReceiver() {
@@ -164,6 +186,11 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
             .mapToDevicePowerEvent(getBGUnixTimestampSecs()))
   }
 
+  private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
+    Timber.d("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
+    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
+  }
+
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
     Timber.v("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
     model.insertBatteryEvent(batteryStatusEvent)
@@ -174,6 +201,8 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     Timber.d("onDestroy")
     //todo think about proper disposing
     unregisterBatteryStatusReceiver()
+    unregisterDevicePowerReceiver()
+    unregisterConnectivityReceiver()
   }
 
   override fun onLowMemory() {
