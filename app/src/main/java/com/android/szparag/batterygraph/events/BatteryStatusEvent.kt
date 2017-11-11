@@ -26,4 +26,5 @@ data class BatteryStatusEvent(
       batteryVoltage = batteryVoltage,
       batteryTemperature = batteryTemperature
   )
+
 }
