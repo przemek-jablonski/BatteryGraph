@@ -211,24 +211,24 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   }
 
   private fun onDevicePowerIntentReceived(intent: Intent) {
-    Timber.d("onDevicePowerIntentReceived, intent: ${intent.asString()}")
+    Timber.v("onDevicePowerIntentReceived, intent: ${intent.asString()}")
     devicePowerSubject.onNext(
         if (VERSION.SDK_INT >= VERSION_CODES.N) intent.mapToDevicePowerEventApiN(getBGUnixTimestampSecs()) else intent
             .mapToDevicePowerEvent(getBGUnixTimestampSecs()))
   }
 
   private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
-    Timber.d("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
+    Timber.v("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
     connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
   }
 
   private fun onFlightModeIntentReceived(intent: Intent) {
-    Timber.d("onFlightModeIntentReceived, intent: ${intent.asString()}")
+    Timber.v("onFlightModeIntentReceived, intent: ${intent.asString()}")
     flightModeSubject.onNext(intent.extras.mapToFlightModeEvent(getBGUnixTimestampSecs()))
   }
 
   private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
-    Timber.v("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
+    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
     model.insertBatteryEvent(batteryStatusEvent)
   }
 
