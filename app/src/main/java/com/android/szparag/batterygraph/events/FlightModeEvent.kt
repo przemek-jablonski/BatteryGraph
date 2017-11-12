@@ -7,5 +7,6 @@ package com.android.szparag.batterygraph.events
 typealias FlightModeStatus = Boolean
 
 data class FlightModeEvent(
+    val eventUnixTimestamp: UnixTimestamp,
     val flightModeOn: FlightModeStatus
 )

@@ -219,7 +219,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
 
   private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
     Timber.v("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
-    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
+    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent(getBGUnixTimestampSecs()))
   }
 
   private fun onFlightModeIntentReceived(intent: Intent) {

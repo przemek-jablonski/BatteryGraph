@@ -19,7 +19,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import com.android.szparag.batterygraph.events.BatteryStatusEvent
-import com.android.szparag.batterygraph.events.ConnectivityNetworkType
 import com.android.szparag.batterygraph.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.events.DevicePowerEvent
 import com.android.szparag.batterygraph.events.FlightModeEvent
@@ -57,28 +56,35 @@ fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStatus
     batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
 )
 
-fun ConnectivityManager.mapToConnectivityEvent() = activeNetworkInfo?.let { network ->
+fun ConnectivityManager.mapToConnectivityEvent(unixTimestamp: UnixTimestamp) = activeNetworkInfo?.let { network ->
   ConnectivityStateEvent(
-      networkType = ConnectivityNetworkType.fromInt(network.type),
-      networkState = network.detailedState,
+      eventUnixTimestamp = unixTimestamp,
+      networkType = network.type,
+      networkState = network.detailedState.ordinal,
       networkStateReason = network.reason
   )
-} ?: ConnectivityStateEvent()
+} ?: ConnectivityStateEvent(unixTimestamp)
 
 
 fun Intent.mapToDevicePowerEvent(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
+    eventUnixTimestamp = unixTimestamp,
     deviceOn = this.action == ACTION_BOOT_COMPLETED
 )
 
 @RequiresApi(Build.VERSION_CODES.N)
 fun Intent.mapToDevicePowerEventApiN(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
+    eventUnixTimestamp = unixTimestamp,
     deviceOn = this.action == ACTION_LOCKED_BOOT_COMPLETED || this.action == ACTION_BOOT_COMPLETED
 )
 
 fun Bundle.mapToFlightModeEvent(unixTimestamp: UnixTimestamp) = FlightModeEvent(
+    eventUnixTimestamp = unixTimestamp,
     flightModeOn = getBoolean("state", false)
 )
 
+fun nullString() = "NULL"
+fun emptyString() = ""
+fun invalidStringValue() = emptyString()
 fun invalidIntValue() = -1
 fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f

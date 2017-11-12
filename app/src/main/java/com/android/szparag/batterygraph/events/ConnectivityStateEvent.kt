@@ -1,16 +1,27 @@
 package com.android.szparag.batterygraph.events
 
-import android.net.NetworkInfo
-import android.net.NetworkInfo.DetailedState.DISCONNECTED
+import com.android.szparag.batterygraph.events.ConnectivityNetworkState.DISCONNECTED
 import com.android.szparag.batterygraph.events.ConnectivityNetworkType.NO_NETWORK
 
 typealias NetworkStateReason = String
 
 //todo: android dependency is here - remove (create own enum)
 data class ConnectivityStateEvent(
+    val eventUnixTimestamp: UnixTimestamp,
     val networkType: ConnectivityNetworkType,
-    val networkState: NetworkInfo.DetailedState,
+    val networkState: ConnectivityNetworkState,
     val networkStateReason: NetworkStateReason
 ) {
-  constructor() : this(NO_NETWORK, DISCONNECTED, "Disabled") //todo: hardcoded string literal
+  constructor(eventUnixTimestamp: UnixTimestamp) : this(
+      eventUnixTimestamp = eventUnixTimestamp,
+      networkType = NO_NETWORK,
+      networkState = DISCONNECTED,
+      networkStateReason = "Disabled") //todo: hardcoded string literal
+
+  constructor(eventUnixTimestamp: UnixTimestamp, networkType: Int, networkState: Int, networkStateReason: NetworkStateReason) : this(
+      eventUnixTimestamp = eventUnixTimestamp,
+      networkType = ConnectivityNetworkType.fromInt(networkType),
+      networkState = ConnectivityNetworkState.fromInt(networkState),
+      networkStateReason = networkStateReason
+  )
 }
