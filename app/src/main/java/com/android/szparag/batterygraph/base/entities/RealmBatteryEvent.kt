@@ -5,11 +5,11 @@ import com.android.szparag.batterygraph.utils.invalidFloatValue
 import com.android.szparag.batterygraph.utils.invalidIntValue
 import com.android.szparag.batterygraph.utils.invalidLongValue
 import io.realm.RealmObject
-import io.realm.annotations.Index
+import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 
 @RealmClass open class RealmBatteryEvent(
-    @Index var unixTimestamp: Long = invalidLongValue(),
+    @PrimaryKey var unixTimestamp: Long = invalidLongValue(),
     var batteryStatus: Int = invalidIntValue(),
     var batteryHealth: Int = invalidIntValue(),
     var batteryPowerSource: Int = invalidIntValue(),
