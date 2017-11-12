@@ -22,6 +22,7 @@ import com.android.szparag.batterygraph.events.BatteryStatusEvent
 import com.android.szparag.batterygraph.events.ConnectivityNetworkType
 import com.android.szparag.batterygraph.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.events.DevicePowerEvent
+import com.android.szparag.batterygraph.events.FlightModeEvent
 import com.android.szparag.batterygraph.events.UnixTimestamp
 import timber.log.Timber
 
@@ -72,6 +73,10 @@ fun Intent.mapToDevicePowerEvent(unixTimestamp: UnixTimestamp) = DevicePowerEven
 @RequiresApi(Build.VERSION_CODES.N)
 fun Intent.mapToDevicePowerEventApiN(unixTimestamp: UnixTimestamp) = DevicePowerEvent(
     deviceOn = this.action == ACTION_LOCKED_BOOT_COMPLETED || this.action == ACTION_BOOT_COMPLETED
+)
+
+fun Bundle.mapToFlightModeEvent(unixTimestamp: UnixTimestamp) = FlightModeEvent(
+    flightModeOn = getBoolean("state", false)
 )
 
 fun invalidIntValue() = -1
