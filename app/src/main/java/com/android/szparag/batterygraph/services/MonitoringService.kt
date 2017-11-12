@@ -10,5 +10,9 @@ interface MonitoringService {
 
   fun registerConnectivityReceiver()
   fun unregisterConnectivityReceiver()
+  //todo: sort this registering / unregistering / receiving (on...IntentReceived)
+  fun registerFlightModeListener()
+
+  fun unregisterFlightModeListener()
 
 }
