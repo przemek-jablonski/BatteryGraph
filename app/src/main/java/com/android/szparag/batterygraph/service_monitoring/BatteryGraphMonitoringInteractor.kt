@@ -1,6 +1,6 @@
 package com.android.szparag.batterygraph.service_monitoring
 
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.base.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
@@ -12,7 +12,7 @@ class BatteryGraphMonitoringInteractor(private val databaseInteractor: DatabaseI
 
   override fun detach() = databaseInteractor.detach()
 
-  override fun insertBatteryStateEvent(event: BatteryStatusEvent) = databaseInteractor.insertBatteryStateEvent(event)
+  override fun insertBatteryStateEvent(event: BatteryStateEvent) = databaseInteractor.insertBatteryStateEvent(event)
 
   override fun insertConnectivityStateEvent(event: ConnectivityStateEvent) = databaseInteractor.insertConnectivityStateEvent(event)
 

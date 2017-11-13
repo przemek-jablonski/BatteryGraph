@@ -3,7 +3,7 @@ package com.android.szparag.batterygraph.widgets
 import android.content.Context
 import android.util.AttributeSet
 import com.android.szparag.batterygraph.R
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.utils.map
 import com.android.szparag.batterygraph.base.utils.safeLast
 import com.github.mikephil.charting.charts.LineChart
@@ -18,7 +18,7 @@ import java.text.DecimalFormat
 
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LineChart(context, attrs, defStyleAttr), ChartWidget<BatteryStatusEvent> {
+) : LineChart(context, attrs, defStyleAttr), ChartWidget<BatteryStateEvent> {
 
   var dataEntries: List<Entry>? = null
   var lineDataSet: LineDataSet? = null
@@ -31,7 +31,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     stylizeYRightAxis(axisRight)
   }
 
-  fun setDataList(data: List<BatteryStatusEvent>) {
+  fun setDataList(data: List<BatteryStateEvent>) {
     Timber.d("setDataList, data.size: ${data.size}, data.last: ${data.safeLast()}")
     if (data.isEmpty()) return
     dataEntries = dataListToEntryList(data)
@@ -43,7 +43,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     applyDataToChart(lineData)
   }
 
-  private fun dataListToEntryList(dataList: List<BatteryStatusEvent>) =
+  private fun dataListToEntryList(dataList: List<BatteryStateEvent>) =
       dataList.map({ data -> Entry(data.eventUnixTimestamp.toFloat(), data.batteryPercentage.toFloat()) }, dataList.size)
 
   private fun stylizeLineDataSet(lineDataSet: LineDataSet?) {

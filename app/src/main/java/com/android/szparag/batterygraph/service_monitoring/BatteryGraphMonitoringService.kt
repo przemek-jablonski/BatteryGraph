@@ -15,7 +15,7 @@ import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.base.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
@@ -46,25 +46,9 @@ const val NOTIFICATION_CHANNEL_ID = "batterygraph.notifications.monitoring.chann
 class BatteryGraphMonitoringService : Service(), MonitoringService {
 
 
-  override fun registerSystemEventsReceivers() {
-    Timber.d("registerSystemEventsReceivers")
-    registerBatteryStatusReceiver()
-    registerConnectivityReceiver()
-    registerDevicePowerReceiver()
-    registerFlightModeListener()
-  }
-
-  override fun unregisterSystemEventsReceivers() {
-    Timber.d("unregisterSystemEventsReceivers")
-    unregisterBatteryStatusReceiver()
-    unregisterConnectivityReceiver()
-    unregisterDevicePowerReceiver()
-    unregisterFlightModeListener()
-  }
-
   @Inject lateinit var model: MonitoringInteractor
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
-  private lateinit var batteryChangedSubject: Subject<BatteryStatusEvent>
+  private lateinit var batteryChangedSubject: Subject<BatteryStateEvent>
   private lateinit var devicePowerActionReceiver: BroadcastReceiver
   private lateinit var devicePowerSubject: Subject<DevicePowerStateEvent>
   private lateinit var connectivityActionReceiver: BroadcastReceiver
@@ -94,14 +78,15 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     Timber.d("onCreate")
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
     registerSystemEventsReceivers()
-    subscribeBatteryStatusChanged()
+    subscribeInAppEvents()
     startServiceAsForegroundService()
   }
 
   override fun onDestroy() {
     super.onDestroy()
     Timber.d("onDestroy")
-    unregisterBatteryStatusReceiver()
+    unsubscribeInAppEvents()
+    unregisterSystemEventsReceivers()
     //todo think about proper disposing
   }
 
@@ -168,6 +153,15 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   //  Registering / unregistering system events listeners:
   //  _________________________________________________________________________
 
+
+  override fun registerSystemEventsReceivers() {
+    Timber.d("registerSystemEventsReceivers")
+    registerBatteryStatusReceiver()
+    registerConnectivityReceiver()
+    registerDevicePowerReceiver()
+    registerFlightModeListener()
+  }
+
   override fun registerBatteryStatusReceiver() {
     Timber.d("registerBatteryStatusReceiver")
     batteryChangedSubject = PublishSubject.create()
@@ -207,6 +201,14 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         intentFilterActions = Intent.ACTION_AIRPLANE_MODE_CHANGED,
         callback = this::onFlightModeIntentReceived
     )
+  }
+
+  override fun unregisterSystemEventsReceivers() {
+    Timber.d("unregisterSystemEventsReceivers")
+    unregisterBatteryStatusReceiver()
+    unregisterConnectivityReceiver()
+    unregisterDevicePowerReceiver()
+    unregisterFlightModeListener()
   }
 
   override fun unregisterBatteryStatusReceiver() {
@@ -259,23 +261,77 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   // Receiving system events converted to in-app events:
   //  _________________________________________________________________________
 
-  private fun subscribeBatteryStatusChanged() {
-    Timber.d("subscribeBatteryStatusChanged")
+  override fun subscribeInAppEvents() {
+    Timber.d("subscribeInAppEvents")
+    subscribeBatteryStateChanges()
+    subscribeConnectivityStateChanges()
+    subscribeDevicePowerStateChanges()
+    subscribeFlightModeStateChanges()
+  }
+
+  private fun subscribeBatteryStateChanges() {
+    Timber.d("subscribeBatteryStateChanges")
     batteryChangedSubject
         .subscribeOn(ui())
         .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
         .observeOn(ui())
-        .subscribe(this::onBatteryStatusChanged)
-    //todo remember about disposing in ondestroy!
+        .subscribe(this::onBatteryStateChanged)
+  }
+
+  private fun subscribeConnectivityStateChanges() {
+    Timber.d("subscribeConnectivityStateChanges")
+    connectivitySubject
+        .subscribeOn(ui())
+        .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
+        .observeOn(ui())
+        .subscribe(this::onConnectivityStateChanged)
+  }
+
+  private fun subscribeDevicePowerStateChanges() {
+    Timber.d("subscribeDevicePowerStateChanges")
+    devicePowerSubject
+        .subscribeOn(ui())
+        .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
+        .observeOn(ui())
+        .subscribe(this::onDevicePowerStateChanged)
+  }
+
+  private fun subscribeFlightModeStateChanges() {
+    Timber.d("subscribeFlightModeStateChanges")
+    flightModeSubject
+        .subscribeOn(ui())
+        .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
+        .observeOn(ui())
+        .subscribe(this::onFlightModeStateChaned)
+  }
+
+  override fun unsubscribeInAppEvents() {
+    Timber.d("unsubscribeInAppEvents")
+    //todo: how to do it properly?
   }
 
 
   // Processing received in-app events:
   //  _________________________________________________________________________
 
-  private fun onBatteryStatusChanged(batteryStatusEvent: BatteryStatusEvent) {
-    Timber.d("onBatteryStatusChanged, batteryStatusEvent: $batteryStatusEvent")
-    model.insertBatteryStateEvent(batteryStatusEvent)
+  private fun onBatteryStateChanged(event: BatteryStateEvent) {
+    Timber.d("onBatteryStatusChanged, event: $event")
+    model.insertBatteryStateEvent(event)
+  }
+
+  private fun onConnectivityStateChanged(event: ConnectivityStateEvent) {
+    Timber.d("onConnectivityStateChanged, event: $event")
+    model.insertConnectivityStateEvent(event)
+  }
+
+  private fun onDevicePowerStateChanged(event: DevicePowerStateEvent) {
+    Timber.d("onDevicePowerStateChanged, event: $event")
+    model.insertDevicePowerStateEvent(event)
+  }
+
+  private fun onFlightModeStateChaned(event: FlightModeStateEvent) {
+    Timber.d("onFlightModeStateChaned, event: $event")
+    model.insertFlightModeStateEvent(event)
   }
 
 

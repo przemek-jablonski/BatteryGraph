@@ -6,7 +6,7 @@ package com.android.szparag.batterygraph.base.events
 
 typealias UnixTimestamp = Long
 
-data class BatteryStatusEvent(
+data class BatteryStateEvent(
     val eventUnixTimestamp: UnixTimestamp,
     val batteryStatus: BatteryStatus,
     val batteryHealth: BatteryHealth,

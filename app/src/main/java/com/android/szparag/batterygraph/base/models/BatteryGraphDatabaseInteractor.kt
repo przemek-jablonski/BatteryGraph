@@ -5,7 +5,7 @@ import com.android.szparag.batterygraph.base.entities.RealmConnectivityStateEven
 import com.android.szparag.batterygraph.base.entities.RealmDevicePowerStateEvent
 import com.android.szparag.batterygraph.base.entities.RealmFlightModeStateEvent
 import com.android.szparag.batterygraph.base.entities.toRealmEvent
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.base.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
@@ -39,7 +39,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     }
   }
 
-  override fun insertBatteryStateEvent(event: BatteryStatusEvent) {
+  override fun insertBatteryStateEvent(event: BatteryStateEvent) {
     Timber.d("insertBatteryStateEvent, event: $event")
     realm.executeTransaction { realm ->
       realm.insert(event.toRealmEvent())
@@ -74,7 +74,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
   //todo: should it return list?
   //todo: i guess not, it should return flowable and on subscription - all available items should be emitted
   //todo: and if new items are coming, then stream just them
-  override fun subscribeBatteryStateEvents(): Observable<List<BatteryStatusEvent>> {
+  override fun subscribeBatteryStateEvents(): Observable<List<BatteryStateEvent>> {
     Timber.d("subscribeBatteryStateEvents")
     return realm.where(RealmBatteryEvent::class.java)
         .findAllSorted("unixTimestamp", ASCENDING)
