@@ -1,6 +1,6 @@
 package com.android.szparag.batterygraph.screen_chart
 
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.views.View
 
 /**
@@ -8,6 +8,6 @@ import com.android.szparag.batterygraph.base.views.View
  */
 interface ChartView : View {
 
-  fun renderBatteryStatuses(events: List<BatteryStatusEvent>)
+  fun renderBatteryStatuses(events: List<BatteryStateEvent>)
 
 }

@@ -18,7 +18,7 @@ import android.os.BatteryManager.EXTRA_VOLTAGE
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.base.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
@@ -46,7 +46,7 @@ fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
   context.unregisterReceiver(this)
 }
 
-fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStatusEvent(
+fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateEvent(
     eventUnixTimestamp = unixTimestamp,
     batteryStatusInt = getInt(EXTRA_STATUS),
     batteryHealthInt = getInt(EXTRA_HEALTH),

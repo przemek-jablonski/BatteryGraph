@@ -16,6 +16,9 @@ interface MonitoringService : View {
   fun registerSystemEventsReceivers()
   fun unregisterSystemEventsReceivers()
 
+  fun subscribeInAppEvents()
+  fun unsubscribeInAppEvents()
+
   fun notificationChannelId(): String
   fun notificationId(): Int
 

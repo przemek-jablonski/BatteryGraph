@@ -3,7 +3,7 @@ package com.android.szparag.batterygraph.screen_chart
 import android.content.Intent
 import android.os.Bundle
 import com.android.szparag.batterygraph.R.layout
-import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.utils.safeLast
 import com.android.szparag.batterygraph.base.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
@@ -44,7 +44,7 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     presenter.detach()
   }
 
-  override fun renderBatteryStatuses(events: List<BatteryStatusEvent>) {
+  override fun renderBatteryStatuses(events: List<BatteryStateEvent>) {
     Timber.d("renderBatteryStatus, events.size: ${events.size}, events.last: ${events.safeLast()}")
     chartView.setDataList(data = events)
   }
