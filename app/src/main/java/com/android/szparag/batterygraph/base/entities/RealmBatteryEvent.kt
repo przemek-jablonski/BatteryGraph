@@ -1,15 +1,17 @@
 package com.android.szparag.batterygraph.base.entities
 
-import com.android.szparag.batterygraph.events.BatteryStatusEvent
-import com.android.szparag.batterygraph.utils.invalidFloatValue
-import com.android.szparag.batterygraph.utils.invalidIntValue
-import com.android.szparag.batterygraph.utils.invalidLongValue
+import com.android.szparag.batterygraph.base.events.BatteryStatusEvent
+import com.android.szparag.batterygraph.base.events.UnixTimestamp
+import com.android.szparag.batterygraph.base.utils.invalidFloatValue
+import com.android.szparag.batterygraph.base.utils.invalidIntValue
+import com.android.szparag.batterygraph.base.utils.invalidLongValue
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 
+
 @RealmClass open class RealmBatteryEvent(
-    @PrimaryKey var unixTimestamp: Long = invalidLongValue(),
+    @PrimaryKey var unixTimestamp: UnixTimestamp = invalidLongValue(),
     var batteryStatus: Int = invalidIntValue(),
     var batteryHealth: Int = invalidIntValue(),
     var batteryPowerSource: Int = invalidIntValue(),

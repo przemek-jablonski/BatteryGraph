@@ -57,7 +57,7 @@ interface Presenter<V : View> {
 
 
   /**
-   * Setting subscriptions for all of the events coming from Model class.
+   * Setting subscriptions for all of the events coming from Interactor class.
    *
    * In order for subscriptions to be properly cleaned up, those Disposables should be aggregated inside #modelDisposables variable
    * (.toModelDisposable() extension function comes handy here).
