@@ -12,7 +12,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name=".screenChart.BatteryGraphChartActivity">
+    <activity android:name=".screen_chart.BatteryGraphChartActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -21,7 +21,7 @@
     </activity>
 
     <service
-        android:name=".services.BatteryGraphMonitoringService"
+        android:name=".service_monitoring.BatteryGraphMonitoringService"
         android:enabled="true"
         android:exported="false">
     </service>

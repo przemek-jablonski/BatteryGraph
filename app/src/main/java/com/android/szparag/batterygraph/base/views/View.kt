@@ -100,5 +100,6 @@ interface View {
 //  fun resolveStartupData()
 
 //  fun subscribeUserBackButtonPressed(): Observable<Any>
+fun requestCode(): Int
 
 }
