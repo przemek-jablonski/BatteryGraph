@@ -112,6 +112,6 @@ abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(),
 //    return PERMISSION_DENIED
 //  }
 
-  private fun requestCode() = Math.abs(this.packageName.hashCode())
+  override fun requestCode() = Math.abs(this.packageName.hashCode())
 
 }
