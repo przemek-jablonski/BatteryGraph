@@ -1,7 +1,7 @@
 package com.android.szparag.batterygraph.dagger
 
-import com.android.szparag.batterygraph.screenChart.BatteryGraphChartActivity
-import com.android.szparag.batterygraph.services.BatteryGraphMonitoringService
+import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartActivity
+import com.android.szparag.batterygraph.service_monitoring.BatteryGraphMonitoringService
 import dagger.Component
 import javax.inject.Singleton
 

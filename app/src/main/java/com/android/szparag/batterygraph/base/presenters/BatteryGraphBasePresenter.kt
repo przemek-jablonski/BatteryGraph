@@ -1,9 +1,9 @@
 package com.android.szparag.batterygraph.base.presenters
 
 import android.support.annotation.CallSuper
-import com.android.szparag.batterygraph.base.models.Model
+import com.android.szparag.batterygraph.base.models.Interactor
+import com.android.szparag.batterygraph.base.utils.add
 import com.android.szparag.batterygraph.base.views.View
-import com.android.szparag.batterygraph.utils.add
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
@@ -11,7 +11,7 @@ import timber.log.Timber
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
  */
-abstract class BatteryGraphBasePresenter<V : View, out M : Model>(val model: M) : Presenter<V> {
+abstract class BatteryGraphBasePresenter<V : View, out M : Interactor>(val model: M) : Presenter<V> {
 
   //  override val logger by lazy { Logger.create(this::class.java, this.hashCode()) }
   override var view: V? = null
