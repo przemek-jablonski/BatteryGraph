@@ -1,6 +1,7 @@
 package com.android.szparag.batterygraph.widgets
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.base.events.BatteryStateEvent
@@ -16,6 +17,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.PercentFormatter
 import timber.log.Timber
 import java.text.DecimalFormat
+
+private const val CIRCLE_TYPE_BATTERY = 0
+private const val CIRCLE_TYPE_FLIGHT_MODE = 1
 
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -73,6 +77,8 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     isKeepPositionOnRotation = true
     setMaxVisibleValueCount(0)
     description.isEnabled = false
+    renderer = CustomDrawableLineChartRenderer(this, animator, viewPortHandler,
+        BitmapFactory.decodeResource(resources, R.drawable.ic_icon_battery))
   }
 
   private fun stylizeXAxis(xAxis: XAxis) {
