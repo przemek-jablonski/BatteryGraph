@@ -27,17 +27,6 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     presenter.attach(this)
   }
 
-  override fun onResume() {
-    Timber.d("onResume")
-    super.onResume()
-  }
-
-  override fun onPause() {
-    Timber.d("onPause")
-    super.onPause()
-  }
-
-
   override fun onStop() {
     super.onStop()
     Timber.d("onStop")
