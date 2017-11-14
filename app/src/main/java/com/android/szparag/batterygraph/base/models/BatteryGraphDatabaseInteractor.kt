@@ -9,7 +9,6 @@ import com.android.szparag.batterygraph.base.events.BatteryStateEvent
 import com.android.szparag.batterygraph.base.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.base.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
-import com.android.szparag.batterygraph.base.utils.safeLast
 import com.android.szparag.batterygraph.base.utils.toObservable
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -26,7 +25,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     Timber.d("attach, thread: ${Thread.currentThread()}")
     return Completable.create {
       realm = Realm.getDefaultInstance()
-      setupDebugRealmListener()
+      setupDebugRealmListeners()
       Timber.d("attach.action, thread: ${Thread.currentThread()}")
     }
   }
@@ -106,13 +105,45 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
         .map { results -> results.map(RealmFlightModeStateEvent::toFlightModeEvent) }
   }
 
-  private fun setupDebugRealmListener() {
-    Timber.d("setupDebugRealmListener, thread: ${Thread.currentThread()}")
+  private fun setupDebugRealmListeners() {
+    Timber.d("setupDebugRealmListeners")
     if (BuildConfig.DEBUG) { //todo do something with this lint warning
-      realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
-        Timber.v("debugRealmListener.callback, events.size: ${events.size}, events.last: ${events.safeLast()}")
-      })
+      setupDebugRealmBatteryEventListener()
+      setupDebugRealmConnectivityEventListener()
+      setupDebugRealmDevicePowerEventListener()
+      setupDebugRealmFlightModeEventListener()
+
     }
   }
+
+  private fun setupDebugRealmBatteryEventListener() {
+    Timber.d("setupDebugRealmBatteryEventListener")
+    realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
+      Timber.v("debugRealmListener.RealmBatteryEvent::class.java.callback, events: $events")
+    })
+  }
+
+  private fun setupDebugRealmConnectivityEventListener() {
+    Timber.d("setupDebugRealmConnectivityEventListener")
+    realm.where(RealmConnectivityStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
+      Timber.v("debugRealmListener.RealmConnectivityStateEvent::class.java.callback, events: $events")
+    })
+  }
+
+  private fun setupDebugRealmDevicePowerEventListener() {
+    Timber.d("setupDebugRealmDevicePowerEventListener")
+    realm.where(RealmDevicePowerStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
+      Timber.v("debugRealmListener.RealmDevicePowerStateEvent::class.java.callback, events: $events")
+    })
+  }
+
+  private fun setupDebugRealmFlightModeEventListener() {
+    Timber.d("setupDebugRealmFlightModeEventListener")
+    realm.where(RealmFlightModeStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
+      Timber.v("debugRealmListener.RealmFlightModeStateEvent::class.java.callback, events: $events")
+    })
+
+  }
+
 
 }
