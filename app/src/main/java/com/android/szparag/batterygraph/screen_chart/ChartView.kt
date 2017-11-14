@@ -1,6 +1,7 @@
 package com.android.szparag.batterygraph.screen_chart
 
 import com.android.szparag.batterygraph.base.events.BatteryStateEvent
+import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.base.views.View
 
 /**
@@ -9,5 +10,6 @@ import com.android.szparag.batterygraph.base.views.View
 interface ChartView : View {
 
   fun renderBatteryStatuses(events: List<BatteryStateEvent>)
+  fun renderFlightModeStatuses(events: List<FlightModeStateEvent>)
 
 }

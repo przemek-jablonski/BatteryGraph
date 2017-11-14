@@ -5,6 +5,7 @@ import com.android.szparag.batterygraph.base.models.BatteryGraphDatabaseInteract
 import com.android.szparag.batterygraph.base.models.DatabaseInteractor
 import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartInteractor
 import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartPresenter
+
 import com.android.szparag.batterygraph.screen_chart.ChartInteractor
 import com.android.szparag.batterygraph.screen_chart.ChartPresenter
 import com.android.szparag.batterygraph.service_monitoring.BatteryGraphMonitoringInteractor

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.android.szparag.batterygraph.R.layout
 import com.android.szparag.batterygraph.base.events.BatteryStateEvent
+import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.base.utils.safeLast
 import com.android.szparag.batterygraph.base.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
@@ -27,17 +28,6 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     presenter.attach(this)
   }
 
-  override fun onResume() {
-    Timber.d("onResume")
-    super.onResume()
-  }
-
-  override fun onPause() {
-    Timber.d("onPause")
-    super.onPause()
-  }
-
-
   override fun onStop() {
     super.onStop()
     Timber.d("onStop")
@@ -46,7 +36,12 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
 
   override fun renderBatteryStatuses(events: List<BatteryStateEvent>) {
     Timber.d("renderBatteryStatus, events.size: ${events.size}, events.last: ${events.safeLast()}")
-    chartView.setDataList(data = events)
+    chartView.setBatteryData(events)
+  }
+
+  override fun renderFlightModeStatuses(events: List<FlightModeStateEvent>) {
+    Timber.d("renderFlightModeStatuses, events.size: ${events.size}, events.last: ${events.safeLast()}")
+    chartView.setFlightModeData(events)
   }
 
 }
