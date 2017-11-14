@@ -61,7 +61,7 @@ fun ConnectivityManager.mapToConnectivityEvent(unixTimestamp: UnixTimestamp) = a
       eventUnixTimestamp = unixTimestamp,
       networkType = network.type,
       networkState = network.detailedState.ordinal,
-      networkStateReason = network.reason
+      networkStateReason = network.reason ?: emptyString()
   )
 } ?: ConnectivityStateEvent(unixTimestamp)
 
