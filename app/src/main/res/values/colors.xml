@@ -2,6 +2,16 @@
 <resources>
   <color name="colorPrimary">#3F51B5</color>
   <color name="colorPrimaryDark">#303F9F</color>
-  <color name="colorAccent">#FF4081</color>
-  <color name="colorAccentAlpha">#96ff4081</color>
+
+  <color name="colorAccent">@color/colorAccent1</color>
+
+  <color name="colorAccent1">#FF4081</color>
+  <color name="colorAccent1Alpha">#96ff4081</color>
+  <color name="colorAccent1AlphaMore">#73ff4081</color>
+
+
+  <color name="colorAccent2">#fbc02d</color>
+  <color name="colorAccent2Alpha">#96fbc02d</color>
+  <color name="colorAccent2AlphaMore">#73fbc02d</color>
+
 </resources>
