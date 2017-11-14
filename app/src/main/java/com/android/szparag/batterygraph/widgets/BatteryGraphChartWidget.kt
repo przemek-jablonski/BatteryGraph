@@ -13,7 +13,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IFillFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -103,23 +102,6 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
       //  smoothing
       it.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
 
-      // chart filling
-      it.setDrawFilled(true)
-      it.fillColor = resources.getColor(R.color.colorPrimaryDark)
-      it.fillAlpha = 185
-      it.fillFormatter = IFillFormatter { dataSet, dataProvider -> //todo: inlining
-        val data = dataProvider.lineData
-        Math.max(
-            0f,
-            if (dataSet.yMax > 0 && dataSet.yMin < 0) {
-              0f
-            } else {
-              val max: Float = if (data.yMax > 0) 0f else dataProvider.yChartMax
-              val min: Float = if (data.yMin < 0) 0f else dataProvider.yChartMin
-              if (dataSet.yMin >= 0) min else max
-            })
-      }
-
       //  lines width and colour
       it.lineWidth = 2f
       it.color = resources.getColor(R.color.colorAccent1)
@@ -131,6 +113,24 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
 
       it.highLightColor = resources.getColor(R.color.colorAccent1AlphaMore)
       it.highlightLineWidth = 1f
+
+      // chart filling
+//      it.fillColor = resources.getColor(R.color.colorPrimaryDark)
+//      it.fillAlpha = 185
+//      it.fillFormatter = IFillFormatter { dataSet, dataProvider -> //todo: inlining
+//        val data = dataProvider.lineData
+//        Math.max(
+//            0f,
+//            if (dataSet.yMax > 0 && dataSet.yMin < 0) {
+//              0f
+//            } else {
+//              val max: Float = if (data.yMax > 0) 0f else dataProvider.yChartMax
+//              val min: Float = if (data.yMin < 0) 0f else dataProvider.yChartMin
+//              if (dataSet.yMin >= 0) min else max
+//            })
+//      }
+      it.setDrawFilled(true)
+      it.fillDrawable = resources.getDrawable(R.drawable.gradient_chart_fill_alpha)
     }
   }
 
@@ -155,10 +155,19 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   }
 
   private fun batteryListToEntryList(dataList: List<BatteryStateEvent>) =
-      dataList.map({ data -> Entry(data.eventUnixTimestamp.toFloat(), data.batteryPercentage.toFloat()) },
-          dataList.size)
+      dataList.map({ data ->
+        Entry(
+            data.eventUnixTimestamp.toFloat(),
+            data.batteryPercentage.toFloat(),
+            resources.getDrawable(R.drawable.ic_icon_battery))
+      }, dataList.size)
 
   private fun flightModeListToEntryList(dataList: List<FlightModeStateEvent>) =
-      dataList.map({ data -> Entry(data.eventUnixTimestamp.toFloat(), -3f) })
+      dataList.map({ data ->
+        Entry(
+            data.eventUnixTimestamp.toFloat(),
+            -3f,
+            resources.getDrawable(R.drawable.ic_icon_airplane))
+      }, dataList.size)
 
 }
