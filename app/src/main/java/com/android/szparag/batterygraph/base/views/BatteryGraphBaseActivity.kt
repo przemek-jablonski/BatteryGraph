@@ -53,7 +53,6 @@ abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(),
   //todo: this has to be fixed
 //  override final fun gotoScreen(targetScreen: Screen) {
 //    Log.d("asd","gotoScreen, targetScreen: $targetScreen")
-//
 //  }
 
 //  override final fun goToDayScreen(unixTimestamp: UnixTimestamp) {

@@ -30,8 +30,16 @@ class BatteryGraphChartPresenter(model: ChartInteractor) : BatteryGraphBasePrese
     model.subscribeBatteryStateEvents()
         .ui()
         .subscribe { events ->
-          Timber.d("subscribeModelEvents.subscription.onNext: events.size: ${events.size}, events.last: ${events.safeLast()}")
+          Timber.d(
+              "subscribeModelEvents.subscribeBatteryStateEvents.onNext: events.size: ${events.size}, events.last: ${events.safeLast()}")
           view?.renderBatteryStatuses(events)
+        }
+
+    model.subscribeFlightModeEvents()
+        .ui()
+        .subscribe { events ->
+          Timber.d("subscribeModelEvents.subscribeFlightModeEvents.onNext, events.size: ${events.size}, events.last: ${events.safeLast()}")
+          view?.renderFlightModeStatuses(events)
         }
   }
 
