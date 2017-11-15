@@ -1,0 +1,36 @@
+<resources>
+
+  <declare-styleable name="DrawableAnimatedDropletWidget">
+    <!-- drawable attributes -->
+    <attr name="drawable" format="reference" />
+    <attr name="drawable_margin_dimen" format="dimension" />
+    <attr name="drawable_margin" format="float" />
+
+    <!-- droplet basic attributes (global) -->
+    <attr name="droplet_speed" format="float"/>
+    <attr name="droplet_fadeout" format="float"/>
+    <attr name="droplet_spawn_center_distance_offset" format="float"/>
+
+    <!-- droplet interpolator attributes -->
+    <attr name="droplet_interpolator_factor" format="float"/>
+    <attr name="droplet_interpolator" format="enum">
+      <enum name="accelerate" value="0"/>
+      <enum name="decelerate" value="1"/>
+      <enum name="accelerate_decelerate" value="2"/>
+      <enum name="bounce" value="3"/>
+      <enum name="overshoot" value="4"/>
+    </attr>
+
+    <!-- droplet layers attributes -->
+    <attr name="layers_count" format="integer"/>
+    <attr name="layers_speed_dependency" format="float"/>
+    <attr name="layers_spawn_phase_dependency" format="float"/>
+
+
+    <!--<attr name="layers_phase_speed_mul" format="float"/>-->
+    <!--<attr name="layers_phase_"-->
+
+
+  </declare-styleable>
+
+</resources>
