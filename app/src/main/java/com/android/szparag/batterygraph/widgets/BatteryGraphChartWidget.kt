@@ -83,6 +83,8 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
 
   private fun stylizeXAxis(xAxis: XAxis) {
 //    xAxis.setAvoidFirstLastClipping(true)
+    xAxis.setDrawGridLines(false)
+    xAxis.setDrawAxisLine(false)
   }
 
   private fun stylizeYLeftAxis(yAxis: YAxis) {
