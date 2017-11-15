@@ -25,6 +25,12 @@
         android:enabled="true"
         android:exported="false">
     </service>
+
+    <activity android:name=".screen_front.BatteryGraphFrontActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.FRONT"/>
+      </intent-filter>
+    </activity>
   </application>
 
 </manifest>
