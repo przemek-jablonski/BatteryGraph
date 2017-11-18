@@ -18,10 +18,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.shared.utils.asString
-import com.android.szparag.batterygraph.shared.utils.duration
 import com.android.szparag.batterygraph.shared.utils.getLocationOnScreen
 import com.android.szparag.batterygraph.shared.utils.hide
-import com.android.szparag.batterygraph.shared.utils.interpolator
 import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
 import com.android.szparag.batterygraph.widgets.interpolators.CutoffInterpolator
@@ -42,22 +40,19 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   @DrawableRes private var drawable: Int? = null
 
+  //todo: drawable layoutParams in xml - maybe someone wants drawable to be WRAP_CONTENT?
   private var drawableMargin: Int = 0
-
   private var dropletSpeed: Int = 1
   private var dropletFadeout: Int = 1
 
   //todo: parse so that srcCompat / src can be used to specify Drawable used
   constructor(context: Context) : this(context, null)
-
   constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
     Timber.d("ctor, this: ${this.asStringWithChildren()}")
+    clipChildren = false
     addOnLayoutChangeListener(this::onLayoutBoundsChanged)
     parseCustomAttributes()
-
-    circularDropletView = createCircularDropletView()
-    addView(circularDropletView)
 
     drawableView = createFrontDrawableView(R.drawable.ic_icon_battery)
     addView(drawableView)
@@ -69,9 +64,11 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
     Timber.d("onLayoutFirstMeasurementApplied")
-//    circularDropletView.shrinkViewToZero()
+
+    circularDropletView = createCircularDropletView()
+    addView(circularDropletView, 0)
     circularDropletView.hide()
-//    animateCircularDropletAlpha(circularDropletView)
+
     animateCircularDroplet(circularDropletView)
   }
 
@@ -82,12 +79,18 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         Timber.d("createCircularDropletView, view: ${it.asString()}")
       }
 
+
+//  drawable.setStroke((int)cET.dpToPx(2), Color.parseColor("#EEEEEE"));
+//  drawable.setSize((int)cET.dpToPx(240), (int)cET.dpToPx(240));
+
+  // https://stackoverflow.com/questions/18693721/oval-shape-clipped-when-created-programmatically
+  // https://stackoverflow.com/questions/44462844/edges-of-shapedrawable-oval-stroke-style-are-cut-android-studio
   private fun createCircularDropletDrawable() =
       ShapeDrawable(OvalShape()).apply {
-        intrinsicHeight = 100 //todo hardcoded
-        intrinsicWidth = 100
+        this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height //todo hardcoded
+        this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
+        this.paint.strokeWidth = 30f
         this.paint.style = STROKE
-        this.paint.strokeWidth = 1f
         this.paint.color = resources.getColor(R.color.colorAccent1)
       }.also {
         Timber.d("createCircularDropletDrawable, drawable: $it")
@@ -97,58 +100,52 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //todo: endalpha as a param
   //todo: repeatoffset as a param
   //todo: internal animation values should be stored as fields and shared between animations (with some multiplier)
-  private fun animateCircularDroplet(dropletView: View) {
-    Timber.d("animateCircularDroplet, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
-    dropletView.show()
+  private fun animateCircularDroplet(targetView: View) {
+    Timber.d("animateCircularDroplet, targetView: ${targetView.asString()}, ${this.asStringWithChildren()}")
+    targetView.show()
     val animationSet = AnimationSet(false)
         .also { set ->
-          set.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f)
-              .also { animation ->
-                animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
-                animation.repeatCount = Animation.INFINITE
-                animation.repeatMode = Animation.RESTART
-                animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators
-                animation.setListenerBy(
-                    onStart = { Timber.d("animateCircularDroplet.SCALEAnimation.onSTART, animation: ${it?.asString()}") },
-                    onRepeat = {
-                      animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
-                      Timber.d("animateCircularDroplet.SCALEAnimation.onREPEAT, animation: ${it?.asString()}")
-                    },
-                    onEnd = { Timber.d("animateCircularDroplet.SCALEAnimation.onEND, animation: ${it?.asString()}") }
-                )
-              })
-          set.addAnimation(AlphaAnimation(1f, 0f)
-              .also { animation ->
-                animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
-                animation.interpolator = CutoffInterpolator(sourceInterpolator = AccelerateInterpolator(),
-                    cutoff = 0.30f) //todo: interpolators
-                // as params
-                animation.isFillEnabled
-                animation.repeatCount = Animation.INFINITE
-                animation.repeatMode = Animation.RESTART
-                animation.setListenerBy(
-                    onStart = { Timber.d("animateCircularDroplet.ALPHAAnimation.onSTART, animation: ${it?.asString()}") },
-                    onRepeat = {
-                      animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
-                      Timber.d("animateCircularDroplet.ALPHAAnimation.onREPEAT, animation: ${it?.asString()}")
-                    },
-                    onEnd = { Timber.d("animateCircularDroplet.ALPHAAnimation.onEND, animation: ${it?.asString()}") }
-                )
-              })
+          set.addAnimation(createScalingAnimation(targetView, 0f, 1f, 0f, 1f))
+          set.addAnimation(createFadeoutAnimation(targetView, 0.3f, 0f))
         }
 
-    dropletView.animation = animationSet
+    targetView.animation = animationSet
     animationSet.start()
   }
 
-  private fun animateCircularDropletAlpha(dropletView: View) {
-    Timber.d("animateCircularDropletAlpha, dropletView: $dropletView, ${this.asStringWithChildren()}")
-    dropletView.animate()
-        .duration(5000)
-        .interpolator(AccelerateInterpolator(5f))
-        .alpha(0.2f)
-        .start()
-  }
+  private fun createScalingAnimation(targetView: View, xStart: Float, xEnd: Float, yStart: Float, yEnd: Float)
+      = ScaleAnimation(xStart, xEnd, yStart, yEnd, this@DrawableAnimatedDropletWidget.width / 2f,
+      this@DrawableAnimatedDropletWidget.height / 2f)
+      .also { animation ->
+        animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+        animation.repeatCount = Animation.INFINITE
+        animation.repeatMode = Animation.RESTART
+        animation.interpolator = DecelerateInterpolator(2.10f) //todo: interpolators
+        animation.setListenerBy(
+            onStart = { Timber.d("createScalingAnimation.onStart, animation: ${it?.asString()}") },
+            onEnd = { Timber.d("createScalingAnimation.onEnd, animation: ${it?.asString()}") },
+            onRepeat = {
+              animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
+              Timber.d("createScalingAnimation.onRepeat, animation: ${it?.asString()}")
+            })
+      }
+
+  private fun createFadeoutAnimation(targetView: View, alphaStart: Float, alphaEnd: Float) = AlphaAnimation(alphaStart, alphaEnd)
+      .also { animation ->
+        animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+        animation.interpolator = CutoffInterpolator(sourceInterpolator = AccelerateInterpolator(), cutoff = 0.30f)
+        //todo: interpolators as params
+        animation.isFillEnabled
+        animation.repeatCount = Animation.INFINITE
+        animation.repeatMode = Animation.RESTART
+        animation.setListenerBy(
+            onStart = { Timber.d("createFadeoutAnimation.onStart, animation: ${it?.asString()}") },
+            onEnd = { Timber.d("createFadeoutAnimation.onEnd, animation: ${it?.asString()}") },
+            onRepeat = {
+              animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
+              Timber.d("createFadeoutAnimation.onRepeat, animation: ${it?.asString()}")
+            })
+      }
 
   private fun createFrontDrawableView(@DrawableRes drawableRes: Int) =
       ImageView(context).apply {
@@ -157,10 +154,16 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         Timber.d("createFrontDrawableView, drawableRes: $drawableRes, ${this.asStringWithChildren()}")
       }
 
-  override final fun addView(child: View) {
+  override final fun addView(child: View?) {
     checkNotNull(child)
-    Timber.d("addView, child: ${child.asString()}, ${this.asStringWithChildren()}")
+    Timber.d("addView, child: ${child?.asString()}, ${this.asStringWithChildren()}")
     super.addView(child)
+  }
+
+  override final fun addView(child: View?, index: Int) {
+    checkNotNull(child)
+    Timber.d("addView, child: ${child?.asString()}, index: $index, ${this.asStringWithChildren()}")
+    super.addView(child, index)
   }
 
   private fun onLayoutBoundsChanged(view: View, left: Int, top: Int, right: Int, bottom: Int,
@@ -172,10 +175,12 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
 }
 
+//todo move this into ViewExtensions, with different name
 fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
     "${this::class.java.simpleName}, dimens: [${this.width}, ${this.height}], location: ${Arrays.toString(this.getLocationOnScreen())}"
 ).toString()
 
+//todo push this inside class as private method
 fun DrawableAnimatedDropletWidget.asStringWithChildren() = StringBuilder(5 * DEBUG_VIEW_STRING_DEFAULT_CAPACITY)
     .apply {
       append("\nthis: {\n\t${this@asStringWithChildren.asString()}")
