@@ -1,6 +1,5 @@
 package com.android.szparag.batterygraph.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint.Style.STROKE
 import android.graphics.drawable.ShapeDrawable
@@ -20,6 +19,7 @@ import com.android.szparag.batterygraph.shared.utils.interpolator
 import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
 import timber.log.Timber
+import java.util.Arrays
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 15/11/2017.
@@ -44,7 +44,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-    Timber.d("ctor, this: ${this.asString()}")
+    Timber.d("ctor, this: ${this.asStringWithChildren()}")
     addOnLayoutChangeListener(this::onLayoutBoundsChanged)
     parseCustomAttributes()
 
@@ -56,7 +56,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   }
 
   private fun parseCustomAttributes() {
-    Timber.d("parseCustomAttributes")
+    Timber.d("parseCustomAttributes, ${this.asStringWithChildren()}")
   }
 
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
@@ -85,17 +85,17 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       }
 
   private fun animateCircularDroplet(dropletView: View) {
-    Timber.d("animateCircularDroplet, dropletView: $dropletView")
+    Timber.d("animateCircularDroplet, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
     dropletView.animate()
         .duration(5000)
         .interpolator(DecelerateInterpolator(1.75f))
-        .scaleY(this.width.toFloat())
-        .scaleX(this.height.toFloat())
+        .scaleY(0f)
+        .scaleX(0f)
         .setListenerBy(
             onStart = {
               Timber.d("animateCircularDroplet.start")
-              dropletView.scaleY = 0.25f
-              dropletView.scaleX = 0.25f
+//              dropletView.scaleY = 0.25f
+//              dropletView.scaleX = 0.25f
               dropletView.show()
             }
         )
@@ -106,22 +106,18 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       ImageView(context).apply {
         setImageResource(drawableRes)
       }.also {
-        Timber.d("createFrontDrawableView, drawableRes: $drawableRes, view: ${it.asString()}")
+        Timber.d("createFrontDrawableView, drawableRes: $drawableRes, ${this.asStringWithChildren()}")
       }
 
   override final fun addView(child: View) {
     checkNotNull(child)
-    Timber.d("addView, child: ${child.asString()}")
+    Timber.d("addView, child: ${child.asString()}, ${this.asStringWithChildren()}")
     super.addView(child)
   }
 
-  @SuppressLint("BinaryOperationInTimber")
-  private final fun onLayoutBoundsChanged(view: View, left: Int, top: Int, right: Int, bottom: Int,
+  private fun onLayoutBoundsChanged(view: View, left: Int, top: Int, right: Int, bottom: Int,
       oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-    Timber.d("onLayoutBoundsChanged, view: $view, left: $left, top: $top, right: $right, bottom: $bottom, " +
-        "oldLeft: $oldLeft, oldTop: $oldTop, oldRight: $oldRight, oldBottom: $oldBottom")
-    if (oldLeft == 0 && oldRight == 0 && oldTop == 0 && oldBottom == 0
-        && left != 0 && right != 0 && top != 0 && bottom != 0) {
+    if (oldLeft == 0 && oldRight == 0 && oldTop == 0 && oldBottom == 0 && left != 0 && right != 0 && top != 0 && bottom != 0) {
       onLayoutFirstMeasurementApplied()
     }
   }
@@ -129,5 +125,13 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 }
 
 fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
-    "${this::class.java.name}, width: ${this.width}, height: ${this.height}, ${this.getLocationOnScreen()}"
+    "${this::class.java.simpleName}, dimens: [${this.width}, ${this.height}], location: ${Arrays.toString(this.getLocationOnScreen())}"
 ).toString()
+
+fun DrawableAnimatedDropletWidget.asStringWithChildren() = StringBuilder(5 * DEBUG_VIEW_STRING_DEFAULT_CAPACITY)
+    .apply {
+      append("\nthis: {\n\t${this@asStringWithChildren.asString()}")
+      for (i in 0 until this@asStringWithChildren.childCount) {
+        this.append("\n\t\t${this@asStringWithChildren.getChildAt(i).asString()}")
+      }
+    }.append("\n}").toString()
