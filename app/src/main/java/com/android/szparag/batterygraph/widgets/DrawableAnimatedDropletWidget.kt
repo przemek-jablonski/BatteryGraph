@@ -8,7 +8,10 @@ import android.support.annotation.CallSuper
 import android.support.annotation.DrawableRes
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.android.szparag.batterygraph.R
@@ -16,7 +19,6 @@ import com.android.szparag.batterygraph.shared.utils.duration
 import com.android.szparag.batterygraph.shared.utils.getLocationOnScreen
 import com.android.szparag.batterygraph.shared.utils.hide
 import com.android.szparag.batterygraph.shared.utils.interpolator
-import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
 import timber.log.Timber
 import java.util.Arrays
@@ -63,7 +65,8 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     Timber.d("onLayoutFirstMeasurementApplied")
 //    circularDropletView.shrinkViewToZero()
     circularDropletView.hide()
-    animateCircularDroplet(circularDropletView)
+//    animateCircularDropletAlpha(circularDropletView)
+    animateCircularDropletScale(circularDropletView)
   }
 
   private fun createCircularDropletView() =
@@ -84,21 +87,43 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         Timber.d("createCircularDropletDrawable, drawable: $it")
       }
 
-  private fun animateCircularDroplet(dropletView: View) {
-    Timber.d("animateCircularDroplet, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
+  private fun animateCircularDropletScale(dropletView: View) {
+    Timber.d("animateCircularDropletScale, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
+    dropletView.show()
+    val animationSet = AnimationSet(false)
+        .apply {
+          this.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f).also { animation ->
+            animation.duration = 5000
+            animation.interpolator = AccelerateDecelerateInterpolator()
+          })
+        }
+
+    dropletView.animation = animationSet
+    animationSet.start()
+
+
+//    AnimationSet(context).addAnimation()
+//    dropletView.animate()
+//        .duration(5000)
+//        .interpolator(DecelerateInterpolator(1f))
+//        .scaleY(1f)
+//        .scaleX(1f)
+////        .alpha(0f)
+//        .setListenerBy(
+//            onStart = {
+//              Timber.d("animateCircularDropletScale.start")
+//              dropletView.show()
+//            }
+//        )
+//        .start()
+  }
+
+  private fun animateCircularDropletAlpha(dropletView: View) {
+    Timber.d("animateCircularDropletAlpha, dropletView: $dropletView, ${this.asStringWithChildren()}")
     dropletView.animate()
         .duration(5000)
-        .interpolator(DecelerateInterpolator(1.75f))
-        .scaleY(0f)
-        .scaleX(0f)
-        .setListenerBy(
-            onStart = {
-              Timber.d("animateCircularDroplet.start")
-//              dropletView.scaleY = 0.25f
-//              dropletView.scaleX = 0.25f
-              dropletView.show()
-            }
-        )
+        .interpolator(AccelerateInterpolator(5f))
+        .alpha(0.2f)
         .start()
   }
 
