@@ -16,14 +16,16 @@ import com.android.szparag.batterygraph.shared.utils.lerp
  * Uses sourceInterpolator Interpolator to transform input data further.
  */
 class CutoffInterpolator(
-    private val sourceInterpolator: Interpolator,
+    private val sourceInterpolator: Interpolator? = null,
     private val inputRangeMin: Float = 0f,
     private val inputRangeMax: Float = 1f,
     cutoff: Float) : Interpolator {
 
   private val lerpLimit = (inputRangeMax - inputRangeMin) + (inputRangeMax - cutoff)
 
-  override fun getInterpolation(input: Float) =
-      sourceInterpolator.getInterpolation(lerp(0f, lerpLimit, input).clamp(inputRangeMax, inputRangeMin))
+  override fun getInterpolation(input: Float): Float {
+    val cutoffInput = lerp(0f, lerpLimit, input).clamp(inputRangeMax, inputRangeMin)
+    return sourceInterpolator?.getInterpolation(cutoffInput) ?: cutoffInput
+  }
 
 }
