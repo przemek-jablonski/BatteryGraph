@@ -89,7 +89,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       ShapeDrawable(OvalShape()).apply {
         this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height //todo hardcoded
         this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
-        this.paint.strokeWidth = 30f
+        this.paint.strokeWidth = 40f
         this.paint.style = STROKE
         this.paint.color = resources.getColor(R.color.colorAccent1)
       }.also {
@@ -106,7 +106,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     val animationSet = AnimationSet(false)
         .also { set ->
           set.addAnimation(createScalingAnimation(targetView, 0f, 1f, 0f, 1f))
-          set.addAnimation(createFadeoutAnimation(targetView, 0.3f, 0f))
+          set.addAnimation(createFadeoutAnimation(targetView, 0.2f, 0f))
         }
 
     targetView.animation = animationSet
@@ -130,6 +130,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
             })
       }
 
+  //TODO: MAKE PATH INTERPOLATOR, SO THAT IT STARTS WITH 0 ALPHA, THEN GOES FAST TO MAX ALPHA AND FADES TO 0 AGAIN!!!
   private fun createFadeoutAnimation(targetView: View, alphaStart: Float, alphaEnd: Float) = AlphaAnimation(alphaStart, alphaEnd)
       .also { animation ->
         animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
@@ -172,6 +173,8 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       onLayoutFirstMeasurementApplied()
     }
   }
+
+  //todo: make method oneShotCircle, so that when battery status changes, it is reflected in animation as well!
 
 }
 
