@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.TimeInterpolator
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
@@ -24,11 +26,11 @@ fun Widget.getLocationOnScreen() = IntArray(2).apply {
 }
 
 fun Widget.hide() {
-  this.visibility = View.GONE
+  if (visibility != GONE) this.visibility = GONE
 }
 
 fun Widget.show() {
-  this.visibility = View.VISIBLE
+  if (visibility != VISIBLE) visibility = VISIBLE
 }
 
 fun Widget.shrinkViewToZero() = configureLayoutParams(width = 0, height = 0)
