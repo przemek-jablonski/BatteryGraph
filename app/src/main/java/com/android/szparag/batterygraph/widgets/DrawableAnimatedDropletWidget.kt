@@ -8,17 +8,21 @@ import android.support.annotation.CallSuper
 import android.support.annotation.DrawableRes
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.android.szparag.batterygraph.R
+import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.duration
 import com.android.szparag.batterygraph.shared.utils.getLocationOnScreen
 import com.android.szparag.batterygraph.shared.utils.hide
 import com.android.szparag.batterygraph.shared.utils.interpolator
+import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
 import timber.log.Timber
 import java.util.Arrays
@@ -28,6 +32,7 @@ import java.util.Arrays
  */
 
 private const val DEBUG_VIEW_STRING_DEFAULT_CAPACITY = 256
+private const val BASE_DROPLET_ANIMATION_LENGTH_MILLIS = 5000L
 
 open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
@@ -66,7 +71,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 //    circularDropletView.shrinkViewToZero()
     circularDropletView.hide()
 //    animateCircularDropletAlpha(circularDropletView)
-    animateCircularDropletScale(circularDropletView)
+    animateCircularDroplet(circularDropletView)
   }
 
   private fun createCircularDropletView() =
@@ -87,14 +92,36 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         Timber.d("createCircularDropletDrawable, drawable: $it")
       }
 
-  private fun animateCircularDropletScale(dropletView: View) {
-    Timber.d("animateCircularDropletScale, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
+  private fun animateCircularDroplet(dropletView: View) {
+    Timber.d("animateCircularDroplet, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
     dropletView.show()
     val animationSet = AnimationSet(false)
-        .apply {
-          this.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f).also { animation ->
-            animation.duration = 5000
-            animation.interpolator = AccelerateDecelerateInterpolator()
+        .also { set ->
+          set.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f).also { animation ->
+            animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+            animation.repeatCount = Animation.INFINITE
+            animation.repeatMode = Animation.RESTART
+            animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators
+            animation.setListenerBy(
+                onStart = { Timber.d("animateCircularDroplet.SCALEAnimation.onSTART, animation: ${it?.asString()}") },
+                onRepeat = { Timber.d("animateCircularDroplet.SCALEAnimation.onREPEAT, animation: ${it?.asString()}") },
+                onEnd = { Timber.d("animateCircularDroplet.SCALEAnimation.onEND, animation: ${it?.asString()}") }
+            )
+//            animation.setListenerBy(onRepeat = { animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4 }) //todo: repeatoffset as
+            // xml and code parameter!
+          })
+          set.addAnimation(AlphaAnimation(1f, 0f).also { animation ->
+            animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+            animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators as params
+            animation.repeatCount = Animation.INFINITE
+            animation.repeatMode = Animation.RESTART
+            animation.setListenerBy(
+                onStart = { Timber.d("animateCircularDroplet.ALPHAAnimation.onSTART, animation: ${it?.asString()}") },
+                onRepeat = { Timber.d("animateCircularDroplet.ALPHAAnimation.onREPEAT, animation: ${it?.asString()}") },
+                onEnd = { Timber.d("animateCircularDroplet.ALPHAAnimation.onEND, animation: ${it?.asString()}") }
+            )
+            //            animation.setListenerBy(onRepeat = { animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4 })
+            //todo: internal animation values should be stored as fields and shared between animations (with some multiplier)
           })
         }
 
@@ -111,7 +138,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 ////        .alpha(0f)
 //        .setListenerBy(
 //            onStart = {
-//              Timber.d("animateCircularDropletScale.start")
+//              Timber.d("animateCircularDroplet.start")
 //              dropletView.show()
 //            }
 //        )
