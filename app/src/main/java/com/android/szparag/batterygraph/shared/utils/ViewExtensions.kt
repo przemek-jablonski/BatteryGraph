@@ -70,3 +70,12 @@ fun Animation.setListenerBy(
 
 fun Animation.asString() = "${this::class.java.simpleName}@${hashCode()}, duration: $duration, offset: $startOffset, starttime: " +
     "${this.startTime}, repeats: $repeatCount, interpolator: ${interpolator::class.java.simpleName}, fillEnabled: ${this.isFillEnabled}"
+
+//fun Float.lerp(second: Float, factor: Float) = this + factor * (second - this)
+
+fun Float.clamp(max: Float, min: Float) = this.coerceAtLeast(min).coerceAtMost(max)
+
+fun lerp(first: Float, second: Float, factor: Float) = first + factor * (second - first)
+
+fun inverseLerp(first: Float, second: Float, factor: Float) = (factor.clamp(Math.max(first, second),
+    Math.min(first, second)) - first) / (second - first)
