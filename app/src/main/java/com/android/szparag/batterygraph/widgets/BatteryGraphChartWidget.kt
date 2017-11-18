@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import com.android.szparag.batterygraph.R
-import com.android.szparag.batterygraph.base.events.BatteryStateEvent
-import com.android.szparag.batterygraph.base.events.FlightModeStateEvent
-import com.android.szparag.batterygraph.base.utils.map
-import com.android.szparag.batterygraph.base.utils.safeLast
+import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
+import com.android.szparag.batterygraph.shared.events.FlightModeStateEvent
+import com.android.szparag.batterygraph.shared.utils.map
+import com.android.szparag.batterygraph.shared.utils.safeLast
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
