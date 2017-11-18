@@ -24,6 +24,7 @@ import com.android.szparag.batterygraph.shared.utils.hide
 import com.android.szparag.batterygraph.shared.utils.interpolator
 import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
+import com.android.szparag.batterygraph.widgets.interpolators.CutoffInterpolator
 import timber.log.Timber
 import java.util.Arrays
 
@@ -92,57 +93,52 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         Timber.d("createCircularDropletDrawable, drawable: $it")
       }
 
+  //todo: staralpha as a param
+  //todo: endalpha as a param
+  //todo: repeatoffset as a param
+  //todo: internal animation values should be stored as fields and shared between animations (with some multiplier)
   private fun animateCircularDroplet(dropletView: View) {
     Timber.d("animateCircularDroplet, dropletView: ${dropletView.asString()}, ${this.asStringWithChildren()}")
     dropletView.show()
     val animationSet = AnimationSet(false)
         .also { set ->
-          set.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f).also { animation ->
-            animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
-            animation.repeatCount = Animation.INFINITE
-            animation.repeatMode = Animation.RESTART
-            animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators
-            animation.setListenerBy(
-                onStart = { Timber.d("animateCircularDroplet.SCALEAnimation.onSTART, animation: ${it?.asString()}") },
-                onRepeat = { Timber.d("animateCircularDroplet.SCALEAnimation.onREPEAT, animation: ${it?.asString()}") },
-                onEnd = { Timber.d("animateCircularDroplet.SCALEAnimation.onEND, animation: ${it?.asString()}") }
-            )
-//            animation.setListenerBy(onRepeat = { animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4 }) //todo: repeatoffset as
-            // xml and code parameter!
-          })
-          set.addAnimation(AlphaAnimation(1f, 0f).also { animation ->
-            animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
-            animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators as params
-            animation.repeatCount = Animation.INFINITE
-            animation.repeatMode = Animation.RESTART
-            animation.setListenerBy(
-                onStart = { Timber.d("animateCircularDroplet.ALPHAAnimation.onSTART, animation: ${it?.asString()}") },
-                onRepeat = { Timber.d("animateCircularDroplet.ALPHAAnimation.onREPEAT, animation: ${it?.asString()}") },
-                onEnd = { Timber.d("animateCircularDroplet.ALPHAAnimation.onEND, animation: ${it?.asString()}") }
-            )
-            //            animation.setListenerBy(onRepeat = { animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4 })
-            //todo: internal animation values should be stored as fields and shared between animations (with some multiplier)
-          })
+          set.addAnimation(ScaleAnimation(0f, 1f, 0f, 1f, dropletView.width / 2f, dropletView.height / 2f)
+              .also { animation ->
+                animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+                animation.repeatCount = Animation.INFINITE
+                animation.repeatMode = Animation.RESTART
+                animation.interpolator = DecelerateInterpolator(1.75f) //todo: interpolators
+                animation.setListenerBy(
+                    onStart = { Timber.d("animateCircularDroplet.SCALEAnimation.onSTART, animation: ${it?.asString()}") },
+                    onRepeat = {
+                      animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
+                      Timber.d("animateCircularDroplet.SCALEAnimation.onREPEAT, animation: ${it?.asString()}")
+                    },
+                    onEnd = { Timber.d("animateCircularDroplet.SCALEAnimation.onEND, animation: ${it?.asString()}") }
+                )
+              })
+          set.addAnimation(AlphaAnimation(1f, 0f)
+              .also { animation ->
+                animation.duration = BASE_DROPLET_ANIMATION_LENGTH_MILLIS
+                animation.interpolator = CutoffInterpolator(sourceInterpolator = AccelerateInterpolator(),
+                    cutoff = 0.30f) //todo: interpolators
+                // as params
+                animation.isFillEnabled
+                animation.repeatCount = Animation.INFINITE
+                animation.repeatMode = Animation.RESTART
+                animation.setListenerBy(
+                    onStart = { Timber.d("animateCircularDroplet.ALPHAAnimation.onSTART, animation: ${it?.asString()}") },
+                    onRepeat = {
+                      animation.startOffset = BASE_DROPLET_ANIMATION_LENGTH_MILLIS / 4
+                      Timber.d("animateCircularDroplet.ALPHAAnimation.onREPEAT, animation: ${it?.asString()}")
+                    },
+                    onEnd = { Timber.d("animateCircularDroplet.ALPHAAnimation.onEND, animation: ${it?.asString()}") }
+                )
+              })
         }
 
     dropletView.animation = animationSet
     animationSet.start()
-
-
-//    AnimationSet(context).addAnimation()
-//    dropletView.animate()
-//        .duration(5000)
-//        .interpolator(DecelerateInterpolator(1f))
-//        .scaleY(1f)
-//        .scaleX(1f)
-////        .alpha(0f)
-//        .setListenerBy(
-//            onStart = {
-//              Timber.d("animateCircularDroplet.start")
-//              dropletView.show()
-//            }
-//        )
-//        .start()
   }
 
   private fun animateCircularDropletAlpha(dropletView: View) {
