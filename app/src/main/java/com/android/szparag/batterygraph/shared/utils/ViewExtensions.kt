@@ -5,11 +5,14 @@ import android.animation.Animator.AnimatorListener
 import android.animation.TimeInterpolator
 import android.view.View
 import android.view.ViewPropertyAnimator
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.view.animation.LayoutAnimationController.AnimationParameters
 
 typealias Widget = View
 
 private val animatorListenerCallbackStub: (Animator?) -> Unit = {}
+private val animationListenerCallbackStub: (Animation?) -> Unit = {}
 
 fun Widget.getLocationInWindow() = IntArray(2).apply {
   this@getLocationInWindow.getLocationInWindow(this)
@@ -48,23 +51,22 @@ fun ViewPropertyAnimator.setListenerBy(
     onEnd: (Animator?) -> (Unit) = animatorListenerCallbackStub,
     onCancel: (Animator?) -> (Unit) = animatorListenerCallbackStub,
     onRepeat: (Animator?) -> (Unit) = animatorListenerCallbackStub
-) =
-    this.setListener(object : AnimatorListener {
-      override fun onAnimationRepeat(animation: Animator?) {
-        onRepeat(animation)
-      }
+) = this.setListener(object : AnimatorListener {
+  override fun onAnimationRepeat(animation: Animator?) = onRepeat(animation)
+  override fun onAnimationEnd(animation: Animator?) = onEnd(animation)
+  override fun onAnimationCancel(animation: Animator?) = onCancel(animation)
+  override fun onAnimationStart(animation: Animator?) = onStart(animation)
+})
 
-      override fun onAnimationEnd(animation: Animator?) {
-        onEnd(animation)
-      }
+fun Animation.setListenerBy(
+    onStart: (Animation?) -> (Unit) = animationListenerCallbackStub,
+    onEnd: (Animation?) -> (Unit) = animationListenerCallbackStub,
+    onRepeat: (Animation?) -> (Unit) = animationListenerCallbackStub
+) = this.setAnimationListener(object : AnimationListener {
+  override fun onAnimationRepeat(animation: Animation?) = onRepeat(animation)
+  override fun onAnimationEnd(animation: Animation?) = onEnd(animation)
+  override fun onAnimationStart(animation: Animation?) = onStart(animation)
+})
 
-      override fun onAnimationCancel(animation: Animator?) {
-        onCancel(animation)
-      }
-
-      override fun onAnimationStart(animation: Animator?) {
-        onStart(animation)
-      }
-
-    })
-
+fun Animation.asString() = "${this::class.java.simpleName}@${hashCode()}, duration: $duration, offset: $startOffset, starttime: " +
+    "${this.startTime}, repeats: $repeatCount, interpolator: ${interpolator::class.java.simpleName}, fillEnabled: ${this.isFillEnabled}"
