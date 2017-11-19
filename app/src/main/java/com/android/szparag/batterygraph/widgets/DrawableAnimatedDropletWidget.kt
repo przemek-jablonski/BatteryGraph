@@ -22,7 +22,6 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.PathInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
-import android.widget.ImageView
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.attach
@@ -42,11 +41,16 @@ private const val BASE_ANIMATION_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MIL
 private const val BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS = (BASE_ANIMATION_LENGTH_MILLIS * 2.32f).toLong()
 private const val BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MILLIS / 33
 
+private const val BASE_OVAL_STROKE_THICKNESS = 50f
+
 open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
-  private lateinit var drawableView: ImageView
-  private lateinit var circularBackgroundView: View
+  private lateinit var drawableView: View
+  private lateinit var circularDropletBackgroundView: View
   private lateinit var circularDropletView: View
+//  private val circularDropletViewLayers = arrayListOf<View>()
+
+  private val circularDropletBackgroundPath by lazy { generateDropletBackgroundPath() }
 
   @DrawableRes private var drawable: Int? = null
 
@@ -64,6 +68,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     clipChildren = false
     addOnLayoutChangeListener(this::onLayoutBoundsChanged)
     parseCustomAttributes()
+    applyCustomAtrributes()
 
     drawableView = createFrontDrawableView(R.drawable.ic_icon_battery)
     addView(drawableView)
@@ -73,13 +78,18 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     Timber.d("parseCustomAttributes, ${widgetAsStringWidthChildren()}")
   }
 
+  private fun applyCustomAtrributes() {
+    Timber.d("applyCustomAtrributes")
+  }
+
+  @RequiresApi(VERSION_CODES.LOLLIPOP) //todo remove
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
     Timber.d("onLayoutFirstMeasurementApplied")
 
-    circularBackgroundView = createCircularBackgroundView()
-    circularBackgroundView.hide()
-    addView(circularBackgroundView, 0)
-    animateCircularBackground(circularBackgroundView)
+    circularDropletBackgroundView = createCircularBackgroundView()
+    circularDropletBackgroundView.hide()
+    addView(circularDropletBackgroundView, 0)
+    animateCircularBackground(circularDropletBackgroundView)
 
     circularDropletView = createCircularDropletView()
     circularDropletView.hide()
@@ -98,6 +108,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //todo: repeatoffset as a param
   //todo: internal animation values should be stored as fields and shared between animations (with some multiplier)
   //TODO: MAKE PATH INTERPOLATOR, SO THAT IT STARTS WITH 0 ALPHA, THEN GOES FAST TO MAX ALPHA AND FADES TO 0 AGAIN!!!
+  //todo: make method oneShotCircle, so that when battery status changes, it is reflected in animation as well!
 
   @RequiresApi(VERSION_CODES.LOLLIPOP) //todo: remove, make function createInterpolator
   private fun animateCircularBackground(targetView: View) {
@@ -113,25 +124,15 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               xEnd = 1f,
               yStart = 0f,
               yEnd = 1f,
-              interpolator = PathInterpolator(Path().apply {
-                fillType
-                moveTo(0f, 0.0f)
-                quadTo((0.13f + 0f) / 2, (0.35f + 0.20f) / 2, 0.13f, 0.30f)
-                lineTo(0.33f, 0.16f)
-                quadTo((0.40f + 0.33f) / 2, (0.69f + 0.16f) / 2, 0.40f, 0.69f)
-                lineTo(0.69f, 0.42f)
-                quadTo((0.74f + 0.69f) / 2, (0.90f + 0.42f) / 2, 0.74f, 0.90f)
-                lineTo(0.93f, 0.71f)
-                quadTo((1.00f + 0.93f) / 2, (1.00f + 0.71f) / 2, 1.00f, 1.00f)  //scientifically proven that this feels good in the ui
-              }),
+              interpolator = PathInterpolator(circularDropletBackgroundPath),
               timeCutoff = 1.0f
           ))
           set.addAnimation(createFadeoutAnimation(
               parentContainer = this,
               durationMillis = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
               repeatDelayMillis = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
-              alphaStart = 0.15f,
-              alphaEnd = 0.00f,
+              alphaStart = 0.30f,
+              alphaEnd = 0.10f,
               interpolator = FastOutLinearInInterpolator(),
               timeCutoff = 0.985f
           ))
@@ -152,15 +153,15 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               xEnd = 0.9f,
               yStart = 0f,
               yEnd = 0.9f,
-              interpolator = OvershootInterpolator(1.25f),
+              interpolator = OvershootInterpolator(1.05f),
               timeCutoff = 0.8f
           ))
           set.addAnimation(createFadeoutAnimation(
               parentContainer = this,
               durationMillis = BASE_ANIMATION_LENGTH_MILLIS,
               repeatDelayMillis = BASE_ANIMATION_REPEAT_DELAY_MILLIS,
-              alphaStart = 0.15f,
-              alphaEnd = 0.00f,
+              alphaStart = 0.35f,
+              alphaEnd = 0.15f,
               interpolator = AccelerateInterpolator(0.85f),
               timeCutoff = 0.95f
           ))
@@ -199,7 +200,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       ShapeDrawable(OvalShape()).apply {
         this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
         this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
-        this.paint.strokeWidth = 40f
+        this.paint.strokeWidth = BASE_OVAL_STROKE_THICKNESS
         this.paint.style = STROKE
         this.paint.color = resources.getColor(R.color.colorAccent1)
       }.also {
@@ -210,7 +211,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       ShapeDrawable(OvalShape()).apply {
         this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
         this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
-        this.paint.strokeWidth = 40f
         this.paint.style = FILL
         this.paint.color = resources.getColor(R.color.colorAccent1)
       }.also {
@@ -237,14 +237,24 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     }
   }
 
-  //todo: make method oneShotCircle, so that when battery status changes, it is reflected in animation as well!
+  //proven that this feels good in the ui with serious laboratory testing. true story
+  private fun generateDropletBackgroundPath() = Path().apply {
+    moveTo(0.000f, 0.000f)
+    quadTo(0.065f, 0.325f, 0.150f, 0.400f)
+    lineTo(0.330f, 0.300f)
+    quadTo(0.390f, 0.630f, 0.420f, 0.690f)
+    lineTo(0.690f, 0.480f)
+    quadTo(0.725f, 0.85f, 0.740f, 0.900f)
+    lineTo(0.930f, 0.710f)
+    quadTo(0.965f, 0.925f, 1.000f, 1.000f)
+  }
 
   private fun widgetAsStringWidthChildren() = StringBuilder(1024)
       .apply {
-        append("\nthis: {\n\t${this@DrawableAnimatedDropletWidget.asString()}")
+        append("\n\t${this@DrawableAnimatedDropletWidget.asString()}")
         for (i in 0 until this@DrawableAnimatedDropletWidget.childCount) {
           this.append("\n\t\t${this@DrawableAnimatedDropletWidget.getChildAt(i).asString()}")
         }
-      }.append("\n}").toString()
+      }.append("").toString()
 
 }
