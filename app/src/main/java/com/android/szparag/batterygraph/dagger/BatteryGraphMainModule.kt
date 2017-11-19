@@ -1,8 +1,8 @@
 package com.android.szparag.batterygraph.dagger
 
 import android.content.Context
-import com.android.szparag.batterygraph.base.models.BatteryGraphDatabaseInteractor
-import com.android.szparag.batterygraph.base.models.DatabaseInteractor
+import com.android.szparag.batterygraph.shared.models.BatteryGraphDatabaseInteractor
+import com.android.szparag.batterygraph.shared.models.DatabaseInteractor
 import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartInteractor
 import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartPresenter
 

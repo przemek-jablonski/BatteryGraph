@@ -26,6 +26,8 @@
     <attr name="layers_speed_dependency" format="float"/>
     <attr name="layers_spawn_phase_dependency" format="float"/>
 
+    <!-- THICKNESS! -->
+    <!-- THICKNESS_LAYER_DEPENDENCY -->
 
     <!--<attr name="layers_phase_speed_mul" format="float"/>-->
     <!--<attr name="layers_phase_"-->

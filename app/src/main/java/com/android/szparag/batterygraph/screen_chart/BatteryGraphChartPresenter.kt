@@ -1,8 +1,8 @@
 package com.android.szparag.batterygraph.screen_chart
 
-import com.android.szparag.batterygraph.base.presenters.BatteryGraphBasePresenter
-import com.android.szparag.batterygraph.base.utils.safeLast
-import com.android.szparag.batterygraph.base.utils.ui
+import com.android.szparag.batterygraph.shared.presenters.BatteryGraphBasePresenter
+import com.android.szparag.batterygraph.shared.utils.safeLast
+import com.android.szparag.batterygraph.shared.utils.ui
 import timber.log.Timber
 
 /**
