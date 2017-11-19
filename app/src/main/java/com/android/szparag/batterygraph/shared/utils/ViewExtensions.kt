@@ -79,14 +79,30 @@ fun Animation.setListenerBy(
 fun Animation.asString() = "${this::class.java.simpleName}@${hashCode()}, duration: $duration, offset: $startOffset, starttime: " +
     "${this.startTime}, repeats: $repeatCount, interpolator: ${interpolator::class.java.simpleName}, fillEnabled: ${this.isFillEnabled}"
 
-//fun Float.lerp(second: Float, factor: Float) = this + factor * (second - this)
 
+fun Int.clamp(max: Int, min: Int) = this.coerceAtLeast(min).coerceAtMost(max)
+fun Long.clamp(max: Long, min: Long) = this.coerceAtLeast(min).coerceAtMost(max)
 fun Float.clamp(max: Float, min: Float) = this.coerceAtLeast(min).coerceAtMost(max)
+fun Double.clamp(max: Double, min: Double) = this.coerceAtLeast(min).coerceAtMost(max)
 
+fun lerp(first: Int, second: Int, factor: Float) = first + factor * (second - first)
+fun lerp(first: Long, second: Long, factor: Float) = first + factor * (second - first)
 fun lerp(first: Float, second: Float, factor: Float) = first + factor * (second - first)
+fun lerp(first: Double, second: Double, factor: Double) = first + factor * (second - first)
 
-fun inverseLerp(first: Float, second: Float, factor: Float) = (factor.clamp(Math.max(first, second),
-    Math.min(first, second)) - first) / (second - first)
+fun lerpLong(first: Long, second: Long, factor: Float) = lerp(first, second, factor).toLong()
+
+fun inverseLerp(first: Int, second: Int, factor: Float)
+    = (factor.clamp(Math.max(first, second).toFloat(), Math.min(first, second).toFloat()) - first) / (second - first)
+
+fun inverseLerp(first: Long, second: Long, factor: Float)
+    = (factor.clamp(Math.max(first, second).toFloat(), Math.min(first, second).toFloat()) - first) / (second - first)
+
+fun inverseLerp(first: Float, second: Float, factor: Float)
+    = (factor.clamp(Math.max(first, second), Math.min(first, second)) - first) / (second - first)
+
+fun inverseLerp(first: Double, second: Double, factor: Float)
+    = (factor.clamp(Math.max(first, second).toFloat(), Math.min(first, second).toFloat()) - first) / (second - first)
 
 fun createImageViewWithDrawable(context: Context, drawable: Drawable?) = ImageView(context).apply { setImageDrawable(drawable) }
 
