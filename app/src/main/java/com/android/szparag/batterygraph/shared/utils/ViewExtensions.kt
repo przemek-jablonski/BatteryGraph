@@ -3,18 +3,24 @@ package com.android.szparag.batterygraph.shared.utils
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.TimeInterpolator
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationSet
 import android.view.animation.LayoutAnimationController.AnimationParameters
+import android.widget.ImageView
+import java.util.Arrays
 
 typealias Widget = View
 
 private val animatorListenerCallbackStub: (Animator?) -> Unit = {}
 private val animationListenerCallbackStub: (Animation?) -> Unit = {}
+private const val DEBUG_VIEW_STRING_DEFAULT_CAPACITY = 256
 
 fun Widget.getLocationInWindow() = IntArray(2).apply {
   this@getLocationInWindow.getLocationInWindow(this)
@@ -81,3 +87,13 @@ fun lerp(first: Float, second: Float, factor: Float) = first + factor * (second 
 
 fun inverseLerp(first: Float, second: Float, factor: Float) = (factor.clamp(Math.max(first, second),
     Math.min(first, second)) - first) / (second - first)
+
+fun createImageViewWithDrawable(context: Context, drawable: Drawable) = ImageView(context).apply { setImageDrawable(drawable) }
+
+fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
+    "${this::class.java.simpleName}, dimens: [${this.width}, ${this.height}], location: ${Arrays.toString(this.getLocationOnScreen())}"
+).toString()
+
+fun AnimationSet.attach(targetView: View) {
+  targetView.animation = this
+}
