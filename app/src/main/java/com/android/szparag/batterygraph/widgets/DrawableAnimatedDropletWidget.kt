@@ -1,5 +1,6 @@
 package com.android.szparag.batterygraph.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
@@ -28,6 +29,9 @@ import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.attach
 import com.android.szparag.batterygraph.shared.utils.createImageViewWithDrawable
 import com.android.szparag.batterygraph.shared.utils.hide
+import com.android.szparag.batterygraph.shared.utils.inverseLerp
+import com.android.szparag.batterygraph.shared.utils.lerp
+import com.android.szparag.batterygraph.shared.utils.lerpLong
 import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
 import com.android.szparag.batterygraph.widgets.interpolators.CutoffInterpolator
@@ -39,14 +43,17 @@ import java.util.Random
  */
 
 private const val BASE_ANIMATION_LENGTH_MILLIS = 5000L
-private const val BASE_ANIMATION_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MILLIS / 4
-private const val BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS = (BASE_ANIMATION_LENGTH_MILLIS * 2.32f).toLong()
-private const val BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MILLIS / 33
+private const val BASE_ANIMATION_LENGTH_MIN_MILLIS = (BASE_ANIMATION_LENGTH_MILLIS * 0.66f).toLong()
+private const val BASE_ANIMATION_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MILLIS / 2
+
+
+private const val BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS = (BASE_ANIMATION_LENGTH_MILLIS * 2.5f).toLong()
+private const val BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS = BASE_ANIMATION_LENGTH_MILLIS / 35
 
 private const val BASE_OVAL_STROKE_THICKNESS = 50f
 
-private const val ANIMATION_RANDOM_START_TIME_BOUND_MILLIS = (BASE_ANIMATION_LENGTH_MILLIS * 1.69f).toLong()
-private const val ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS = ANIMATION_RANDOM_START_TIME_BOUND_MILLIS * 1.33f
+private const val ANIMATION_RANDOM_START_TIME_BOUND_MILLIS = BASE_ANIMATION_LENGTH_MILLIS * 2
+private const val ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS = ANIMATION_RANDOM_START_TIME_BOUND_MILLIS * 2.50
 
 
 typealias Millis = Long
@@ -103,7 +110,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
     Timber.d("onLayoutFirstMeasurementApplied")
 
-    createCircularDropletsLayers(4)
+    createCircularDropletsLayers(6)
     circularDropletBackgroundView = createCircularBackgroundView(R.color.colorAccent1)
     circularDropletBackgroundView.hide()
     addView(circularDropletBackgroundView, 0)
@@ -145,7 +152,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   @RequiresApi(VERSION_CODES.LOLLIPOP) //todo: remove, make function createInterpolator
   private fun animateCircularBackground(targetView: View) {
-    Timber.d("animateCircularDroplet, targetView: ${targetView.asString()}")
+    Timber.d("animateCircularBackground, targetView: ${targetView.asString()}")
     targetView.show()
     AnimationSet(false)
         .also { set ->
@@ -154,10 +161,8 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
               repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
               startTime = 0L,
-              xStart = 0f,
-              xEnd = 1f,
-              yStart = 0f,
-              yEnd = 1f,
+              xyStart = 0f,
+              xyEnd = 1f,
               interpolator = PathInterpolator(circularDropletBackgroundPath),
               timeCutoff = 1.0f
           ))
@@ -166,10 +171,10 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
               repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
               startTime = 0L,
-              alphaStart = 0.16f,
+              alphaStart = 0.13f,
               alphaEnd = 0.00f,
               interpolator = FastOutLinearInInterpolator(),
-              timeCutoff = 0.99f
+              timeCutoff = 0.95f
           ))
           set.attach(targetView)
         }.start()
@@ -179,41 +184,50 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     val startTime = random.nextInt(ANIMATION_RANDOM_START_TIME_BOUND_MILLIS.toInt()).toLong()
     val repeatDelayAddition = random.nextInt(ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
     val layerValuesMultiplier = layerIndex / layerCount * layerDependency
-    Timber.d("animateCircularDroplet, targetView: ${targetView.asString()}")
+    val inverseLerp = inverseLerp(0, layerCount, layerIndex.toFloat())
+    Timber.d("animateCircularDroplet, layerIndex: $layerIndex, layerCount: $layerCount, layerDependency: $layerDependency, inverseLerp: " +
+        "$inverseLerp, layerValuesMultiplier: $layerValuesMultiplier")
     targetView.show()
     AnimationSet(false)
         .also { set ->
+          set.fillAfter = true
+          set.isFillEnabled = true
           set.addAnimation(createScalingAnimation(
               parentContainer = this,
-              duration = BASE_ANIMATION_LENGTH_MILLIS,
+              duration = lerpLong(first = BASE_ANIMATION_LENGTH_MIN_MILLIS, second = BASE_ANIMATION_LENGTH_MILLIS, factor = inverseLerp),
               repeatDelay = BASE_ANIMATION_REPEAT_DELAY_MILLIS + repeatDelayAddition,
               startTime = startTime,
-              xStart = 0f,
-              xEnd = 0.9f,
-              yStart = 0f,
-              yEnd = 0.9f,
-              interpolator = OvershootInterpolator(1.05f),
-              timeCutoff = 0.8f
+              xyStart = lerp(0.10f, 0.00f, inverseLerp),
+              xyEnd = lerp(0.67f, 0.93f, inverseLerp),
+              interpolator = OvershootInterpolator(lerp(1.15f, 0.95f, inverseLerp)),
+              timeCutoff = lerp(0.8f, 0.98f, inverseLerp)
           ))
           set.addAnimation(createFadeoutAnimation(
               parentContainer = this,
-              duration = BASE_ANIMATION_LENGTH_MILLIS,
+              duration = lerp(
+                  first = BASE_ANIMATION_LENGTH_MIN_MILLIS,
+                  second = BASE_ANIMATION_LENGTH_MILLIS,
+                  factor = inverseLerp(0, layerCount, layerIndex.toFloat())
+              ).toLong(),
               repeatDelay = BASE_ANIMATION_REPEAT_DELAY_MILLIS + repeatDelayAddition,
               startTime = startTime,
-              alphaStart = 0.15f,
+              alphaStart = lerp(0.13f, 0.30f, inverseLerp),
               alphaEnd = 0.00f,
-              interpolator = AccelerateInterpolator(0.85f),
-              timeCutoff = 0.99f
+              interpolator = AccelerateInterpolator(lerp(1.05f, 0.85f, inverseLerp)),
+              timeCutoff = lerp(0.92f, 0.99f, inverseLerp)
           ))
           set.attach(targetView)
         }.start()
   }
 
 
+  @SuppressLint("BinaryOperationInTimber")
   private fun createScalingAnimation(parentContainer: View, duration: Millis, repeatDelay: Millis, startTime: Millis,
-      xStart: Float, xEnd: Float, yStart: Float, yEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
-      = ScaleAnimation(xStart, xEnd, yStart, yEnd, parentContainer.width / 2f, parentContainer.height / 2f)
+      xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
+      = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
       .also { animation ->
+        Timber.d("createScalingAnimation, duration: $duration, repeatDelay: $repeatDelay, startTime: $startTime, " +
+            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: $interpolator, timeCutoff: $timeCutoff")
         animation.duration = duration
         animation.startOffset = startTime
         animation.repeatCount = Animation.INFINITE
@@ -226,10 +240,16 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float) =
       AlphaAnimation(alphaStart, alphaEnd)
           .also { animation ->
+            Timber.d("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: $interpolator, timeCutoff: $timeCutoff")
             animation.duration = duration
             animation.startOffset = startTime
             animation.repeatCount = Animation.INFINITE
             animation.repeatMode = Animation.RESTART
+            animation.isFillEnabled = true
+            animation.fillAfter = true
+            animation.fillBefore = false
+//            animation.isFillEnabled = truex
             animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
             animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
           }
@@ -252,25 +272,25 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         this.paint.style = FILL
         this.paint.color = resources.getColor(colourId)
       }.also {
-        Timber.d("createCircularDropletDrawable, drawable: ${it.asString()}")
+        Timber.d("createCircularBackgroundDrawable, drawable: ${it.asString()}")
       }
 
   private fun createFrontDrawableView(@DrawableRes drawableRes: ResourceId?)
       = createImageViewWithDrawable(context, drawableRes?.let { resources.getDrawable(drawableRes) })
 
   override final fun addView(child: View) {
-    Timber.d("addView, child: ${child.asString()}")
+//    Timber.d("addView, child: ${child.asString()}")
     super.addView(child)
   }
 
   override final fun addView(child: View, index: Int) {
-    Timber.d("addView, child: ${child.asString()}, index: $index")
+//    Timber.d("addView, child: ${child.asString()}, index: $index")
     super.addView(child, index)
   }
 
   //todo index not used!
   private fun addViews(children: List<View>, index: Int = 0, childApply: (View, Int) -> (Unit) = { _, _ -> }) {
-    Timber.d("addViews, children.count: ${children.size}, children: ${children.map { it.asString() }}, index: $index")
+//    Timber.d("addViews, children.count: ${children.size}, children: ${children.map { it.asString() }}, index: $index")
     for (i in children.size - 1 downTo 0) {
       children[i].apply { childApply.invoke(this, i); addView(this) }
     }
