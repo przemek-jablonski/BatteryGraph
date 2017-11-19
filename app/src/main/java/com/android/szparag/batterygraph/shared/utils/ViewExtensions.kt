@@ -88,7 +88,7 @@ fun lerp(first: Float, second: Float, factor: Float) = first + factor * (second 
 fun inverseLerp(first: Float, second: Float, factor: Float) = (factor.clamp(Math.max(first, second),
     Math.min(first, second)) - first) / (second - first)
 
-fun createImageViewWithDrawable(context: Context, drawable: Drawable) = ImageView(context).apply { setImageDrawable(drawable) }
+fun createImageViewWithDrawable(context: Context, drawable: Drawable?) = ImageView(context).apply { setImageDrawable(drawable) }
 
 fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
     "${this::class.java.simpleName}, dimens: [${this.width}, ${this.height}], location: ${Arrays.toString(this.getLocationOnScreen())}"
@@ -97,3 +97,6 @@ fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
 fun AnimationSet.attach(targetView: View) {
   targetView.animation = this
 }
+
+fun Drawable.asString() = "${this::class.java.simpleName}@${hashCode()}, bounds: ${this.bounds}, iHeight: ${this.intrinsicHeight}, " +
+    "iWidth: ${this.intrinsicWidth}, alpha: ${this.alpha}, opacity: ${this.opacity}, state: ${this.state}, visible: ${this.isVisible}"
