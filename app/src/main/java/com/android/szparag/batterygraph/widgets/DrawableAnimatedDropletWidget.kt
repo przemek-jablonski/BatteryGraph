@@ -2,6 +2,7 @@ package com.android.szparag.batterygraph.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.Path
@@ -24,6 +25,7 @@ import android.view.animation.Interpolator
 import android.view.animation.PathInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
+import android.widget.ImageView
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.attach
@@ -64,7 +66,7 @@ typealias Percentage = Float
 open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   //todo: unify - there are vars, lateinit vars and vals here
-  private var drawableView: View
+  private var drawableView: ImageView
   private lateinit var circularDropletBackgroundView1: View
   private lateinit var circularDropletBackgroundView2: View
   //  private val circularBackgroundViewLayers = arrayListOf<View>()
@@ -90,6 +92,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     applyCustomAtrributes()
 
     drawableView = createFrontDrawableView(drawable)
+    drawableView.imageTintList = ColorStateList.valueOf(R.color.colorPrimaryDark)
     addView(drawableView)
   }
 
@@ -195,7 +198,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               duration = duration,
               repeatDelay = repeatDelay,
               startTime = startTime,
-              alphaStart = 0.12f,
+              alphaStart = 0.10f,
               alphaEnd = 0.00f,
               interpolator = FastOutLinearInInterpolator(),
               timeCutoff = 0.99f
