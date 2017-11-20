@@ -14,7 +14,7 @@
       app:layout_constraintGuide_percent="0.5"
       />
   <TextView
-      android:id="@+id/label1"
+      android:id="@+id/labelPercentage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -34,7 +34,7 @@
       app:layout_constraintTop_toTopOf="parent"
       />
   <TextView
-      android:id="@+id/content1"
+      android:id="@+id/contentPercentage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -44,13 +44,12 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      android:text="TextView"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label1"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelPercentage"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />
   <TextView
-      android:id="@+id/label2"
+      android:id="@+id/labelHealth"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -67,10 +66,10 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/label1"
+      app:layout_constraintTop_toBottomOf="@+id/labelPercentage"
       />
   <TextView
-      android:id="@+id/content2"
+      android:id="@+id/contentHealth"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -80,13 +79,12 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      android:text="TextView"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label2"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelHealth"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />
   <TextView
-      android:id="@+id/label3"
+      android:id="@+id/labelStatus"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -103,10 +101,10 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/label2"
+      app:layout_constraintTop_toBottomOf="@+id/labelHealth"
       />
   <TextView
-      android:id="@+id/content3"
+      android:id="@+id/contentStatus"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -116,13 +114,12 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      android:text="TextView"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label3"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelStatus"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />
   <TextView
-      android:id="@+id/label4"
+      android:id="@+id/labelSource"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -139,10 +136,10 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/label3"
+      app:layout_constraintTop_toBottomOf="@+id/labelStatus"
       />
   <TextView
-      android:id="@+id/content4"
+      android:id="@+id/contentSource"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -152,13 +149,12 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      android:text="TextView"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label4"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelSource"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />
   <TextView
-      android:id="@+id/label5"
+      android:id="@+id/labelVoltage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -175,10 +171,10 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/label4"
+      app:layout_constraintTop_toBottomOf="@+id/labelSource"
       />
   <TextView
-      android:id="@+id/content5"
+      android:id="@+id/contentVoltage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -188,12 +184,12 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label5"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelVoltage"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />
   <TextView
-      android:id="@+id/label6"
+      android:id="@+id/labelTemperature"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
@@ -212,10 +208,10 @@
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/label5"
+      app:layout_constraintTop_toBottomOf="@+id/labelVoltage"
       />
   <TextView
-      android:id="@+id/content6"
+      android:id="@+id/contentTemperature"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -225,7 +221,7 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/label6"
+      app:layout_constraintBaseline_toBaselineOf="@+id/labelTemperature"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
       />

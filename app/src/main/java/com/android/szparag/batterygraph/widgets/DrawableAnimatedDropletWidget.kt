@@ -166,6 +166,9 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       = createImageViewWithDrawable(context, createCircularBackgroundDrawable(colourId))
       .also { Timber.d("createCircularBackgroundView, view: ${it.asString()}") }
 
+  //todo: callback (with default implementation) onUserClicked()
+  //todo: callback (with default implementation) onUserLongPressed()
+  //todo: performOneShotDroplet
   //todo: color(s?) as params (reference)
   //todo: interpolators as params (enum)
   //todo: staralpha as a param

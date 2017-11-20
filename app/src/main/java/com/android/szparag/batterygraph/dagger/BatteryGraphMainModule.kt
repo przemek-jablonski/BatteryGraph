@@ -8,6 +8,10 @@ import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartPresenter
 
 import com.android.szparag.batterygraph.screen_chart.ChartInteractor
 import com.android.szparag.batterygraph.screen_chart.ChartPresenter
+import com.android.szparag.batterygraph.screen_front.BatteryGraphFrontInteractor
+import com.android.szparag.batterygraph.screen_front.BatteryGraphFrontPresenter
+import com.android.szparag.batterygraph.screen_front.FrontInteractor
+import com.android.szparag.batterygraph.screen_front.FrontPresenter
 import com.android.szparag.batterygraph.service_monitoring.BatteryGraphMonitoringInteractor
 import com.android.szparag.batterygraph.service_monitoring.MonitoringInteractor
 import dagger.Module
@@ -20,12 +24,18 @@ import javax.inject.Singleton
 @Module
 class BatteryGraphMainModule(private val applicationContext: Context) {
 
+  //todo: refactor module (new way of injecting stuff)
+
   @Provides fun providesChartPresenter(chartModel: ChartInteractor): ChartPresenter = BatteryGraphChartPresenter(chartModel)
 
-  @Provides @Singleton fun providesDatabaseInteractor(): DatabaseInteractor = BatteryGraphDatabaseInteractor()
+  @Provides fun providesFrontPresenter(frontModel: FrontInteractor) : FrontPresenter = BatteryGraphFrontPresenter(frontModel)
 
   @Provides @Singleton fun providesChartInteractor(databaseInteractor: DatabaseInteractor): ChartInteractor =
       BatteryGraphChartInteractor(databaseInteractor)
+
+  @Provides @Singleton fun providesFrontInteractor() : FrontInteractor = BatteryGraphFrontInteractor()
+
+  @Provides @Singleton fun providesDatabaseInteractor(): DatabaseInteractor = BatteryGraphDatabaseInteractor()
 
   @Provides @Singleton fun providesMonitoringInteractor(databaseInteractor: DatabaseInteractor): MonitoringInteractor =
       BatteryGraphMonitoringInteractor(databaseInteractor)
