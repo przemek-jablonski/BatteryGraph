@@ -1,6 +1,15 @@
 <resources>
   <string name="app_name">BatteryGraph</string>
+
   <string name="service_notification_title">BatteryGraph</string>
   <string name="service_notification_text">Periodically monitoring battery status</string>
   <string name="service_notification_channel_name">Battery Graph notifications</string>
+
+  <string name="activity_front_title_battery_status">Status</string>
+  <string name="activity_front_title_battery_health">Health</string>
+  <string name="activity_front_title_battery_powersource">Power Source</string>
+  <string name="activity_front_title_battery_percentage">Percentage</string>
+  <string name="activity_front_title_battery_voltage">Voltage</string>
+  <string name="activity_front_title_battery_temperature">Temperature</string>
+
 </resources>
