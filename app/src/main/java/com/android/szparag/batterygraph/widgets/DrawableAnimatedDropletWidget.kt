@@ -19,6 +19,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
+import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.Interpolator
 import android.view.animation.OvershootInterpolator
 import android.view.animation.PathInterpolator
@@ -65,6 +66,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //todo: unify - there are vars, lateinit vars and vals here
   private var drawableView: View
   private lateinit var circularDropletBackgroundView: View
+  private val circularBackgroundViewLayers = arrayListOf<View>()
   private val circularDropletViewLayers = arrayListOf<View>()
 
   private val random by lazy { Random() }
@@ -123,10 +125,11 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     (0 until layerCount).mapTo(circularDropletViewLayers) { layerIndex ->
       createCircularDropletView(
           thickness = BASE_OVAL_STROKE_THICKNESS - (layerIndex * BASE_OVAL_STROKE_THICKNESS / layerCount),
-          colourId = R.color.colorAccent1)
+          colourId = R.color.colorAccent1
+      )
     }
 
-    addViews(children = circularDropletViewLayers, index = 0, childApply = { child, index ->
+    addViews(children = circularDropletViewLayers, childApply = { child, index ->
       child.hide()
       animateCircularDroplet(child, index, layerCount, 1.0f)
     })
@@ -171,10 +174,10 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
               repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
               startTime = 0L,
-              alphaStart = 0.13f,
+              alphaStart = 0.11f,
               alphaEnd = 0.00f,
               interpolator = FastOutLinearInInterpolator(),
-              timeCutoff = 0.95f
+              timeCutoff = 0.99f
           ))
           set.attach(targetView)
         }.start()
@@ -192,14 +195,18 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         .also { set ->
           set.fillAfter = true
           set.isFillEnabled = true
+          val interpol =  if (inverseLerp < 0.67f)
+            OvershootInterpolator(lerp(1.15f, 0.95f, inverseLerp))
+          else
+            AccelerateInterpolator()
           set.addAnimation(createScalingAnimation(
               parentContainer = this,
               duration = lerpLong(first = BASE_ANIMATION_LENGTH_MIN_MILLIS, second = BASE_ANIMATION_LENGTH_MILLIS, factor = inverseLerp),
               repeatDelay = BASE_ANIMATION_REPEAT_DELAY_MILLIS + repeatDelayAddition,
               startTime = startTime,
-              xyStart = lerp(0.10f, 0.00f, inverseLerp),
+              xyStart = 0.00f,
               xyEnd = lerp(0.67f, 0.93f, inverseLerp),
-              interpolator = OvershootInterpolator(lerp(1.15f, 0.95f, inverseLerp)),
+              interpolator =AnticipateOvershootInterpolator(lerp(1.15f, 0.00f, inverseLerp)),
               timeCutoff = lerp(0.8f, 0.98f, inverseLerp)
           ))
           set.addAnimation(createFadeoutAnimation(
@@ -289,7 +296,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   }
 
   //todo index not used!
-  private fun addViews(children: List<View>, index: Int = 0, childApply: (View, Int) -> (Unit) = { _, _ -> }) {
+  private fun addViews(children: List<View>, childApply: (View, Int) -> (Unit) = { _, _ -> }) {
 //    Timber.d("addViews, children.count: ${children.size}, children: ${children.map { it.asString() }}, index: $index")
     for (i in children.size - 1 downTo 0) {
       children[i].apply { childApply.invoke(this, i); addView(this) }
