@@ -15,6 +15,7 @@ import android.view.animation.AnimationSet
 import android.view.animation.LayoutAnimationController.AnimationParameters
 import android.widget.ImageView
 import java.util.Arrays
+import java.util.Random
 
 typealias Widget = View
 
@@ -106,9 +107,16 @@ fun inverseLerp(first: Double, second: Double, factor: Float)
 
 fun createImageViewWithDrawable(context: Context, drawable: Drawable?) = ImageView(context).apply { setImageDrawable(drawable) }
 
-fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
-    "${this::class.java.simpleName}, dimens: [${this.width}, ${this.height}], location: ${Arrays.toString(this.getLocationOnScreen())}"
-).toString()
+fun View.asString() = asShortString()
+
+//fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
+//    "${asShortString()}, id: ${this.id}, dimens: [${this.width}, ${this.height}], " +
+//        "location: ${Arrays.toString(this.getLocationOnScreen
+//    ())}"
+//).toString()
+
+
+fun View.asShortString() = "${this::class.java.simpleName}@${hashCode()}"
 
 fun AnimationSet.attach(targetView: View) {
   targetView.animation = this
@@ -116,3 +124,13 @@ fun AnimationSet.attach(targetView: View) {
 
 fun Drawable.asString() = "${this::class.java.simpleName}@${hashCode()}, bounds: ${this.bounds}, iHeight: ${this.intrinsicHeight}, " +
     "iWidth: ${this.intrinsicWidth}, alpha: ${this.alpha}, opacity: ${this.opacity}, state: ${this.state}, visible: ${this.isVisible}"
+
+fun Random.nextFloat(min: Float, max: Float) = nextFloat() * (max - min) + min
+fun Random.nextDouble(min: Double, max: Double) = nextDouble() * (max - min) + min
+fun Random.nextInt(min: Int, max: Int) = nextInt() * (max - min) + min
+fun Random.nextLong(min: Long, max: Long) = nextLong() * (max - min) + min
+
+fun Float.randomVariation(random: Random, factor: Float) = random.nextFloat(this - this * factor, this + this * factor)
+fun Double.randomVariation(random: Random, factor: Float) = random.nextDouble(this - this * factor, this + this * factor)
+fun Int.randomVariation(random: Random, factor: Float) = random.nextInt((this - this * factor).toInt(), (this + this * factor).toInt())
+fun Long.randomVariation(random: Random, factor: Float) = random.nextLong((this - this * factor).toLong(), (this + this * factor).toLong())
