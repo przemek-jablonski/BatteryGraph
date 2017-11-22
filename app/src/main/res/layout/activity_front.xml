@@ -9,7 +9,7 @@
     >
 
   <com.android.szparag.batterygraph.widgets.DrawableAnimatedDropletWidget
-      android:id="@+id/imageView2"
+      android:id="@+id/batteryAnimatedView"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:layout_marginBottom="8dp"
@@ -25,7 +25,7 @@
       />
   <include
       layout="@layout/layout_front_batterystats"
-      android:id="@+id/include"
+      android:id="@+id/batteryStatusView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
