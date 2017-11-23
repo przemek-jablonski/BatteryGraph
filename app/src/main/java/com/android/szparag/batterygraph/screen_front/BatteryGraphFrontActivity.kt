@@ -12,18 +12,16 @@ import com.android.szparag.batterygraph.shared.utils.getBGUnixTimestampSecs
 import com.android.szparag.batterygraph.shared.utils.mapToBatteryStatusEvent
 import com.android.szparag.batterygraph.shared.utils.unregisterReceiverFromContext
 import com.android.szparag.batterygraph.shared.views.BatteryGraphBaseActivity
-import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.activity_front.batteryAnimatedView
 import kotlinx.android.synthetic.main.activity_front.batteryStatusView
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentHealth
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentPercentage
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentSource
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentStatus
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentTemperature
-import kotlinx.android.synthetic.main.layout_front_batterystats.view.contentVoltage
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentHealth
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentPercentage
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSource
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
+import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
 import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
