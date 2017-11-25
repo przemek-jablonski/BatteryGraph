@@ -3,6 +3,10 @@ package com.android.szparag.batterygraph.screen_front
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback
+import android.view.View
+import android.view.ViewGroup
 import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
@@ -22,12 +26,13 @@ import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSo
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
+import kotlinx.android.synthetic.main.activity_front.smallChartsView
 import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
 
-  private lateinit var batteryChangedSubject : Subject<BatteryStateEvent>
-  private lateinit var batteryChangedReceiver : BroadcastReceiver
+  private lateinit var batteryChangedSubject: Subject<BatteryStateEvent>
+  private lateinit var batteryChangedReceiver: BroadcastReceiver
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -54,7 +59,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     Timber.d("registerBatteryStateEventsReceiver")
     batteryChangedSubject = PublishSubject.create()
     batteryChangedReceiver = createRegisteredBroadcastReceiver(
-        intentFilterActions =  Intent.ACTION_BATTERY_CHANGED,
+        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
         callback = this::onBatteryStatusIntentReceived
     )
   }
@@ -74,6 +79,23 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(getBGUnixTimestampSecs()))
   }
 
+  fun setupSmallChartsView() {
+    Timber.d("setupSmallChartsView")
+    BottomSheetBehavior.from(smallChartsView).apply {
+      this.peekHeight = 75
+      this.isHideable = false
+      this.setBottomSheetCallback(object: BottomSheetCallback() {
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+          Timber.d("onSlide, bottomSheet: $bottomSheet, slideOffset: $slideOffset")
+        }
+
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+          Timber.d("onStateChanged, bottomSheet: $bottomSheet, newState: $newState")
+        }
+
+      })
+    }
+  }
 
   override fun renderBatteryState(event: BatteryStateEvent) {
     Timber.d("renderBatteryState, event: $event")

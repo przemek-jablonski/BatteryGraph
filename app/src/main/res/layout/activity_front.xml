@@ -78,6 +78,7 @@
   </android.support.constraint.ConstraintLayout>
 
   <include
+      android:id="@+id/smallChartsView"
       layout="@layout/layout_charts_small_group"
       />
 
