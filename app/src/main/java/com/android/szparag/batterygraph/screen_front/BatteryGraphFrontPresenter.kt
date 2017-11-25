@@ -10,6 +10,7 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
   override fun onAttached() {
     view?.registerBatteryStateEventsReceiver()
     super.onAttached()
+    view?.setupSmallChartsView()
   }
 
   override fun onBeforeDetached() {
@@ -27,6 +28,8 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
               view?.renderBatteryState(event)
             }
         )
+
+    view?.setupSmallChartsData()
   }
 
   override fun subscribeViewUserEvents() {

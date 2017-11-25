@@ -13,5 +13,7 @@ interface FrontView: View {
   fun registerBatteryStateEventsReceiver()
   fun unregisterBatteryStateEventsReceiver()
   fun subscribeBatteryStateEvents(): Observable<BatteryStateEvent>
+  fun setupSmallChartsView()
+  fun setupSmallChartsData()
 
 }
