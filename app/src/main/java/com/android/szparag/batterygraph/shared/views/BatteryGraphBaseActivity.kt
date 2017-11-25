@@ -3,7 +3,9 @@ package com.android.szparag.batterygraph.shared.views
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v7.app.AppCompatActivity
+import android.util.DisplayMetrics
 import com.android.szparag.batterygraph.shared.presenters.Presenter
+import com.android.szparag.batterygraph.shared.utils.getDisplayMetrics
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -13,10 +15,12 @@ import javax.inject.Inject
 abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(), View {
 
   @Inject lateinit open var presenter: P //todo: close and private this somehow
+  protected lateinit var displayMetrics: DisplayMetrics
 
   @CallSuper
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    displayMetrics = getDisplayMetrics()
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
   }
 

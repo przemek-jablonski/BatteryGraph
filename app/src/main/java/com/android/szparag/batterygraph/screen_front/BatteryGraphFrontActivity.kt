@@ -13,6 +13,7 @@ import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.shared.utils.getBGUnixTimestampSecs
 import com.android.szparag.batterygraph.shared.utils.mapToBatteryStatusEvent
+import com.android.szparag.batterygraph.shared.utils.toPx
 import com.android.szparag.batterygraph.shared.utils.unregisterReceiverFromContext
 import com.android.szparag.batterygraph.shared.views.BatteryGraphBaseActivity
 import io.reactivex.Observable
@@ -81,7 +82,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
   override fun setupSmallChartsView() {
     Timber.d("setupSmallChartsView")
     BottomSheetBehavior.from(smallChartsView).apply {
-      this.peekHeight = 75
+      this.peekHeight = 100f.toPx(displayMetrics) //todo hardcoded
       this.isHideable = false
       this.setBottomSheetCallback(object: BottomSheetCallback() {
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
