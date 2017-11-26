@@ -79,7 +79,7 @@
 
   <include
       android:id="@+id/smallChartsView"
-      layout="@layout/layout_charts_small_group"
+      layout="@layout/layout_small_charts_group"
       />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -28,12 +28,14 @@ import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSo
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
+import kotlinx.android.synthetic.main.layout_small_charts_group.batteryPercentageSmallChart
 import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
 
   override fun renderSmallChartBatteryPercentage(events: List<BatteryStateEvent>) {
     Timber.d("renderSmallChartBatteryPercentage")
+    batteryPercentageSmallChart.setData(events)
   }
 
   override fun renderSmallChartBatteryTemperature(events: List<BatteryStateEvent>) {
@@ -112,6 +114,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
       })
     }
+    batteryPercentageSmallChart.initialize()
   }
 
 
