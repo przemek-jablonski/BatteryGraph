@@ -1,9 +1,10 @@
-package com.android.szparag.batterygraph.widgets
+package com.android.szparag.batterygraph.screens.chart.widgets
 
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import com.android.szparag.batterygraph.R
+import com.android.szparag.batterygraph.R.drawable
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.shared.utils.map
@@ -21,11 +22,13 @@ import java.text.DecimalFormat
 private const val CIRCLE_TYPE_BATTERY = 0
 private const val CIRCLE_TYPE_FLIGHT_MODE = 1
 
+//todo: refactor so that it takes only one type of data, put it into interface
+//todo: and put common logic (with BatteryGraphChartSmallWidget) into BatteryGraphChartWidget
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LineChart(context, attrs, defStyleAttr), ChartWidget<BatteryStateEvent> {
+) : LineChart(context, attrs, defStyleAttr) {
 
-  private var batteryEntries = emptyList<Entry>()
+  private var batteryEntries = emptyList<Entry>() //todo: refactor to emptyArrayList()
   private var batteryDataSet: LineDataSet? = null
   private var flightModeEntries = emptyList<Entry>()
   private var flightModeDataSet: LineDataSet? = null
@@ -50,6 +53,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     applyDataToChart()
   }
 
+  //todo wtf is this, this should be PowerOnOffEvent
   fun setFlightModeData(data: List<FlightModeStateEvent>) {
     Timber.d("setFlightModeData, data.size: ${data.size}, data.last: ${data.safeLast()}")
     if (data.isEmpty()) return
@@ -78,7 +82,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     setMaxVisibleValueCount(0)
     description.isEnabled = false
     renderer = CustomDrawableLineChartRenderer(this, animator, viewPortHandler,
-        BitmapFactory.decodeResource(resources, R.drawable.ic_icon_battery))
+        BitmapFactory.decodeResource(resources, drawable.ic_icon_battery))
   }
 
   private fun stylizeXAxis(xAxis: XAxis) {

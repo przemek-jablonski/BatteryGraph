@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.screen_chart
+package com.android.szparag.batterygraph.screens.chart
 
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
@@ -10,7 +10,6 @@ import io.reactivex.Observable
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
  */
-const val EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS = 5L
 
 interface ChartInteractor : Interactor {
 

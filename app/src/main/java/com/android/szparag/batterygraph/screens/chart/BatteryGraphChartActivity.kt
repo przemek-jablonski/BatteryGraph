@@ -1,14 +1,14 @@
-package com.android.szparag.batterygraph.screen_chart
+package com.android.szparag.batterygraph.screens.chart
 
 import android.content.Intent
 import android.os.Bundle
 import com.android.szparag.batterygraph.R.layout
+import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
+import com.android.szparag.batterygraph.services.monitoring.BatteryGraphMonitoringService
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.shared.utils.safeLast
 import com.android.szparag.batterygraph.shared.views.BatteryGraphBaseActivity
-import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
-import com.android.szparag.batterygraph.service_monitoring.BatteryGraphMonitoringService
 import kotlinx.android.synthetic.main.activity_chart.chartView
 import timber.log.Timber
 

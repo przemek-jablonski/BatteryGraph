@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.widgets
+package com.android.szparag.batterygraph.screens.front.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -37,7 +37,8 @@ import com.android.szparag.batterygraph.shared.utils.lerpLong
 import com.android.szparag.batterygraph.shared.utils.randomVariation
 import com.android.szparag.batterygraph.shared.utils.setListenerBy
 import com.android.szparag.batterygraph.shared.utils.show
-import com.android.szparag.batterygraph.widgets.interpolators.CutoffInterpolator
+import com.android.szparag.batterygraph.shared.widgets.DrawableAnimatedWidget
+import com.android.szparag.batterygraph.shared.widgets.interpolators.CutoffInterpolator
 import timber.log.Timber
 import java.util.Random
 
@@ -201,7 +202,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               duration = duration,
               repeatDelay = repeatDelay,
               startTime = startTime,
-              alphaStart = 0.10f,
+              alphaStart = 0.12f,
               alphaEnd = 0.00f,
               interpolator = FastOutLinearInInterpolator(),
               timeCutoff = 0.99f
@@ -212,7 +213,8 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   private fun animateCircularDroplet(targetView: View, layerIndex: Int, layerCount: Int, layerDependency: Float) {
     val startTime = random.nextInt(ANIMATION_RANDOM_START_TIME_BOUND_MILLIS.toInt()).toLong()
-    val repeatDelayAddition = random.nextInt(ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
+    val repeatDelayAddition = random.nextInt(
+        ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
     val layerValuesMultiplier = layerIndex / layerCount * layerDependency
     val inverseLerp = inverseLerp(0, layerCount, layerIndex.toFloat())
     Timber.d("animateCircularDroplet, layerIndex: $layerIndex, layerCount: $layerCount, layerDependency: $layerDependency, inverseLerp: " +
@@ -241,10 +243,10 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
               ).toLong(),
               repeatDelay = BASE_ANIMATION_REPEAT_DELAY_MILLIS + repeatDelayAddition,
               startTime = startTime,
-              alphaStart = lerp(0.15f, 0.40f, inverseLerp),
+              alphaStart = lerp(0.15f, 0.55f, inverseLerp),
               alphaEnd = 0.00f,
-              interpolator = AccelerateInterpolator(lerp(1.05f, 0.85f, inverseLerp)),
-              timeCutoff = lerp(0.92f, 0.99f, inverseLerp)
+              interpolator = AccelerateInterpolator(lerp(1.10f, 0.85f, inverseLerp)),
+              timeCutoff = lerp(0.90f, 0.97f, inverseLerp)
           ))
           set.attach(targetView)
         }.start()

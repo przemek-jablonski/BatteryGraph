@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.screen_chart
+package com.android.szparag.batterygraph.screens.chart
 
 import com.android.szparag.batterygraph.shared.presenters.BatteryGraphBasePresenter
 import com.android.szparag.batterygraph.shared.utils.safeLast

@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.widgets.interpolators
+package com.android.szparag.batterygraph.shared.widgets.interpolators
 
 import android.view.animation.Interpolator
 import com.android.szparag.batterygraph.shared.utils.clamp

@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.service_monitoring
+package com.android.szparag.batterygraph.services.monitoring
 
 import android.app.Notification
 import android.app.PendingIntent

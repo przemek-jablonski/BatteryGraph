@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.widgets
+package com.android.szparag.batterygraph.screens.chart.widgets
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

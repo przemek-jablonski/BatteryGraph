@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.service_monitoring
+package com.android.szparag.batterygraph.services.monitoring
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -15,6 +15,8 @@ import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
+import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
+import com.android.szparag.batterygraph.screens.chart.BatteryGraphChartActivity
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.shared.events.DevicePowerStateEvent
@@ -31,8 +33,6 @@ import com.android.szparag.batterygraph.shared.utils.mapToFlightModeEvent
 import com.android.szparag.batterygraph.shared.utils.toPendingIntent
 import com.android.szparag.batterygraph.shared.utils.ui
 import com.android.szparag.batterygraph.shared.utils.unregisterReceiverFromContext
-import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
-import com.android.szparag.batterygraph.screen_chart.BatteryGraphChartActivity
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import timber.log.Timber

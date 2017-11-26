@@ -16,7 +16,7 @@
       android:layout_margin="8dp"
       >
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryGraphChartSmallWidget
         android:id="@+id/smallChart1"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryGraphChartSmallWidget
         android:id="@+id/smallChart2"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/smallChart1"
         />
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryGraphChartSmallWidget
         android:id="@+id/smallChart3"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/smallChart2"
         />
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryGraphChartSmallWidget
         android:id="@+id/smallChart4"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/smallChart3"
         />
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryGraphChartSmallWidget
         android:id="@+id/smallChart5"
         android:layout_width="0dp"
         android:layout_height="0dp"

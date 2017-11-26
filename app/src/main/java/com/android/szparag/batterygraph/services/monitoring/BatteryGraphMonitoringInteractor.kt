@@ -1,4 +1,4 @@
-package com.android.szparag.batterygraph.service_monitoring
+package com.android.szparag.batterygraph.services.monitoring
 
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
