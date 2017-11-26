@@ -23,7 +23,7 @@ private const val CIRCLE_TYPE_BATTERY = 0
 private const val CIRCLE_TYPE_FLIGHT_MODE = 1
 
 //todo: refactor so that it takes only one type of data, put it into interface
-//todo: and put common logic (with BatteryGraphChartSmallWidget) into BatteryGraphChartWidget
+//todo: and put common logic (with SmallChartWidget) into BatteryGraphChartWidget
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr) {

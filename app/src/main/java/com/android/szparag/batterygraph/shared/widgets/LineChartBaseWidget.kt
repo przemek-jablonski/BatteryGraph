@@ -3,6 +3,7 @@ package com.android.szparag.batterygraph.shared.widgets
 import android.content.Context
 import android.support.annotation.CallSuper
 import android.util.AttributeSet
+import com.android.szparag.batterygraph.shared.utils.emptyString
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -18,7 +19,7 @@ import timber.log.Timber
  *
  * Built using MPAndroidChart library (https://github.com/PhilJay/MPAndroidChart)
  */
-abstract class BatteryGraphLineChartBaseWidget<in E : Any> @JvmOverloads constructor(
+abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr), ChartWidget<E> {
 
@@ -98,6 +99,18 @@ abstract class BatteryGraphLineChartBaseWidget<in E : Any> @JvmOverloads constru
   protected fun stylizeChartLine(dataSet: LineDataSet) {
     Timber.d("stylizeChartLine, dataSet: $dataSet")
     checkInitalization()
+  }
+
+
+  override fun setData(data: List<E>) {
+    Timber.d("setData, data: $data")
+    if (data.isEmpty()) return
+    dataEntries = data.map { mapDataToEntry(it) }
+    dataSet = LineDataSet(dataEntries, emptyString())
+    dataSet?.let {
+      stylizeChartLine(it)
+      applyDataSetToChart(it)
+    }
   }
 
 
