@@ -29,6 +29,10 @@ import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSt
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryPercentageSmallChart
+import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart2
+import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart3
+import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart4
+import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart5
 import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
@@ -115,6 +119,10 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
       })
     }
     batteryPercentageSmallChart.initialize()
+    smallChart2.initialize()
+    smallChart3.initialize()
+    smallChart4.initialize()
+    smallChart5.initialize()
   }
 
 
