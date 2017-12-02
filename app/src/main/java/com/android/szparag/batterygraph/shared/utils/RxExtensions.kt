@@ -152,6 +152,6 @@ fun Completable.computation() = this.subscribeOn(Schedulers.computation())
 fun ui() = AndroidSchedulers.mainThread()
 
 //yo dawg, i herd u like observabelz
-inline fun <E : RealmModel> RealmResults<E>.toObservable() = this.asObservable().toObservable()
+fun <E : RealmModel> RealmResults<E>.toObservable() = this.asObservable().toObservable()
 
-inline fun <E> rx.Observable<E>.toObservable() = RxJavaInterop.toV2Observable(this)
+fun <E> rx.Observable<E>.toObservable() = RxJavaInterop.toV2Observable(this)

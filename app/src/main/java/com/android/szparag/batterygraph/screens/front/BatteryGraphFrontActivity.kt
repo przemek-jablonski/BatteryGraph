@@ -38,28 +38,7 @@ import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
 
-  override fun renderSmallChartBatteryPercentage(events: List<BatteryStateEvent>) {
-    Timber.d("renderSmallChartBatteryPercentage")
-    batteryPercentageSmallChart.setData(events)
-  }
-
-  override fun renderSmallChartBatteryTemperature(events: List<BatteryStateEvent>) {
-    Timber.d("renderSmallChartBatteryTemperature")
-  }
-
-  override fun renderSmallChartBatteryVoltage(events: List<BatteryStateEvent>) {
-    Timber.d("renderSmallChartBatteryVoltage")
-  }
-
-  override fun renderSmallChartBatteryHealth(events: List<BatteryStateEvent>) {
-    Timber.d("renderSmallChartBatteryHealth")
-  }
-
-  override fun renderSmallChartConnectivity(events: List<ConnectivityStateEvent>) {
-    Timber.d("renderSmallChartConnectivity")
-  }
-
-  private lateinit var batteryChangedSubject: Subject<BatteryStateEvent>
+  private val batteryChangedSubject: Subject<BatteryStateEvent> by lazy { PublishSubject.create<BatteryStateEvent>() }
   private lateinit var batteryChangedReceiver: BroadcastReceiver
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +69,6 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
   override fun registerBatteryStateEventsReceiver() {
     Timber.d("registerBatteryStateEventsReceiver")
-    batteryChangedSubject = PublishSubject.create()
     batteryChangedReceiver = createRegisteredBroadcastReceiver(
         intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
         callback = this::onBatteryStatusIntentReceived
@@ -145,6 +123,27 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
   override fun performOneShotAnimation() {
     Timber.d("performOneShotAnimation")
 //    batteryAnimatedView.performOneShotAnimation()
+  }
+
+  override fun renderSmallChartBatteryPercentage(events: List<BatteryStateEvent>) {
+    Timber.d("renderSmallChartBatteryPercentage")
+    batteryPercentageSmallChart.setData(events)
+  }
+
+  override fun renderSmallChartBatteryTemperature(events: List<BatteryStateEvent>) {
+    Timber.d("renderSmallChartBatteryTemperature")
+  }
+
+  override fun renderSmallChartBatteryVoltage(events: List<BatteryStateEvent>) {
+    Timber.d("renderSmallChartBatteryVoltage")
+  }
+
+  override fun renderSmallChartBatteryHealth(events: List<BatteryStateEvent>) {
+    Timber.d("renderSmallChartBatteryHealth")
+  }
+
+  override fun renderSmallChartConnectivity(events: List<ConnectivityStateEvent>) {
+    Timber.d("renderSmallChartConnectivity")
   }
 
 

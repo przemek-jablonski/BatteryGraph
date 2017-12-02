@@ -21,6 +21,10 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
     view?.unregisterBatteryStateEventsReceiver()
   }
 
+  override fun subscribeViewUserEvents() {
+    Timber.d("subscribeViewUserEvents")
+  }
+
   override fun subscribeModelEvents() {
     Timber.d("subscribeModelEvents")
     view?.subscribeBatteryStateEvents()
@@ -67,10 +71,6 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
           view?.renderSmallChartConnectivity(events)
         }
 
-  }
-
-  override fun subscribeViewUserEvents() {
-    Timber.d("subscribeViewUserEvents")
   }
 
 }
