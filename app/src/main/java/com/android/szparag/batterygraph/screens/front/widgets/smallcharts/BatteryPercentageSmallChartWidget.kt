@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
 import com.android.szparag.batterygraph.shared.widgets.LineChartBaseWidget
+import com.android.szparag.batterygraph.shared.widgets.LineChartSmallBaseWidget
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import timber.log.Timber
@@ -19,7 +20,7 @@ import timber.log.Timber
  */
 class BatteryPercentageSmallChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LineChartBaseWidget<BatteryStateEvent>(context, attrs, defStyleAttr) {
+) : LineChartSmallBaseWidget<BatteryStateEvent>(context, attrs, defStyleAttr) {
 
   override fun mapDataToEntry(data: BatteryStateEvent) =
       Entry(data.eventUnixTimestamp.toFloat(), data.batteryPercentage.toFloat())

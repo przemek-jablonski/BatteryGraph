@@ -23,8 +23,8 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr), ChartWidget<E> {
 
-  protected var dataEntries = emptyList<Entry>()
-  protected var dataSet: LineDataSet? = null //todo can it be lateinit?
+  protected open var dataEntries = emptyList<Entry>()
+  protected open var dataSet: LineDataSet? = null //todo can it be lateinit?
   private var initialized: Boolean = false
 
   @CallSuper override fun initialize() {
@@ -44,7 +44,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    *
    * @see LineChart
    */
-  protected fun stylizeChart() {
+  protected open fun stylizeChart() {
     Timber.d("stylizeChart")
     checkInitalization()
     isScaleYEnabled = false
@@ -60,7 +60,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * Configure look and feel option for X-Axis of the chart.
    * @see XAxis
    */
-  protected fun stylizeXAxis(xAxis: XAxis) {
+  protected open fun stylizeXAxis(xAxis: XAxis) {
     Timber.d("stylizeXAxis, xAxis: $xAxis")
     checkInitalization()
     xAxis.setAvoidFirstLastClipping(true)
@@ -73,7 +73,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * Configure look and feel option for Y-Axis (left one) of the chart.
    * @see YAxis
    */
-  protected fun stylizeYLeftAxis(yAxis: YAxis) {
+  protected open fun stylizeYLeftAxis(yAxis: YAxis) {
     Timber.d("stylizeYLeftAxis, yAxis: $yAxis")
     checkInitalization()
     yAxis.axisMinimum = 0f
@@ -87,7 +87,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * Configure look and feel option for Y-Axis (right one) of the chart.
    * @see YAxis
    */
-  protected fun stylizeYRightAxis(yAxis: YAxis) {
+  protected open fun stylizeYRightAxis(yAxis: YAxis) {
     Timber.d("stylizeYRightAxis, yAxis: $yAxis")
     checkInitalization()
     yAxis.isEnabled = false
@@ -96,7 +96,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   /**
    * Configure look of the data line in the chart
    */
-  protected fun stylizeChartLine(dataSet: LineDataSet) {
+  protected open fun stylizeChartLine(dataSet: LineDataSet) {
     Timber.d("stylizeChartLine, dataSet: $dataSet")
     checkInitalization()
   }
@@ -124,7 +124,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see ILineDataSet
    * @see IDataSet
    */
-  protected fun applyDataSetToChart(dataSet: ILineDataSet) {
+  protected open fun applyDataSetToChart(dataSet: ILineDataSet) {
     Timber.d("applyDataSetToChart, dataSet: $dataSet")
     checkInitalization()
     data.clearValues()
@@ -138,7 +138,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    */
   abstract fun mapDataToEntry(data: E): Entry
 
-  protected fun checkInitalization() {
+  protected open fun checkInitalization() {
     Timber.d("checkInitalization, value: $initialized")
     check(initialized, { throw RuntimeException("Method called before initialization.") }) //todo
   }
