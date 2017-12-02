@@ -13,6 +13,7 @@ import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.shared.utils.asString
 import com.android.szparag.batterygraph.shared.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.shared.utils.getBGUnixTimestampSecs
+import com.android.szparag.batterygraph.shared.utils.getStickyIntentFromSystem
 import com.android.szparag.batterygraph.shared.utils.mapToBatteryStatusEvent
 import com.android.szparag.batterygraph.shared.utils.toPx
 import com.android.szparag.batterygraph.shared.utils.unregisterReceiverFromContext
@@ -80,6 +81,11 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     super.onStop()
     Timber.d("onStop")
     presenter.detach()
+  }
+
+  override fun forceFetchBatteryStateEvent() {
+    Timber.d("forceFetchBatteryStateEvent")
+    onBatteryStatusIntentReceived(getStickyIntentFromSystem(Intent.ACTION_BATTERY_CHANGED))
   }
 
   override fun registerBatteryStateEventsReceiver() {

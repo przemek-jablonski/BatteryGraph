@@ -31,8 +31,7 @@ import timber.log.Timber
 
 fun Context.createRegisteredBroadcastReceiver(
     vararg intentFilterActions: String, callback: (Intent) -> (Unit)): BroadcastReceiver {
-  Timber.d(
-      "createRegisteredBroadcastReceiver, intentFilterActions: $intentFilterActions, callback: $callback, context: $this")
+  Timber.d("createRegisteredBroadcastReceiver, intentFilterActions: $intentFilterActions, callback: $callback, context: $this")
   val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       intent?.takeIf { intentFilterActions.contains(it.action) }?.let(callback::invoke)
@@ -45,6 +44,9 @@ fun Context.createRegisteredBroadcastReceiver(
 fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
   context.unregisterReceiver(this)
 }
+
+fun Context.getStickyIntentFromSystem(intentFilterAction: String) = registerReceiver(null, IntentFilter(intentFilterAction))
+    .also { Timber.d("c, intentFilterAction: $intentFilterAction, result: ${it.asString()}") }
 
 fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateEvent(
     eventUnixTimestamp = unixTimestamp,
