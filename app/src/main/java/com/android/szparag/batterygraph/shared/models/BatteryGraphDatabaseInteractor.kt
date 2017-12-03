@@ -23,10 +23,10 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
 
   override fun attach(): Completable {
     Timber.d("attach, thread: ${Thread.currentThread()}")
-    return Completable.create {
+    return Completable.fromAction {
       realm = Realm.getDefaultInstance()
       setupDebugRealmListeners()
-      Timber.d("attach.action, thread: ${Thread.currentThread()}")
+      Timber.d("attach.callback, thread: ${Thread.currentThread()}")
     }
   }
 

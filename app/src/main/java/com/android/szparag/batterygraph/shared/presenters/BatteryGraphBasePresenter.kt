@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper
 import com.android.szparag.batterygraph.shared.models.Interactor
 import com.android.szparag.batterygraph.shared.utils.add
 import com.android.szparag.batterygraph.shared.views.View
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
@@ -13,27 +14,25 @@ import timber.log.Timber
  */
 abstract class BatteryGraphBasePresenter<V : View, out M : Interactor>(val model: M) : Presenter<V> {
 
-  //  override val logger by lazy { Logger.create(this::class.java, this.hashCode()) }
   override var view: V? = null
-  override lateinit var viewDisposables: CompositeDisposable //todo: i can access this in implemented presenters, that's bad
-  override lateinit var modelDisposables: CompositeDisposable
+  private val viewDisposables: CompositeDisposable by lazy { CompositeDisposable() }
+  private val modelDisposables: CompositeDisposable by lazy { CompositeDisposable() }
 
-  //todo: logger creation is probably heavy, move to another thread
   override fun attach(view: V) {
     Timber.d("attach, view: $view")
     this.view = view
-    model.attach().subscribe {}
-    onAttached()
+    model.attach()
+        .andThen(Completable.fromAction { subscribeModelEvents() })
+        .andThen(Completable.fromAction { subscribeViewUserEvents() })
+        .andThen(Completable.fromAction { onAttached() })
+        .subscribe {
+          Timber.d("attach.call, view: $view")
+        }
   }
 
   @CallSuper override fun onAttached() {
     Timber.d("onAttached")
-    viewDisposables = CompositeDisposable()
-    modelDisposables = CompositeDisposable()
-    subscribeModelEvents()
-//    subscribeViewReadyEvents()
-//    subscribeViewPermissionsEvents()
-    subscribeViewUserEvents()
+
   }
 
 
@@ -49,20 +48,6 @@ abstract class BatteryGraphBasePresenter<V : View, out M : Interactor>(val model
     modelDisposables.clear()
     model.detach()
   }
-
-//  override fun onViewReady() {
-//    Log.d("asd","onViewReady")
-////    view?.setupViews()
-//  }
-
-//  @CallSuper override fun subscribeViewPermissionsEvents() {
-//    Log.d("asd","subscribeViewPermissionsEvents")
-//  }
-//
-//  private fun subscribeViewReadyEvents() {
-//    Log.d("asd","subscribeViewReadyEvents")
-//  }
-
 
   fun Disposable?.toViewDisposable() {
     Timber.d("toViewDisposable, viewDisposables: $viewDisposables, disposed: ${viewDisposables.isDisposed}")

@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.szparag.batterygraph.screen_chart.BatteryGraphChartActivity"
+    tools:context=".screens.chart.BatteryGraphChartActivity"
     >
 
-  <com.android.szparag.batterygraph.widgets.BatteryGraphChartWidget
+  <com.android.szparag.batterygraph.screens.chart.widgets.BatteryGraphChartWidget
       android:id="@+id/chartView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

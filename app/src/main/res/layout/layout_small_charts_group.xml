@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    >
+
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_margin="8dp"
+      >
+
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryPercentageSmallChartWidget
+        android:id="@+id/batteryPercentageSmallChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        tools:background="@android:color/holo_orange_dark"
+        app:layout_constraintBottom_toTopOf="@+id/batteryTemperatureSmallChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryTemperatureSmallChartWidget
+        android:id="@+id/batteryTemperatureSmallChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        tools:background="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toTopOf="@+id/batteryVoltageSmallChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/batteryPercentageSmallChart"
+        />
+
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryVoltageSmallChartWidget
+        android:id="@+id/batteryVoltageSmallChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        tools:background="@android:color/holo_purple"
+        app:layout_constraintBottom_toTopOf="@+id/batteryHealthSmallChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/batteryTemperatureSmallChart"
+        />
+
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryHealthSmallChartWidget
+        android:id="@+id/batteryHealthSmallChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        tools:background="@android:color/holo_red_dark"
+        app:layout_constraintBottom_toTopOf="@+id/connectivitySmallChart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/batteryVoltageSmallChart"
+        />
+
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.ConnectivitySmallChartWidget
+        android:id="@+id/connectivitySmallChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        tools:background="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/batteryHealthSmallChart"
+        />
+
+  </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

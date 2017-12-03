@@ -12,23 +12,24 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name=".screen_chart.BatteryGraphChartActivity">
+    <activity android:name="com.android.szparag.batterygraph.screens.chart.BatteryGraphChartActivity">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.CHARTS"/>
       </intent-filter>
     </activity>
 
     <service
-        android:name=".service_monitoring.BatteryGraphMonitoringService"
+        android:name="com.android.szparag.batterygraph.services.monitoring.BatteryGraphMonitoringService"
         android:enabled="true"
         android:exported="false">
     </service>
 
-    <activity android:name=".screen_front.BatteryGraphFrontActivity">
+    <activity android:name="com.android.szparag.batterygraph.screens.front.BatteryGraphFrontActivity">
       <intent-filter>
         <action android:name="android.intent.action.FRONT"/>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
   </application>
