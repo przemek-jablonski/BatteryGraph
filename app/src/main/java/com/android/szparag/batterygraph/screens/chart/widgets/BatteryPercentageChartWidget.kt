@@ -27,6 +27,7 @@ private const val CIRCLE_TYPE_FLIGHT_MODE = 1
 class BatteryGraphChartWidget @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr) {
+  //todo: this does not extend from LineChartBaseWidget
 
   private var batteryEntries = emptyList<Entry>() //todo: refactor to emptyArrayList()
   private var batteryDataSet: LineDataSet? = null
@@ -91,6 +92,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
     xAxis.setDrawAxisLine(false)
     xAxis.setDrawLabels(false)
   }
+
 
   private fun stylizeYLeftAxis(yAxis: YAxis) {
     yAxis.axisMinimum = -10f

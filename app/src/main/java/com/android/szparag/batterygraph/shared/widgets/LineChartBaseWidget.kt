@@ -96,10 +96,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   /**
    * Configure look of the data line in the chart
    */
-  protected open fun stylizeChartLine(dataSet: LineDataSet) {
-    Timber.d("stylizeChartLine, dataSet: $dataSet")
-    checkInitalization()
-  }
+  abstract fun stylizeChartLine(dataSet: LineDataSet)
 
 
   override fun setData(data: List<E>) {

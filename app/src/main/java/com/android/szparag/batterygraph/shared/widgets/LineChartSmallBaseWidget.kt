@@ -2,7 +2,10 @@ package com.android.szparag.batterygraph.shared.widgets
 
 import android.content.Context
 import android.util.AttributeSet
+import com.android.szparag.batterygraph.R
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.LineDataSet
 import timber.log.Timber
 
 /**
@@ -17,12 +20,15 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
 
 
   override fun stylizeChart() {
+    Timber.d("stylizeChart")
     super.stylizeChart()
     data.isHighlightEnabled = false
     isHighlightPerTapEnabled = false
     isHighlightPerDragEnabled = false
     setPinchZoom(false)
     isDoubleTapToZoomEnabled = false
+    description.isEnabled = false
+    legend.isEnabled = false
   }
 
   override fun stylizeYLeftAxis(yAxis: YAxis) {
@@ -33,8 +39,20 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
     yAxis.setDrawGridLines(false)
     yAxis.setDrawAxisLine(false)
     yAxis.setDrawLabels(false)
+
+    yAxis.addLimitLine(LimitLine(0f).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
+    yAxis.addLimitLine(LimitLine(100f).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
   }
 
-  //todo: stylizeBatteryLineDataSet has to be protected open
+  override fun stylizeChartLine(dataSet: LineDataSet) {
+    Timber.d("stylizeChartLine, dataSet: $dataSet")
+    dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+    dataSet.color = resources.getColor(R.color.colorAccent1)
+    dataSet.setDrawCircleHole(false)
+    dataSet.setDrawCircles(false)
+    dataSet.lineWidth = 2f
+    dataSet.setDrawFilled(true)
+    dataSet.fillDrawable = resources.getDrawable(R.drawable.gradient_chart_fill_alpha_lighter)
+  }
 
 }

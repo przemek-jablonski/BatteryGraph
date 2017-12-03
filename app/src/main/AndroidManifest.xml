@@ -14,9 +14,7 @@
       android:theme="@style/AppTheme">
     <activity android:name="com.android.szparag.batterygraph.screens.chart.BatteryGraphChartActivity">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.CHARTS"/>
       </intent-filter>
     </activity>
 
@@ -29,6 +27,9 @@
     <activity android:name="com.android.szparag.batterygraph.screens.front.BatteryGraphFrontActivity">
       <intent-filter>
         <action android:name="android.intent.action.FRONT"/>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
   </application>
