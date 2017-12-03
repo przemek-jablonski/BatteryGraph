@@ -18,7 +18,6 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChartBaseWidget<E>(context, attrs, defStyleAttr) {
 
-
   override fun stylizeChart() {
     Timber.d("stylizeChart")
     super.stylizeChart()
@@ -39,9 +38,10 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
     yAxis.setDrawGridLines(false)
     yAxis.setDrawAxisLine(false)
     yAxis.setDrawLabels(false)
+    yAxis.isDrawLimitLinesBehindDataEnabled
 
-    yAxis.addLimitLine(LimitLine(0f).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
-    yAxis.addLimitLine(LimitLine(100f).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
+    yAxis.addLimitLine(LimitLine(yAxisMinimumValue).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
+    yAxis.addLimitLine(LimitLine(yAxisMaximumValue).apply { this.lineColor = resources.getColor(R.color.colorGreyAlpha) })
   }
 
   override fun stylizeChartLine(dataSet: LineDataSet) {
@@ -53,6 +53,7 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
     dataSet.lineWidth = 2f
     dataSet.setDrawFilled(true)
     dataSet.fillDrawable = resources.getDrawable(R.drawable.gradient_chart_fill_alpha_lighter)
+    //todo: this should be parametrizable
   }
 
 }

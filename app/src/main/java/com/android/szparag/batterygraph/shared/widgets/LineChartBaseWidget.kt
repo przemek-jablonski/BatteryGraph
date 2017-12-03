@@ -23,6 +23,9 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LineChart(context, attrs, defStyleAttr), ChartWidget<E> {
 
+  protected val yAxisMinimumValue = 0f
+  protected val yAxisMaximumValue = 100f
+
   protected open var dataEntries = emptyList<Entry>()
   protected open var dataSet: LineDataSet? = null //todo can it be lateinit?
   private var initialized: Boolean = false
@@ -76,8 +79,8 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   protected open fun stylizeYLeftAxis(yAxis: YAxis) {
     Timber.d("stylizeYLeftAxis, yAxis: $yAxis")
     checkInitalization()
-    yAxis.axisMinimum = 0f
-    yAxis.axisMaximum = 100f
+    yAxis.axisMinimum = yAxisMinimumValue
+    yAxis.axisMaximum = yAxisMaximumValue
     yAxis.gridLineWidth = 0.5f
     yAxis.setDrawAxisLine(false)
     yAxis.setLabelCount(6, false)

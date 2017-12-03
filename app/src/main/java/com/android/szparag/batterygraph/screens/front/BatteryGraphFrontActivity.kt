@@ -29,11 +29,11 @@ import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSo
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
+import kotlinx.android.synthetic.main.layout_small_charts_group.batteryHealthSmallChart
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryPercentageSmallChart
-import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart2
-import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart3
-import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart4
-import kotlinx.android.synthetic.main.layout_small_charts_group.smallChart5
+import kotlinx.android.synthetic.main.layout_small_charts_group.batteryTemperatureSmallChart
+import kotlinx.android.synthetic.main.layout_small_charts_group.batteryVoltageSmallChart
+import kotlinx.android.synthetic.main.layout_small_charts_group.connectivitySmallChart
 import timber.log.Timber
 
 class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), FrontView {
@@ -103,10 +103,10 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
       })
     }
     batteryPercentageSmallChart.initialize()
-    smallChart2.initialize()
-    smallChart3.initialize()
-    smallChart4.initialize()
-    smallChart5.initialize()
+    batteryTemperatureSmallChart.initialize()
+    batteryVoltageSmallChart.initialize()
+    batteryHealthSmallChart.initialize()
+    connectivitySmallChart.initialize()
   }
 
 
@@ -132,18 +132,22 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
   override fun renderSmallChartBatteryTemperature(events: List<BatteryStateEvent>) {
     Timber.d("renderSmallChartBatteryTemperature")
+    batteryTemperatureSmallChart.setData(events)
   }
 
   override fun renderSmallChartBatteryVoltage(events: List<BatteryStateEvent>) {
     Timber.d("renderSmallChartBatteryVoltage")
+    batteryVoltageSmallChart.setData(events)
   }
 
   override fun renderSmallChartBatteryHealth(events: List<BatteryStateEvent>) {
     Timber.d("renderSmallChartBatteryHealth")
+    batteryHealthSmallChart.setData(events)
   }
 
   override fun renderSmallChartConnectivity(events: List<ConnectivityStateEvent>) {
     Timber.d("renderSmallChartConnectivity")
+    connectivitySmallChart.setData(events)
   }
 
 

@@ -23,53 +23,53 @@
         android:layout_height="0dp"
         android:layout_marginBottom="4dp"
         tools:background="@android:color/holo_orange_dark"
-        app:layout_constraintBottom_toTopOf="@+id/smallChart2"
+        app:layout_constraintBottom_toTopOf="@+id/batteryTemperatureSmallChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryPercentageSmallChartWidget
-        android:id="@+id/smallChart2"
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryTemperatureSmallChartWidget
+        android:id="@+id/batteryTemperatureSmallChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         tools:background="@android:color/holo_blue_dark"
-        app:layout_constraintBottom_toTopOf="@+id/smallChart3"
+        app:layout_constraintBottom_toTopOf="@+id/batteryVoltageSmallChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/batteryPercentageSmallChart"
         />
 
-    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryPercentageSmallChartWidget
-        android:id="@+id/smallChart3"
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryVoltageSmallChartWidget
+        android:id="@+id/batteryVoltageSmallChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         tools:background="@android:color/holo_purple"
-        app:layout_constraintBottom_toTopOf="@+id/smallChart4"
+        app:layout_constraintBottom_toTopOf="@+id/batteryHealthSmallChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/smallChart2"
+        app:layout_constraintTop_toBottomOf="@+id/batteryTemperatureSmallChart"
         />
 
-    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryPercentageSmallChartWidget
-        android:id="@+id/smallChart4"
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryHealthSmallChartWidget
+        android:id="@+id/batteryHealthSmallChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         tools:background="@android:color/holo_red_dark"
-        app:layout_constraintBottom_toTopOf="@+id/smallChart5"
+        app:layout_constraintBottom_toTopOf="@+id/connectivitySmallChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/smallChart3"
+        app:layout_constraintTop_toBottomOf="@+id/batteryVoltageSmallChart"
         />
 
-    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.BatteryPercentageSmallChartWidget
-        android:id="@+id/smallChart5"
+    <com.android.szparag.batterygraph.screens.front.widgets.smallcharts.ConnectivitySmallChartWidget
+        android:id="@+id/connectivitySmallChart"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
@@ -77,7 +77,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/smallChart4"
+        app:layout_constraintTop_toBottomOf="@+id/batteryHealthSmallChart"
         />
 
   </android.support.constraint.ConstraintLayout>
