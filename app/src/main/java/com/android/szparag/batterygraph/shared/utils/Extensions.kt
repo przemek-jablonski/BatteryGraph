@@ -95,20 +95,7 @@ fun Intent.toPendingIntent(context: Context, requestCode: Int = 0, flags: Int = 
     PendingIntent.getActivity(context, requestCode, this, flags)
 
 //todo refactor that, this may be cool, but code quality needs to be better
-fun Intent.asString() = StringBuilder(1024).append(
-    "Intent: [action: ${this.action}, cat: ${this.categories}, component: ${this.component}, flags: ${this.flags} bundle: ${this
-        .extras.asString(StringBuilder(1024))}]")
 
-fun Bundle?.asString(stringBuilder: StringBuilder): StringBuilder {
-  if (this == null) return stringBuilder.append("[null]")
-  val keys = this.keySet()
-  stringBuilder.append("[")
-  keys.forEach { key ->
-    stringBuilder.append("$key: ${this.get(key)}, ")
-  }
-  stringBuilder.delete(stringBuilder.length - 2, stringBuilder.length - 1).append("]")
-  return stringBuilder
-}
 
 fun <E : Any> Collection<E>.safeLast() = when (this) {
   is List -> if (isEmpty()) null else this[this.lastIndex]
@@ -123,7 +110,7 @@ fun <E : Any> Collection<E>.safeLast() = when (this) {
 }
 
 inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int) =
-    mapTo(ArrayList<R>(initialCapacity), transform)
+    mapTo(ArrayList(initialCapacity), transform)
 
 fun <T : Any> List<T>.safeLast() = if (!isEmpty()) this[lastIndex] else null
 

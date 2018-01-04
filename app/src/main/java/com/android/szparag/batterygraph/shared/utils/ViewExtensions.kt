@@ -14,7 +14,6 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationSet
 import android.view.animation.LayoutAnimationController.AnimationParameters
 import android.widget.ImageView
-import java.util.Arrays
 import java.util.Random
 
 typealias Widget = View
@@ -77,9 +76,6 @@ fun Animation.setListenerBy(
   override fun onAnimationStart(animation: Animation?) = onStart(animation)
 })
 
-fun Animation.asString() = "${this::class.java.simpleName}@${hashCode()}, duration: $duration, offset: $startOffset, starttime: " +
-    "${this.startTime}, repeats: $repeatCount, interpolator: ${interpolator::class.java.simpleName}, fillEnabled: ${this.isFillEnabled}"
-
 
 fun Int.clamp(max: Int, min: Int) = this.coerceAtLeast(min).coerceAtMost(max)
 fun Long.clamp(max: Long, min: Long) = this.coerceAtLeast(min).coerceAtMost(max)
@@ -107,23 +103,12 @@ fun inverseLerp(first: Double, second: Double, factor: Float)
 
 fun createImageViewWithDrawable(context: Context, drawable: Drawable?) = ImageView(context).apply { setImageDrawable(drawable) }
 
-fun View.asString() = asShortString()
 
-//fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
-//    "${asShortString()}, id: ${this.id}, dimens: [${this.width}, ${this.height}], " +
-//        "location: ${Arrays.toString(this.getLocationOnScreen
-//    ())}"
-//).toString()
-
-
-fun View.asShortString() = "${this::class.java.simpleName}@${hashCode()}"
 
 fun AnimationSet.attach(targetView: View) {
   targetView.animation = this
 }
 
-fun Drawable.asString() = "${this::class.java.simpleName}@${hashCode()}, bounds: ${this.bounds}, iHeight: ${this.intrinsicHeight}, " +
-    "iWidth: ${this.intrinsicWidth}, alpha: ${this.alpha}, opacity: ${this.opacity}, state: ${this.state}, visible: ${this.isVisible}"
 
 fun Random.nextFloat(min: Float, max: Float) = nextFloat() * (max - min) + min
 fun Random.nextDouble(min: Double, max: Double) = nextDouble() * (max - min) + min

@@ -33,7 +33,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   @CallSuper override fun initialize() {
     Timber.d("initialize")
     initialized = true
-    isLogEnabled = true
+//    isLogEnabled = true
     data = LineData()
     stylizeChart()
     stylizeXAxis(xAxis)
