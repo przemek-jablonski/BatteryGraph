@@ -87,7 +87,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   constructor(context: Context) : this(context, null)
   constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-    Timber.d("ctor")
+    Timber.v("ctor")
     setupView()
     parseCustomAttributes()
     applyCustomAtrributes()
@@ -98,7 +98,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   }
 
   private fun setupView() {
-    Timber.d("setupView")
+    Timber.v("setupView")
     addOnLayoutChangeListener(this::onLayoutBoundsChanged)
     clipChildren = false
     drawable = R.drawable.ic_icon_battery //todo hardcoded
@@ -106,16 +106,16 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   //todo: typedarray as input
   @CallSuper protected fun parseCustomAttributes() {
-    Timber.d("parseCustomAttributes")
+    Timber.v("parseCustomAttributes")
   }
 
   @CallSuper protected fun applyCustomAtrributes() {
-    Timber.d("applyCustomAtrributes")
+    Timber.v("applyCustomAtrributes")
   }
 
   @RequiresApi(VERSION_CODES.LOLLIPOP) //todo remove
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
-    Timber.d("onLayoutFirstMeasurementApplied")
+    Timber.v("onLayoutFirstMeasurementApplied")
 
     createCircularDropletsLayers(6)
 
@@ -145,7 +145,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
 
   private fun createCircularDropletsLayers(layerCount: Int) {
-    Timber.d("createCircularDropletsLayers, layerCount: $layerCount")
+    Timber.v("createCircularDropletsLayers, layerCount: $layerCount")
     (0 until layerCount).mapTo(circularDropletViewLayers) { layerIndex ->
       createCircularDropletView(
           thickness = BASE_OVAL_STROKE_THICKNESS - (layerIndex * BASE_OVAL_STROKE_THICKNESS / layerCount),
@@ -161,11 +161,11 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   private fun createCircularDropletView(thickness: Float, @ColorRes colourId: ResourceId)
       = createImageViewWithDrawable(context, createCircularDropletDrawable(thickness, colourId))
-      .also { Timber.d("createCircularDropletView, thickness: $thickness, view: ${it.asString()}") }
+      .also { Timber.v("createCircularDropletView, thickness: $thickness, view: ${it.asString()}") }
 
   private fun createCircularBackgroundView(@ColorRes colourId: ResourceId)
       = createImageViewWithDrawable(context, createCircularBackgroundDrawable(colourId))
-      .also { Timber.d("createCircularBackgroundView, view: ${it.asString()}") }
+      .also { Timber.v("createCircularBackgroundView, view: ${it.asString()}") }
 
   //todo: callback (with default implementation) onUserClicked()
   //todo: callback (with default implementation) onUserLongPressed()
@@ -183,7 +183,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   @RequiresApi(VERSION_CODES.LOLLIPOP) //todo: remove, make function createInterpolator
   private fun animateCircularBackground(targetView: View, startTime: Millis, duration: Millis, repeatDelay: Millis,
       pathRandomFactor: Float) {
-    Timber.d("animateCircularBackground, targetView: ${targetView.asString()}")
+    Timber.v("animateCircularBackground, targetView: ${targetView.asString()}")
     targetView.show()
     AnimationSet(false)
         .also { set ->
@@ -211,13 +211,15 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         }.start()
   }
 
+  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+  @SuppressLint("BinaryOperationInTimber")
   private fun animateCircularDroplet(targetView: View, layerIndex: Int, layerCount: Int, layerDependency: Float) {
     val startTime = random.nextInt(ANIMATION_RANDOM_START_TIME_BOUND_MILLIS.toInt()).toLong()
     val repeatDelayAddition = random.nextInt(
         ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
     val layerValuesMultiplier = layerIndex / layerCount * layerDependency
     val inverseLerp = inverseLerp(0, layerCount, layerIndex.toFloat())
-    Timber.d("animateCircularDroplet, layerIndex: $layerIndex, layerCount: $layerCount, layerDependency: $layerDependency, inverseLerp: " +
+    Timber.v("animateCircularDroplet, layerIndex: $layerIndex, layerCount: $layerCount, layerDependency: $layerDependency, inverseLerp: " +
         "$inverseLerp, layerValuesMultiplier: $layerValuesMultiplier")
     targetView.show()
     AnimationSet(false)
@@ -253,13 +255,14 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   }
 
 
+  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
   @SuppressLint("BinaryOperationInTimber")
   private fun createScalingAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
       xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
       = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
       .also { animation ->
-        Timber.d("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: $interpolator, timeCutoff: $timeCutoff")
+        Timber.v("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
         animation.duration = duration
         animation.startOffset = startTime
         animation.repeatCount = Animation.INFINITE
@@ -268,12 +271,14 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
       }
 
+  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+  @SuppressLint("BinaryOperationInTimber")
   private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
       alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float) =
       AlphaAnimation(alphaStart, alphaEnd)
           .also { animation ->
-            Timber.d("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: $interpolator, timeCutoff: $timeCutoff")
+            Timber.v("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
             animation.duration = duration
             animation.startOffset = startTime
             animation.repeatCount = Animation.INFINITE
@@ -281,7 +286,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
             animation.isFillEnabled = true
             animation.fillAfter = true
             animation.fillBefore = false
-//            animation.isFillEnabled = truex
+//            animation.isFillEnabled = true
             animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
             animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
           }
@@ -294,7 +299,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         this.paint.style = STROKE
         this.paint.color = resources.getColor(colourId)
       }.also {
-        Timber.d("createCircularDropletDrawable, drawable: ${it.asString()}")
+        Timber.v("createCircularDropletDrawable, drawable: ${it.asString()}")
       }
 
   private fun createCircularBackgroundDrawable(@ColorRes colourId: ResourceId) =
@@ -304,25 +309,25 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         this.paint.style = FILL
         this.paint.color = resources.getColor(colourId)
       }.also {
-        Timber.d("createCircularBackgroundDrawable, drawable: ${it.asString()}")
+        Timber.v("createCircularBackgroundDrawable, drawable: ${it.asString()}")
       }
 
   private fun createFrontDrawableView(@DrawableRes drawableRes: ResourceId?)
       = createImageViewWithDrawable(context, drawableRes?.let { resources.getDrawable(drawableRes) })
 
   override final fun addView(child: View) {
-//    Timber.d("addView, child: ${child.asString()}")
+//    Timber.v("addView, child: ${child.asString()}")
     super.addView(child)
   }
 
   override final fun addView(child: View, index: Int) {
-//    Timber.d("addView, child: ${child.asString()}, index: $index")
+//    Timber.v("addView, child: ${child.asString()}, index: $index")
     super.addView(child, index)
   }
 
   //todo index not used!
   private fun addViews(children: List<View>, childApply: (View, Int) -> (Unit) = { _, _ -> }) {
-//    Timber.d("addViews, children.count: ${children.size}, children: ${children.map { it.asString() }}, index: $index")
+//    Timber.v("addViews, children.count: ${children.size}, children: ${children.map { it.asString() }}, index: $index")
     for (i in children.size - 1 downTo 0) {
       children[i].apply { childApply.invoke(this, i); addView(this) }
     }
