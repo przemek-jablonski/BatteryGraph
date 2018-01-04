@@ -1,6 +1,8 @@
 package com.android.szparag.batterygraph.dagger
 
 import android.content.Context
+import com.android.szparag.batterygraph.common.models.BatteryGraphDatabaseInteractor
+import com.android.szparag.batterygraph.common.models.DatabaseInteractor
 import com.android.szparag.batterygraph.screens.chart.BatteryGraphChartInteractor
 import com.android.szparag.batterygraph.screens.chart.BatteryGraphChartPresenter
 import com.android.szparag.batterygraph.screens.chart.ChartInteractor
@@ -11,8 +13,6 @@ import com.android.szparag.batterygraph.screens.front.FrontInteractor
 import com.android.szparag.batterygraph.screens.front.FrontPresenter
 import com.android.szparag.batterygraph.services.monitoring.BatteryGraphMonitoringInteractor
 import com.android.szparag.batterygraph.services.monitoring.MonitoringInteractor
-import com.android.szparag.batterygraph.shared.models.BatteryGraphDatabaseInteractor
-import com.android.szparag.batterygraph.shared.models.DatabaseInteractor
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -1,0 +1,12 @@
+package com.android.szparag.batterygraph.common.events
+
+/**
+ * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 12/11/2017.
+ */
+
+typealias FlightModeStatus = Boolean
+
+data class FlightModeStateEvent(
+    val eventUnixTimestamp: UnixTimestamp,
+    val flightModeOn: FlightModeStatus
+)

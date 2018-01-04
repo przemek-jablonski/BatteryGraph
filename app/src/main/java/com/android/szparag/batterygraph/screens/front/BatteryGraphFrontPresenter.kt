@@ -1,7 +1,7 @@
 package com.android.szparag.batterygraph.screens.front
 
-import com.android.szparag.batterygraph.shared.presenters.BatteryGraphBasePresenter
-import com.android.szparag.batterygraph.shared.utils.ui
+import com.android.szparag.batterygraph.common.presenters.BatteryGraphBasePresenter
+import com.android.szparag.batterygraph.common.utils.ui
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
 
