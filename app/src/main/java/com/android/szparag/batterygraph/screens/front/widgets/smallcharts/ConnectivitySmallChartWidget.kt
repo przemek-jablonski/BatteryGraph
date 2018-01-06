@@ -15,7 +15,7 @@ class ConnectivitySmallChartWidget @JvmOverloads constructor(
 
   override fun mapDataToEntry(data: ConnectivityStateEvent) =
       Entry(data.eventUnixTimestamp.toFloat(), lerp(yAxisMinimumValue, yAxisMaximumValue, mapNetworkTypeToFloat(data.networkType)))
-          .also { Timber.d("mapDataToEntry, data: $data, entry: $it") }
+          .also { Timber.v("mapDataToEntry, data: $data, entry: $it") }
 
 
   private fun mapNetworkTypeToFloat(networkType: ConnectivityNetworkType) = when (networkType) {

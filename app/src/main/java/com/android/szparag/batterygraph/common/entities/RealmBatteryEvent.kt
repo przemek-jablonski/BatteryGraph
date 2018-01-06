@@ -1,7 +1,6 @@
 package com.android.szparag.batterygraph.common.entities
 
-import com.android.szparag.batterygraph.common.events.BatteryStateEvent
-import com.android.szparag.batterygraph.common.events.UnixTimestamp
+import com.android.szparag.batterygraph.common.utils.UnixTimestamp
 import com.android.szparag.batterygraph.common.utils.invalidFloatValue
 import com.android.szparag.batterygraph.common.utils.invalidIntValue
 import com.android.szparag.batterygraph.common.utils.invalidLongValue
@@ -17,21 +16,4 @@ import io.realm.annotations.RealmClass
     var batteryPercentage: Int = invalidIntValue(),
     var batteryVoltage: Float = invalidFloatValue(),
     var batteryTemperature: Int = invalidIntValue()
-) : RealmObject() {
-
-  fun toBatteryStatusEvent() = BatteryStateEvent(
-      unixTimestamp, batteryStatus, batteryHealth, batteryPowerSource, batteryPercentage,
-      batteryVoltage, batteryTemperature
-  )
-
-}
-
-fun BatteryStateEvent.toRealmEvent() = RealmBatteryEvent(
-    unixTimestamp = eventUnixTimestamp,
-    batteryStatus = batteryStatus.statusInt,
-    batteryHealth = batteryHealth.healthInt,
-    batteryPowerSource = batteryPowerSource.sourceInt,
-    batteryPercentage = batteryPercentage,
-    batteryVoltage = batteryVoltage,
-    batteryTemperature = batteryTemperature
-)
+) : RealmObject()

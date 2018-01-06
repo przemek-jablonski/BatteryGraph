@@ -2,10 +2,9 @@ package com.android.szparag.batterygraph.common.events
 
 import com.android.szparag.batterygraph.common.events.ConnectivityNetworkState.DISCONNECTED
 import com.android.szparag.batterygraph.common.events.ConnectivityNetworkType.NO_NETWORK
+import com.android.szparag.batterygraph.common.utils.NetworkStateReason
+import com.android.szparag.batterygraph.common.utils.UnixTimestamp
 
-typealias NetworkStateReason = String
-
-//todo: android dependency is here - remove (create own enum)
 data class ConnectivityStateEvent(
     val eventUnixTimestamp: UnixTimestamp,
     val networkType: ConnectivityNetworkType,

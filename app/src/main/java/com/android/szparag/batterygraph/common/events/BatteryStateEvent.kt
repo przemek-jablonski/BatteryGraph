@@ -1,10 +1,10 @@
 package com.android.szparag.batterygraph.common.events
 
+import com.android.szparag.batterygraph.common.utils.UnixTimestamp
+
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/11/2017.
  */
-
-typealias UnixTimestamp = Long
 
 data class BatteryStateEvent(
     val eventUnixTimestamp: UnixTimestamp,

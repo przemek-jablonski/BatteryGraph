@@ -17,7 +17,7 @@ class BatteryHealthSmallChartWidget @JvmOverloads constructor(
       Entry(
           data.eventUnixTimestamp.toFloat(),
           lerp(yAxisMinimumValue, yAxisMaximumValue, mapBatteryHealthToFloat(data.batteryHealth)))
-          .also { Timber.d("mapDataToEntry, data: $data, entry: $it") }
+          .also { Timber.v("mapDataToEntry, data: $data, entry: $it") }
 
 
   private fun mapBatteryHealthToFloat(batteryHealth: BatteryHealth) =

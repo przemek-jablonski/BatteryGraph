@@ -24,7 +24,7 @@ class BatteryVoltageSmallChartWidget @JvmOverloads constructor(
       Entry(
           data.eventUnixTimestamp.toFloat(),
           lerp(yAxisMinimumValue, yAxisMaximumValue, inverseLerp(VOLTAGE_MINIMUM_VALUE, VOLTAGE_MAXIMUM_VALUE, data.batteryVoltage)))
-          .also { Timber.d("mapDataToEntry, data: $data, entry: $it (rangeMin: $VOLTAGE_MINIMUM_VALUE, rangeMax: $VOLTAGE_MAXIMUM_VALUE") }
+          .also { Timber.v("mapDataToEntry, data: $data, entry: $it (rangeMin: $VOLTAGE_MINIMUM_VALUE, rangeMax: $VOLTAGE_MAXIMUM_VALUE") }
 
 
 }

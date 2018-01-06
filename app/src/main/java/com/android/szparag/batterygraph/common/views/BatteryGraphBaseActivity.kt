@@ -12,6 +12,7 @@ import javax.inject.Inject
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
  */
+
 abstract class BatteryGraphBaseActivity<P : Presenter<*>> : AppCompatActivity(), View {
 
   @Inject lateinit open var presenter: P //todo: close and private this somehow

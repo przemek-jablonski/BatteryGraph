@@ -23,7 +23,6 @@ import com.android.szparag.batterygraph.common.events.BatteryStateEvent
 import com.android.szparag.batterygraph.common.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.common.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
-import com.android.szparag.batterygraph.common.events.UnixTimestamp
 import timber.log.Timber
 import java.util.Arrays
 
@@ -46,15 +45,14 @@ fun Context.createRegisteredBroadcastReceiver(
   return broadcastReceiver
 }
 
-fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
-  context.unregisterReceiver(this)
-}
+fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) =
+    context.unregisterReceiver(this)
 
 fun Context.getStickyIntentFromSystem(intentFilterAction: String): Intent = registerReceiver(null, IntentFilter(intentFilterAction))
     .also { Timber.d("getStickyIntentFromSystem, intentFilterAction: $intentFilterAction, result: ${it.asString()}") }
 
-fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateEvent(
-    eventUnixTimestamp = unixTimestamp,
+fun Bundle.mapToBatteryStatusEvent() = BatteryStateEvent(
+    eventUnixTimestamp = getUnixTimestampSecs(),
     batteryStatusInt = getInt(EXTRA_STATUS),
     batteryHealthInt = getInt(EXTRA_HEALTH),
     batteryPowerSourceInt = getInt(EXTRA_PLUGGED),
@@ -63,14 +61,14 @@ fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateE
     batteryTemperature = getInt(EXTRA_TEMPERATURE) / 10
 )
 
-fun ConnectivityManager.mapToConnectivityEvent(unixTimestamp: UnixTimestamp) = activeNetworkInfo?.let { network ->
+fun ConnectivityManager.mapToConnectivityEvent() = activeNetworkInfo?.let { network ->
   ConnectivityStateEvent(
-      eventUnixTimestamp = unixTimestamp,
+      eventUnixTimestamp = getUnixTimestampSecs(),
       networkType = network.type,
       networkState = network.detailedState.ordinal,
       networkStateReason = network.reason ?: emptyString()
   )
-} ?: ConnectivityStateEvent(unixTimestamp)
+} ?: ConnectivityStateEvent(getUnixTimestampSecs())
 
 
 fun Intent.mapToDevicePowerEvent(unixTimestamp: UnixTimestamp) = DevicePowerStateEvent(
@@ -96,23 +94,21 @@ fun invalidIntValue() = -1
 fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f
 
-fun Intent.toPendingIntent(context: Context, requestCode: Int = 0, flags: Int = 0) =
+fun Intent.toPendingIntent(context: Context, requestCode: Int = 0, flags: Int = 0): PendingIntent =
     PendingIntent.getActivity(context, requestCode, this, flags)
 
 //todo refactor that, this may be cool, but code quality needs to be better
-
-
-fun <E : Any> Collection<E>.safeLast() = when (this) {
-  is List -> if (isEmpty()) null else this[this.lastIndex]
-  else -> {
-    val iterator = iterator()
-    if (!iterator.hasNext()) null
-    var last = iterator.next()
-    while (iterator.hasNext())
-      last = iterator.next()
-    last
-  }
-}
+//fun <E : Any> Collection<E>.safeLast() = when (this) {
+//  is List -> if (isEmpty()) null else this[this.lastIndex]
+//  else -> {
+//    val iterator = iterator()
+//    if (!iterator.hasNext()) null
+//    var last = iterator.next()
+//    while (iterator.hasNext())
+//      last = iterator.next()
+//    last
+//  }
+//}
 
 inline fun <T, R> Iterable<T>.map(transform: (T) -> R, initialCapacity: Int) =
     mapTo(ArrayList(initialCapacity), transform)

@@ -17,8 +17,8 @@ interface FrontView : View {
 
   fun performOneShotAnimation()
 
-  fun registerBatteryStateEventsReceiver()
-  fun unregisterBatteryStateEventsReceiver()
+  //  fun registerBatteryStateEventsReceiver()
+//  fun unregisterBatteryStateEventsReceiver()
   fun subscribeBatteryStateEvents(): Observable<BatteryStateEvent>
   fun forceFetchBatteryStateEvent()
 
