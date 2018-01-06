@@ -2,10 +2,10 @@ package com.android.szparag.batterygraph.screens.front.widgets.smallcharts
 
 import android.content.Context
 import android.util.AttributeSet
-import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
-import com.android.szparag.batterygraph.shared.utils.inverseLerp
-import com.android.szparag.batterygraph.shared.utils.lerp
-import com.android.szparag.batterygraph.shared.widgets.LineChartSmallBaseWidget
+import com.android.szparag.batterygraph.common.events.BatteryStateEvent
+import com.android.szparag.batterygraph.common.utils.inverseLerp
+import com.android.szparag.batterygraph.common.utils.lerp
+import com.android.szparag.batterygraph.common.widgets.LineChartSmallBaseWidget
 import com.github.mikephil.charting.data.Entry
 import timber.log.Timber
 
@@ -24,6 +24,6 @@ class BatteryTemperatureSmallChartWidget @JvmOverloads constructor(
           data.eventUnixTimestamp.toFloat(),
           lerp(yAxisMinimumValue, yAxisMaximumValue,
               inverseLerp(TEMPERATURE_MINIMUM_VALUE, TEMPERATURE_MAXIMUM_VALUE, data.batteryTemperature.toFloat())))
-          .also { Timber.d("mapDataToEntry, data: $data, entry: $it") }
+          .also { Timber.v("mapDataToEntry, data: $data, entry: $it") }
 
 }

@@ -2,9 +2,9 @@ package com.android.szparag.batterygraph.screens.front.widgets.smallcharts
 
 import android.content.Context
 import android.util.AttributeSet
-import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
-import com.android.szparag.batterygraph.shared.widgets.LineChartBaseWidget
-import com.android.szparag.batterygraph.shared.widgets.LineChartSmallBaseWidget
+import com.android.szparag.batterygraph.common.events.BatteryStateEvent
+import com.android.szparag.batterygraph.common.widgets.LineChartBaseWidget
+import com.android.szparag.batterygraph.common.widgets.LineChartSmallBaseWidget
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import timber.log.Timber
@@ -24,6 +24,6 @@ class BatteryPercentageSmallChartWidget @JvmOverloads constructor(
 
   override fun mapDataToEntry(data: BatteryStateEvent) =
       Entry(data.eventUnixTimestamp.toFloat(), data.batteryPercentage.toFloat())
-          .also { Timber.d("mapDataToEntry, data: $data, entry: $it") }
+          .also { Timber.v("mapDataToEntry, data: $data, entry: $it") }
 
 }

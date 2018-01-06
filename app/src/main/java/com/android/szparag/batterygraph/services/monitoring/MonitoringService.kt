@@ -2,7 +2,7 @@ package com.android.szparag.batterygraph.services.monitoring
 
 import android.app.Notification
 import android.app.PendingIntent
-import com.android.szparag.batterygraph.shared.views.View
+import com.android.szparag.batterygraph.common.views.View
 
 interface MonitoringService : View {
 

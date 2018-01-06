@@ -1,8 +1,8 @@
 package com.android.szparag.batterygraph.screens.front
 
-import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
-import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
-import com.android.szparag.batterygraph.shared.views.View
+import com.android.szparag.batterygraph.common.events.BatteryStateEvent
+import com.android.szparag.batterygraph.common.events.ConnectivityStateEvent
+import com.android.szparag.batterygraph.common.views.View
 import io.reactivex.Observable
 
 interface FrontView : View {
@@ -17,9 +17,9 @@ interface FrontView : View {
 
   fun performOneShotAnimation()
 
-  fun registerBatteryStateEventsReceiver()
-  fun unregisterBatteryStateEventsReceiver()
-  fun subscribeBatteryStateEvents(): Observable<BatteryStateEvent>
+  //  fun registerBatteryStateEventsReceiver()
+//  fun unregisterBatteryStateEventsReceiver()
+  fun subscribeForceFetchedBatteryStateEvent(): Observable<BatteryStateEvent>
   fun forceFetchBatteryStateEvent()
 
   fun setupSmallChartsView()

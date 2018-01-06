@@ -15,24 +15,24 @@ import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v7.app.NotificationCompat
 import com.android.szparag.batterygraph.R
+import com.android.szparag.batterygraph.common.events.BatteryStateEvent
+import com.android.szparag.batterygraph.common.events.ConnectivityStateEvent
+import com.android.szparag.batterygraph.common.events.DevicePowerStateEvent
+import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
+import com.android.szparag.batterygraph.common.utils.asString
+import com.android.szparag.batterygraph.common.utils.createRegisteredBroadcastReceiver
+import com.android.szparag.batterygraph.common.utils.emptyString
+import com.android.szparag.batterygraph.common.utils.getUnixTimestampSecs
+import com.android.szparag.batterygraph.common.utils.mapToBatteryStatusEvent
+import com.android.szparag.batterygraph.common.utils.mapToConnectivityEvent
+import com.android.szparag.batterygraph.common.utils.mapToDevicePowerEvent
+import com.android.szparag.batterygraph.common.utils.mapToDevicePowerEventApiN
+import com.android.szparag.batterygraph.common.utils.mapToFlightModeEvent
+import com.android.szparag.batterygraph.common.utils.toPendingIntent
+import com.android.szparag.batterygraph.common.utils.ui
+import com.android.szparag.batterygraph.common.utils.unregisterReceiverFromContext
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import com.android.szparag.batterygraph.screens.chart.BatteryGraphChartActivity
-import com.android.szparag.batterygraph.shared.events.BatteryStateEvent
-import com.android.szparag.batterygraph.shared.events.ConnectivityStateEvent
-import com.android.szparag.batterygraph.shared.events.DevicePowerStateEvent
-import com.android.szparag.batterygraph.shared.events.FlightModeStateEvent
-import com.android.szparag.batterygraph.shared.utils.asString
-import com.android.szparag.batterygraph.shared.utils.createRegisteredBroadcastReceiver
-import com.android.szparag.batterygraph.shared.utils.emptyString
-import com.android.szparag.batterygraph.shared.utils.getBGUnixTimestampSecs
-import com.android.szparag.batterygraph.shared.utils.mapToBatteryStatusEvent
-import com.android.szparag.batterygraph.shared.utils.mapToConnectivityEvent
-import com.android.szparag.batterygraph.shared.utils.mapToDevicePowerEvent
-import com.android.szparag.batterygraph.shared.utils.mapToDevicePowerEventApiN
-import com.android.szparag.batterygraph.shared.utils.mapToFlightModeEvent
-import com.android.szparag.batterygraph.shared.utils.toPendingIntent
-import com.android.szparag.batterygraph.shared.utils.ui
-import com.android.szparag.batterygraph.shared.utils.unregisterReceiverFromContext
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import timber.log.Timber
@@ -42,11 +42,9 @@ import javax.inject.Inject
 const val EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS = 5L
 const val NOTIFICATION_CHANNEL_ID = "batterygraph.notifications.monitoring.channel_id"
 
-//todo: create presenter
 class BatteryGraphMonitoringService : Service(), MonitoringService {
 
-
-  @Inject lateinit var model: MonitoringInteractor
+  @Inject lateinit var interactor: MonitoringInteractor
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver
   private lateinit var batteryChangedSubject: Subject<BatteryStateEvent>
   private lateinit var devicePowerActionReceiver: BroadcastReceiver
@@ -65,9 +63,7 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   private lateinit var backToAppIntent: PendingIntent
 
 
-  //  Android Service lifecycle callbacks:
-  //  _________________________________________________________________________
-
+  //<editor-fold desc="Lifecycle">
   override fun onBind(intent: Intent?): IBinder {
     Timber.d("onBind, intent: $intent")
     throw NotImplementedError()
@@ -89,11 +85,10 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     unregisterSystemEventsReceivers()
     //todo think about proper disposing
   }
+  //</editor-fold>
 
 
-  //  Creating foreground notification:
-  //  _________________________________________________________________________
-
+  //<editor-fold desc="Creating Foreground Service notification">
   override fun startServiceAsForegroundService() {
     Timber.d("startServiceAsForegroundService")
     setupBackToAppIntent()
@@ -148,12 +143,10 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         .build()
         .also { Timber.d("createForegroundNotificationWithoutChannel, return: $it") }
   }
+  //</editor-fold>
 
 
-  //  Registering / unregistering system events listeners:
-  //  _________________________________________________________________________
-
-
+  //<editor-fold desc="Registering for Android System Events">
   override fun registerSystemEventsReceivers() {
     Timber.d("registerSystemEventsReceivers")
     registerBatteryStatusReceiver()
@@ -202,7 +195,10 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         callback = this::onFlightModeIntentReceived
     )
   }
+  //</editor-fold>
 
+
+  //<editor-fold desc="Unregistering from Android System Events">
   override fun unregisterSystemEventsReceivers() {
     Timber.d("unregisterSystemEventsReceivers")
     unregisterBatteryStatusReceiver()
@@ -230,43 +226,46 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
     Timber.d("unregisterFlightModeListener")
     flightModeActionReceiver.unregisterReceiverFromContext(this)
   }
+  //</editor-fold>
 
-
-  //  Handling incoming system events:
-  //  _________________________________________________________________________
-
+  //todo: this is too convoluted
+  //<editor-fold desc="Mapping incoming Android System Events to Internal Application Events">
   private fun onBatteryStatusIntentReceived(intent: Intent) {
-    Timber.v("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
-    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent(getBGUnixTimestampSecs()))
+    Timber.i("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
+    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
   }
 
   private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
-    Timber.v("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
-    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent(getBGUnixTimestampSecs()))
+    Timber.i("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
+    connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
   }
 
   private fun onDevicePowerIntentReceived(intent: Intent) {
-    Timber.v("onDevicePowerIntentReceived, intent: ${intent.asString()}")
+    Timber.i("onDevicePowerIntentReceived, intent: ${intent.asString()}")
     devicePowerSubject.onNext(
-        if (VERSION.SDK_INT >= VERSION_CODES.N) intent.mapToDevicePowerEventApiN(getBGUnixTimestampSecs()) else intent
-            .mapToDevicePowerEvent(getBGUnixTimestampSecs()))
+        if (VERSION.SDK_INT >= VERSION_CODES.N) intent.mapToDevicePowerEventApiN(getUnixTimestampSecs()) else intent
+            .mapToDevicePowerEvent(getUnixTimestampSecs()))
   }
 
   private fun onFlightModeIntentReceived(intent: Intent) {
-    Timber.v("onFlightModeIntentReceived, intent: ${intent.asString()}")
-    flightModeSubject.onNext(intent.extras.mapToFlightModeEvent(getBGUnixTimestampSecs()))
+    Timber.i("onFlightModeIntentReceived, intent: ${intent.asString()}")
+    flightModeSubject.onNext(intent.extras.mapToFlightModeEvent(getUnixTimestampSecs()))
   }
+  //</editor-fold>
 
 
-  // Receiving system events converted to in-app events:
-  //  _________________________________________________________________________
-
+  //<editor-fold desc="Handling mapped Internal Application Events (Rx throttling)">
   override fun subscribeInAppEvents() {
     Timber.d("subscribeInAppEvents")
     subscribeBatteryStateChanges()
     subscribeConnectivityStateChanges()
     subscribeDevicePowerStateChanges()
     subscribeFlightModeStateChanges()
+  }
+
+  override fun unsubscribeInAppEvents() {
+    Timber.d("unsubscribeInAppEvents")
+    //todo: how to do it properly?
   }
 
   private fun subscribeBatteryStateChanges() {
@@ -302,46 +301,40 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
         .subscribeOn(ui())
         .sample(EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS, TimeUnit.SECONDS, true)
         .observeOn(ui())
-        .subscribe(this::onFlightModeStateChaned)
+        .subscribe(this::onFlightModeStateChanged)
   }
-
-  override fun unsubscribeInAppEvents() {
-    Timber.d("unsubscribeInAppEvents")
-    //todo: how to do it properly?
-  }
+  //</editor-fold>
 
 
-  // Processing received in-app events:
-  //  _________________________________________________________________________
-
+  //<editor-fold desc="Pushing mapped Internal Application Events to the Interactor">
   private fun onBatteryStateChanged(event: BatteryStateEvent) {
     Timber.d("onBatteryStatusChanged, event: $event")
-    model.insertBatteryStateEvent(event)
+    interactor.insertBatteryStateEvent(event)
   }
 
   private fun onConnectivityStateChanged(event: ConnectivityStateEvent) {
     Timber.d("onConnectivityStateChanged, event: $event")
-    model.insertConnectivityStateEvent(event)
+    interactor.insertConnectivityStateEvent(event)
   }
 
   private fun onDevicePowerStateChanged(event: DevicePowerStateEvent) {
     Timber.d("onDevicePowerStateChanged, event: $event")
-    model.insertDevicePowerStateEvent(event)
+    interactor.insertDevicePowerStateEvent(event)
   }
 
-  private fun onFlightModeStateChaned(event: FlightModeStateEvent) {
-    Timber.d("onFlightModeStateChaned, event: $event")
-    model.insertFlightModeStateEvent(event)
+  private fun onFlightModeStateChanged(event: FlightModeStateEvent) {
+    Timber.d("onFlightModeStateChanged, event: $event")
+    interactor.insertFlightModeStateEvent(event)
   }
+  //</editor-fold>
 
 
-  // Misc:
-  //  _________________________________________________________________________
-
+  //<editor-fold desc="Misc">
   override fun requestCode() = Math.abs(this.packageName.hashCode())
 
   override fun notificationChannelId() = if (VERSION.SDK_INT >= VERSION_CODES.O) notificationChannel?.id ?: emptyString() else emptyString()
 
   override fun notificationId() = requestCode()
+  //</editor-fold>
 
 }
