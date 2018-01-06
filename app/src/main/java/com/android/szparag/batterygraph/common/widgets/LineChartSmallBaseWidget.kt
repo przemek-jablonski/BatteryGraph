@@ -19,7 +19,7 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
 ) : LineChartBaseWidget<E>(context, attrs, defStyleAttr) {
 
   override fun stylizeChart() {
-    Timber.d("stylizeChart")
+    Timber.v("stylizeChart")
     super.stylizeChart()
     data.isHighlightEnabled = false
     isHighlightPerTapEnabled = false
@@ -31,7 +31,7 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
   }
 
   override fun stylizeYLeftAxis(yAxis: YAxis) {
-    Timber.d("stylizeYLeftAxis, yAxis: $yAxis")
+    Timber.v("stylizeYLeftAxis, yAxis: $yAxis")
     checkInitalization()
     yAxis.axisMinimum = 0f
     yAxis.axisMaximum = 100f
@@ -45,7 +45,7 @@ abstract class LineChartSmallBaseWidget<in E : Any> @JvmOverloads constructor(
   }
 
   override fun stylizeChartLine(dataSet: LineDataSet) {
-    Timber.d("stylizeChartLine, dataSet: $dataSet")
+    Timber.v("stylizeChartLine, dataSet: $dataSet")
     dataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
     dataSet.color = resources.getColor(R.color.colorAccent1)
     dataSet.setDrawCircleHole(false)

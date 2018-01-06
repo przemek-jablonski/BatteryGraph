@@ -51,7 +51,7 @@ fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
 }
 
 fun Context.getStickyIntentFromSystem(intentFilterAction: String): Intent = registerReceiver(null, IntentFilter(intentFilterAction))
-    .also { Timber.d("c, intentFilterAction: $intentFilterAction, result: ${it.asString()}") }
+    .also { Timber.d("getStickyIntentFromSystem, intentFilterAction: $intentFilterAction, result: ${it.asString()}") }
 
 fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateEvent(
     eventUnixTimestamp = unixTimestamp,

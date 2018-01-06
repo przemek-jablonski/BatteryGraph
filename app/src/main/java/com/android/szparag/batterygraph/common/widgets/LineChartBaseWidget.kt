@@ -31,7 +31,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   private var initialized: Boolean = false
 
   @CallSuper override fun initialize() {
-    Timber.d("initialize")
+    Timber.v("initialize")
     initialized = true
 //    isLogEnabled = true
     data = LineData()
@@ -48,7 +48,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see LineChart
    */
   protected open fun stylizeChart() {
-    Timber.d("stylizeChart")
+    Timber.v("stylizeChart")
     checkInitalization()
     isScaleYEnabled = false
     isDoubleTapToZoomEnabled = false
@@ -64,7 +64,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see XAxis
    */
   protected open fun stylizeXAxis(xAxis: XAxis) {
-    Timber.d("stylizeXAxis, xAxis: $xAxis")
+    Timber.v("stylizeXAxis, xAxis: $xAxis")
     checkInitalization()
     xAxis.setAvoidFirstLastClipping(true)
     xAxis.setDrawGridLines(false)
@@ -77,7 +77,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see YAxis
    */
   protected open fun stylizeYLeftAxis(yAxis: YAxis) {
-    Timber.d("stylizeYLeftAxis, yAxis: $yAxis")
+    Timber.v("stylizeYLeftAxis, yAxis: $yAxis")
     checkInitalization()
     yAxis.axisMinimum = yAxisMinimumValue
     yAxis.axisMaximum = yAxisMaximumValue
@@ -91,7 +91,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see YAxis
    */
   protected open fun stylizeYRightAxis(yAxis: YAxis) {
-    Timber.d("stylizeYRightAxis, yAxis: $yAxis")
+    Timber.v("stylizeYRightAxis, yAxis: $yAxis")
     checkInitalization()
     yAxis.isEnabled = false
   }
@@ -103,7 +103,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
 
 
   override fun setData(data: List<E>) {
-    Timber.d("setData, data: $data")
+    Timber.v("setData, data: $data")
     if (data.isEmpty()) return
     dataEntries = data.map { mapDataToEntry(it) }
     dataSet = LineDataSet(dataEntries, emptyString())
@@ -125,7 +125,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
    * @see IDataSet
    */
   protected open fun applyDataSetToChart(dataSet: ILineDataSet) {
-    Timber.d("applyDataSetToChart, dataSet: $dataSet")
+    Timber.v("applyDataSetToChart, dataSet: $dataSet")
     checkInitalization()
     data.clearValues()
     data.addDataSet(dataSet)
@@ -139,7 +139,7 @@ abstract class LineChartBaseWidget<in E : Any> @JvmOverloads constructor(
   abstract fun mapDataToEntry(data: E): Entry
 
   protected open fun checkInitalization() {
-    Timber.d("checkInitalization, value: $initialized")
+    Timber.v("checkInitalization, value: $initialized")
     check(initialized, { throw RuntimeException("Method called before initialization.") }) //todo
   }
 
