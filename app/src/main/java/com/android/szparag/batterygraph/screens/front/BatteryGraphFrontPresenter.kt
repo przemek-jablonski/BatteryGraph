@@ -24,17 +24,26 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
 
   override fun subscribeModelEvents() {
     Timber.d("subscribeModelEvents")
-    view?.subscribeBatteryStateEvents()
+    view?.subscribeForceFetchedBatteryStateEvent()
         ?.ui()
         ?.subscribe { event ->
-          Timber.d("subscribeBatteryStateEvents.onNext, event: $event")
+          Timber.d("view.subscribeForceFetchedBatteryStateEvent.onNext, event: $event")
           view?.renderBatteryState(event)
+          view?.performOneShotAnimation()
+        }
+
+    model.subscribeBatteryStateEvents()
+        .ui()
+        .subscribe { events ->
+          Timber.d("model.subscribeBatteryStateEvents.onNext, events: $events")
+          view?.renderSmallChartBatteryPercentage(events)
+          view?.performOneShotAnimation()
         }
 
     model.subscribeBatteryStateEvent()
         .ui()
         .subscribe { event ->
-          Timber.d("subscribeModelEvents.onNext, event: $event")
+          Timber.d("model.subscribeBatteryStateEvent.onNext, event: $event")
           view?.renderBatteryState(event)
         }
 

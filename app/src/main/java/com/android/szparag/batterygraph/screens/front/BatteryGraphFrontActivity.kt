@@ -16,6 +16,7 @@ import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.android.synthetic.main.activity_front.batteryAnimatedView
 import kotlinx.android.synthetic.main.activity_front.batteryStatusView
 import kotlinx.android.synthetic.main.activity_front.smallChartsView
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentHealth
@@ -64,8 +65,8 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     onBatteryStatusIntentReceived(getStickyIntentFromSystem(Intent.ACTION_BATTERY_CHANGED))
   }
 
-  override fun subscribeBatteryStateEvents(): Observable<BatteryStateEvent> {
-    Timber.d("subscribeBatteryStateEvents")
+  override fun subscribeForceFetchedBatteryStateEvent(): Observable<BatteryStateEvent> {
+    Timber.d("subscribeForceFetchedBatteryStateEvent")
     return batteryChangedSubject
   }
 
@@ -100,7 +101,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
   override fun performOneShotAnimation() {
     Timber.d("performOneShotAnimation")
-//    batteryAnimatedView.performOneShotAnimation()
+    batteryAnimatedView.performOneShotAnimation()
   }
 
   override fun renderSmallChartBatteryPercentage(events: List<BatteryStateEvent>) {

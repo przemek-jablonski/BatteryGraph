@@ -315,6 +315,10 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   private fun createFrontDrawableView(@DrawableRes drawableRes: ResourceId?)
       = createImageViewWithDrawable(context, drawableRes?.let { resources.getDrawable(drawableRes) })
 
+  fun performOneShotAnimation() {
+
+  }
+
   override final fun addView(child: View) {
 //    Timber.v("addView, child: ${child.asString()}")
     super.addView(child)
