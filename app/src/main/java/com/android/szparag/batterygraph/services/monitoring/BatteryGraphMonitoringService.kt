@@ -231,24 +231,24 @@ class BatteryGraphMonitoringService : Service(), MonitoringService {
   //todo: this is too convoluted
   //<editor-fold desc="Mapping incoming Android System Events to Internal Application Events">
   private fun onBatteryStatusIntentReceived(intent: Intent) {
-    Timber.v("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
+    Timber.i("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
     batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
   }
 
   private fun onConnectivityIntentReceived(intent: Intent, connectivityManager: ConnectivityManager) {
-    Timber.v("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
+    Timber.i("onConnectivityIntentReceived, intent: ${intent.asString()}, connectivityManager: $connectivityManager")
     connectivitySubject.onNext(connectivityManager.mapToConnectivityEvent())
   }
 
   private fun onDevicePowerIntentReceived(intent: Intent) {
-    Timber.v("onDevicePowerIntentReceived, intent: ${intent.asString()}")
+    Timber.i("onDevicePowerIntentReceived, intent: ${intent.asString()}")
     devicePowerSubject.onNext(
         if (VERSION.SDK_INT >= VERSION_CODES.N) intent.mapToDevicePowerEventApiN(getUnixTimestampSecs()) else intent
             .mapToDevicePowerEvent(getUnixTimestampSecs()))
   }
 
   private fun onFlightModeIntentReceived(intent: Intent) {
-    Timber.v("onFlightModeIntentReceived, intent: ${intent.asString()}")
+    Timber.i("onFlightModeIntentReceived, intent: ${intent.asString()}")
     flightModeSubject.onNext(intent.extras.mapToFlightModeEvent(getUnixTimestampSecs()))
   }
   //</editor-fold>

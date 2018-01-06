@@ -126,7 +126,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     Timber.w("setupDebugRealmBatteryEventListener")
     realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).apply {
       this.forEach { event -> Timber.w("debugRealmListener.RealmBatteryEvent, event: $event") }
-      this.addChangeListener({ events -> Timber.v("debugRealmListener.RealmBatteryEvent, events: $events") })
+      this.addChangeListener({ events -> Timber.w("debugRealmListener.RealmBatteryEvent, events: $events") })
     }
   }
 
@@ -134,7 +134,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     Timber.w("setupDebugRealmConnectivityEventListener")
     realm.where(RealmConnectivityStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).apply {
       this.forEach { event -> Timber.w("debugRealmListener.RealmConnectivityStateEvent, event: $event") }
-      this.addChangeListener({ events -> Timber.v("debugRealmListener.RealmConnectivityStateEvent, events: $events") })
+      this.addChangeListener({ events -> Timber.w("debugRealmListener.RealmConnectivityStateEvent, events: $events") })
     }
   }
 
@@ -142,7 +142,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     Timber.w("setupDebugRealmDevicePowerEventListener")
     realm.where(RealmDevicePowerStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).apply {
       this.forEach { event -> Timber.w("debugRealmListener.RealmDevicePowerStateEvent, event: $event") }
-      this.addChangeListener({ events -> Timber.v("debugRealmListener.RealmDevicePowerStateEvent, events: $events") })
+      this.addChangeListener({ events -> Timber.w("debugRealmListener.RealmDevicePowerStateEvent, events: $events") })
     }
   }
 
@@ -150,7 +150,7 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
     Timber.w("setupDebugRealmFlightModeEventListener")
     realm.where(RealmFlightModeStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).apply {
       this.forEach { event -> Timber.w("debugRealmListener.RealmFlightModeStateEvent, event: $event") }
-      this.addChangeListener({ events -> Timber.v("debugRealmListener.RealmFlightModeStateEvent, events: $events") })
+      this.addChangeListener({ events -> Timber.w("debugRealmListener.RealmFlightModeStateEvent, events: $events") })
     }
   }
   //</editor-fold>
