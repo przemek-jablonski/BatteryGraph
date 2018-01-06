@@ -42,9 +42,7 @@ import javax.inject.Inject
 const val EVENTS_PERSISTENCE_SAMPLING_VALUE_SECS = 5L
 const val NOTIFICATION_CHANNEL_ID = "batterygraph.notifications.monitoring.channel_id"
 
-//todo: create presenter
 class BatteryGraphMonitoringService : Service(), MonitoringService {
-
 
   @Inject lateinit var model: MonitoringInteractor
   private lateinit var batteryChangedActionReceiver: BroadcastReceiver

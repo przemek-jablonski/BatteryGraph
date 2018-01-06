@@ -14,7 +14,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.Sort.ASCENDING
-import timber.log.BuildConfig
 import timber.log.Timber
 
 class BatteryGraphDatabaseInteractor : DatabaseInteractor {
@@ -107,40 +106,40 @@ class BatteryGraphDatabaseInteractor : DatabaseInteractor {
 
   private fun setupDebugRealmListeners() {
     Timber.d("setupDebugRealmListeners")
-    if (BuildConfig.DEBUG) { //todo do something with this lint warning
+//    if (BuildConfig.DEBUG) { //todo do something with this lint warning
       setupDebugRealmBatteryEventListener()
       setupDebugRealmConnectivityEventListener()
       setupDebugRealmDevicePowerEventListener()
       setupDebugRealmFlightModeEventListener()
-
-    }
+//    }
   }
 
   private fun setupDebugRealmBatteryEventListener() {
     Timber.d("setupDebugRealmBatteryEventListener")
-    realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
-      Timber.v("debugRealmListener.RealmBatteryEvent::class.java.callback, events: $events")
-    })
+    realm.where(RealmBatteryEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).apply {
+      this.forEach { event -> timber.log.Timber.v("debugRealmListener.RealmBatteryEvent, event: $event") }
+      this.addChangeListener({ events -> Timber.v("debugRealmListener.RealmBatteryEvent, events: $events") })
+    }
   }
 
   private fun setupDebugRealmConnectivityEventListener() {
     Timber.d("setupDebugRealmConnectivityEventListener")
     realm.where(RealmConnectivityStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
-      Timber.v("debugRealmListener.RealmConnectivityStateEvent::class.java.callback, events: $events")
+      Timber.v("debugRealmListener.RealmConnectivityStateEvent, events: $events")
     })
   }
 
   private fun setupDebugRealmDevicePowerEventListener() {
     Timber.d("setupDebugRealmDevicePowerEventListener")
     realm.where(RealmDevicePowerStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
-      Timber.v("debugRealmListener.RealmDevicePowerStateEvent::class.java.callback, events: $events")
+      Timber.v("debugRealmListener.RealmDevicePowerStateEvent, events: $events")
     })
   }
 
   private fun setupDebugRealmFlightModeEventListener() {
     Timber.d("setupDebugRealmFlightModeEventListener")
     realm.where(RealmFlightModeStateEvent::class.java).findAllSorted("unixTimestamp", ASCENDING).addChangeListener({ events ->
-      Timber.v("debugRealmListener.RealmFlightModeStateEvent::class.java.callback, events: $events")
+      Timber.v("debugRealmListener.RealmFlightModeStateEvent:, events: $events")
     })
 
   }

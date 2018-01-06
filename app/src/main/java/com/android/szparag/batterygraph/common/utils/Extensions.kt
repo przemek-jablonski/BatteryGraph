@@ -1,5 +1,6 @@
 package com.android.szparag.batterygraph.common.utils
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,14 +25,18 @@ import com.android.szparag.batterygraph.common.events.DevicePowerStateEvent
 import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.common.events.UnixTimestamp
 import timber.log.Timber
+import java.util.Arrays
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/11/2017.
  */
 
+//https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+@SuppressLint("BinaryOperationInTimber")
 fun Context.createRegisteredBroadcastReceiver(
     vararg intentFilterActions: String, callback: (Intent) -> (Unit)): BroadcastReceiver {
-  Timber.d("createRegisteredBroadcastReceiver, intentFilterActions: $intentFilterActions, callback: $callback, context: $this")
+  Timber.d("createRegisteredBroadcastReceiver, intentFilterActions: ${intentFilterActions.arrayAsString()}, " +
+      "callback: $callback, context: ${this::class.java.simpleName}")
   val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       intent?.takeIf { intentFilterActions.contains(it.action) }?.let(callback::invoke)
@@ -45,7 +50,7 @@ fun BroadcastReceiver.unregisterReceiverFromContext(context: Context) {
   context.unregisterReceiver(this)
 }
 
-fun Context.getStickyIntentFromSystem(intentFilterAction: String) = registerReceiver(null, IntentFilter(intentFilterAction))
+fun Context.getStickyIntentFromSystem(intentFilterAction: String): Intent = registerReceiver(null, IntentFilter(intentFilterAction))
     .also { Timber.d("c, intentFilterAction: $intentFilterAction, result: ${it.asString()}") }
 
 fun Bundle.mapToBatteryStatusEvent(unixTimestamp: UnixTimestamp) = BatteryStateEvent(
@@ -121,3 +126,5 @@ fun getUnixTimestampSecs() = getUnixTimestampMillis() / 1000L
 private const val BGUnixTimestampOrigin = 1510099200
 
 fun getBGUnixTimestampSecs() = getUnixTimestampSecs() - BGUnixTimestampOrigin
+
+fun <T : Any> Array<T>.arrayAsString() = Arrays.toString(this) ?: nullString()

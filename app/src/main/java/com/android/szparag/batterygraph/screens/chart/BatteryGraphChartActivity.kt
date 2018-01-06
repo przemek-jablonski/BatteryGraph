@@ -1,6 +1,5 @@
 package com.android.szparag.batterygraph.screens.chart
 
-import android.content.Intent
 import android.os.Bundle
 import com.android.szparag.batterygraph.R.layout
 import com.android.szparag.batterygraph.common.events.BatteryStateEvent
@@ -8,7 +7,6 @@ import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.common.utils.safeLast
 import com.android.szparag.batterygraph.common.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
-import com.android.szparag.batterygraph.services.monitoring.BatteryGraphMonitoringService
 import kotlinx.android.synthetic.main.activity_chart.chartView
 import timber.log.Timber
 
@@ -19,7 +17,6 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     setContentView(layout.activity_chart)
     DaggerGlobalScopeWrapper.getComponent(this).inject(this)
-    startService(Intent(this, BatteryGraphMonitoringService::class.java))
   }
 
   override fun onStart() {
