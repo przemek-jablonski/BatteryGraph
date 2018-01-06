@@ -7,10 +7,8 @@ import io.reactivex.Observable
 
 interface FrontInteractor : Interactor {
 
-  fun subscribeBatteryPercentageAndPowerEvents(): Observable<List<BatteryStateEvent>> //todo powereventszip
-  fun subscribeBatteryTemperatureEvents(): Observable<List<BatteryStateEvent>>
-  fun subscribeBatteryVoltageEvents(): Observable<List<BatteryStateEvent>>
-  fun subscribeBatteryHealthEvents(): Observable<List<BatteryStateEvent>>
-  fun subscribeConnectivityEvents(): Observable<List<ConnectivityStateEvent>>
+  fun subscribeBatteryStateEvent(): Observable<BatteryStateEvent>
+  fun subscribeBatteryStateEvents(): Observable<List<BatteryStateEvent>> //todo: as flowable
+  fun subscribeConnectivityEvents(): Observable<List<ConnectivityStateEvent>> //todo: as flowable
 
 }

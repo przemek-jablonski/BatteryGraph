@@ -1,6 +1,9 @@
 package com.android.szparag.batterygraph.common.events
 
 import com.android.szparag.batterygraph.common.utils.UnixTimestamp
+import com.android.szparag.batterygraph.common.utils.invalidFloatValue
+import com.android.szparag.batterygraph.common.utils.invalidIntValue
+import com.android.szparag.batterygraph.common.utils.invalidLongValue
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/11/2017.
@@ -27,4 +30,11 @@ data class BatteryStateEvent(
       batteryTemperature = batteryTemperature
   )
 
+  companion object {
+    fun generateInvalidEvent() = BatteryStateEvent(invalidLongValue(), invalidIntValue(), invalidIntValue(),
+        invalidIntValue(), invalidIntValue(), invalidFloatValue(), invalidIntValue())
+  }
+
 }
+
+

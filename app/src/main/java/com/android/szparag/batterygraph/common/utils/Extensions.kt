@@ -124,3 +124,5 @@ private const val BGUnixTimestampOrigin = 1510099200
 fun getBGUnixTimestampSecs() = getUnixTimestampSecs() - BGUnixTimestampOrigin
 
 fun <T : Any> Array<T>.arrayAsString() = Arrays.toString(this) ?: nullString()
+
+fun <T : Any> List<T>.lastOr(default: T) = if (this.isNotEmpty()) this.last() else default

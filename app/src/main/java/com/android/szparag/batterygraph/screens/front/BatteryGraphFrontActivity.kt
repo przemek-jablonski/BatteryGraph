@@ -64,19 +64,6 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     onBatteryStatusIntentReceived(getStickyIntentFromSystem(Intent.ACTION_BATTERY_CHANGED))
   }
 
-//  override fun registerBatteryStateEventsReceiver() {
-//    Timber.d("registerBatteryStateEventsReceiver")
-//    batteryChangedReceiver = createRegisteredBroadcastReceiver(
-//        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
-//        callback = this::onBatteryStatusIntentReceived
-//    )
-//  }
-//
-//  override fun unregisterBatteryStateEventsReceiver() {
-//    Timber.d("unregisterBatteryStateEventsReceiver")
-//    batteryChangedReceiver.unregisterReceiverFromContext(this)
-//  }
-
   override fun subscribeBatteryStateEvents(): Observable<BatteryStateEvent> {
     Timber.d("subscribeBatteryStateEvents")
     return batteryChangedSubject
@@ -92,11 +79,6 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     BottomSheetBehavior.from(smallChartsView).apply {
       this.peekHeight = 100f.toPx(displayMetrics)
       this.isHideable = false
-//      this.setBottomSheetCallback(object: BottomSheetCallback() {
-//        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-//        override fun onStateChanged(bottomSheet: View, newState: Int) {}
-//
-//      })
     }
     batteryPercentageSmallChart.initialize()
     batteryTemperatureSmallChart.initialize()

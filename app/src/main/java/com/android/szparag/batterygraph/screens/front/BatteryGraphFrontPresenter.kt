@@ -31,38 +31,17 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
           view?.renderBatteryState(event)
         }
 
-    model.subscribeBatteryPercentageAndPowerEvents()
+    model.subscribeBatteryStateEvent()
         .ui()
-        .subscribe { events ->
-          Timber.d("interactor.subscribeBatteryPercentageAndPowerEvents")
-          view?.renderSmallChartBatteryPercentage(events)
-        }
-
-    model.subscribeBatteryTemperatureEvents()
-        .ui()
-        .subscribe { events ->
-          Timber.d("interactor.subscribeBatteryTemperatureEvents")
-          view?.renderSmallChartBatteryTemperature(events)
-        }
-
-    model.subscribeBatteryVoltageEvents()
-        .ui()
-        .subscribe { events ->
-          Timber.d("interactor.subscribeBatteryVoltageEvents")
-          view?.renderSmallChartBatteryVoltage(events)
-        }
-
-    model.subscribeBatteryHealthEvents()
-        .ui()
-        .subscribe { events ->
-          Timber.d("interactor.subscribeBatteryHealthEvents")
-          view?.renderSmallChartBatteryHealth(events)
+        .subscribe { event ->
+          Timber.d("subscribeModelEvents.onNext, event: $event")
+          view?.renderBatteryState(event)
         }
 
     model.subscribeConnectivityEvents()
         .ui()
         .subscribe { events ->
-          Timber.d("interactor.subscribeConnectivityEvents")
+          Timber.d("model.subscribeConnectivityEvents")
           view?.renderSmallChartConnectivity(events)
         }
 
