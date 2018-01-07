@@ -19,9 +19,15 @@ interface FrontView : View {
 
   //  fun registerBatteryStateEventsReceiver()
 //  fun unregisterBatteryStateEventsReceiver()
-  fun subscribeForceFetchedBatteryStateEvent(): Observable<BatteryStateEvent>
+  fun subscribeRealtimeBatteryStateEvents(): Observable<BatteryStateEvent>
   fun forceFetchBatteryStateEvent()
 
   fun setupSmallChartsView()
+  //this is being used along with data from database, because this one reacts instantly
+  //whereas database has throttling enabled, so if battery state changed (eg. charge level gone up/down)
+  //this would be reflected in the UI with a full throttled delay in the worst case scenario (eg. 10 minutes late)
+  fun registerBatteryStateEventsReceiver()
+
+  fun unregisterBatteryStateEventsReceiver()
 
 }

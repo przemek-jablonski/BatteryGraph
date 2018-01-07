@@ -8,9 +8,11 @@ import com.android.szparag.batterygraph.R
 import com.android.szparag.batterygraph.common.events.BatteryStateEvent
 import com.android.szparag.batterygraph.common.events.ConnectivityStateEvent
 import com.android.szparag.batterygraph.common.utils.asString
+import com.android.szparag.batterygraph.common.utils.createRegisteredBroadcastReceiver
 import com.android.szparag.batterygraph.common.utils.getStickyIntentFromSystem
 import com.android.szparag.batterygraph.common.utils.mapToBatteryStatusEvent
 import com.android.szparag.batterygraph.common.utils.toPx
+import com.android.szparag.batterygraph.common.utils.unregisterReceiverFromContext
 import com.android.szparag.batterygraph.common.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import io.reactivex.Observable
@@ -60,35 +62,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
   }
   //</editor-fold>
 
-  override fun forceFetchBatteryStateEvent() {
-    Timber.d("forceFetchBatteryStateEvent")
-    onBatteryStatusIntentReceived(getStickyIntentFromSystem(Intent.ACTION_BATTERY_CHANGED))
-  }
-
-  override fun subscribeForceFetchedBatteryStateEvent(): Observable<BatteryStateEvent> {
-    Timber.d("subscribeForceFetchedBatteryStateEvent")
-    return batteryChangedSubject
-  }
-
-  private fun onBatteryStatusIntentReceived(intent: Intent) {
-    Timber.d("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
-    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
-  }
-
-  override fun setupSmallChartsView() {
-    Timber.d("setupSmallChartsView")
-    BottomSheetBehavior.from(smallChartsView).apply {
-      this.peekHeight = 100f.toPx(displayMetrics)
-      this.isHideable = false
-    }
-    batteryPercentageSmallChart.initialize()
-    batteryTemperatureSmallChart.initialize()
-    batteryVoltageSmallChart.initialize()
-    batteryHealthSmallChart.initialize()
-    connectivitySmallChart.initialize()
-  }
-
-
+  //<editor-fold desc="Central UI elements rendering">
   override fun renderBatteryState(event: BatteryStateEvent) {
     Timber.d("renderBatteryState, event: $event")
     batteryStatusView.contentPercentage.text = event.batteryPercentage.toString()
@@ -102,6 +76,21 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
   override fun performOneShotAnimation() {
     Timber.d("performOneShotAnimation")
     batteryAnimatedView.performOneShotAnimation()
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="'Small Charts' rendering">
+  override fun setupSmallChartsView() {
+    Timber.d("setupSmallChartsView")
+    BottomSheetBehavior.from(smallChartsView).apply {
+      this.peekHeight = 100f.toPx(displayMetrics)
+      this.isHideable = false
+    }
+    batteryPercentageSmallChart.initialize()
+    batteryTemperatureSmallChart.initialize()
+    batteryVoltageSmallChart.initialize()
+    batteryHealthSmallChart.initialize()
+    connectivitySmallChart.initialize()
   }
 
   override fun renderSmallChartBatteryPercentage(events: List<BatteryStateEvent>) {
@@ -128,6 +117,39 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
     Timber.d("renderSmallChartConnectivity")
     connectivitySmallChart.setData(events)
   }
+  //</editor-fold>
 
+  //<editor-fold desc="Fetching Android Battery State events">
+  override fun forceFetchBatteryStateEvent() {
+    Timber.d("forceFetchBatteryStateEvent")
+    onBatteryStatusIntentReceived(getStickyIntentFromSystem(Intent.ACTION_BATTERY_CHANGED))
+  }
+
+  //this is being used along with data from database, because this one reacts instantly
+  //whereas database has throttling enabled, so if battery state changed (eg. charge level gone up/down)
+  //this would be reflected in the UI with a full throttled delay in the worst case scenario (eg. 10 minutes late)
+  override fun registerBatteryStateEventsReceiver() {
+    Timber.d("registerBatteryStateEventsReceiver")
+    batteryChangedReceiver = createRegisteredBroadcastReceiver(
+        intentFilterActions = Intent.ACTION_BATTERY_CHANGED,
+        callback = this::onBatteryStatusIntentReceived
+    )
+  }
+
+  override fun unregisterBatteryStateEventsReceiver() {
+    Timber.d("unregisterBatteryStateEventsReceiver")
+    batteryChangedReceiver.unregisterReceiverFromContext(this)
+  }
+
+  override fun subscribeRealtimeBatteryStateEvents(): Observable<BatteryStateEvent> {
+    Timber.d("subscribeRealtimeBatteryStateEvents")
+    return batteryChangedSubject
+  }
+
+  private fun onBatteryStatusIntentReceived(intent: Intent) {
+    Timber.d("onBatteryStatusIntentReceived, intent: ${intent.asString()}")
+    batteryChangedSubject.onNext(intent.extras.mapToBatteryStatusEvent())
+  }
+  //</editor-fold>
 
 }
