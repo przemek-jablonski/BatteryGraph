@@ -11,11 +11,13 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
     super.onAttached()
     view?.setupSmallChartsView()
     view?.forceFetchBatteryStateEvent()
+    view?.registerBatteryStateEventsReceiver()
   }
 
   override fun onBeforeDetached() {
     Timber.d("onBeforeDetached")
     super.onBeforeDetached()
+    view?.unregisterBatteryStateEventsReceiver()
   }
 
   override fun subscribeViewUserEvents() {
@@ -24,10 +26,10 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
 
   override fun subscribeModelEvents() {
     Timber.d("subscribeModelEvents")
-    view?.subscribeForceFetchedBatteryStateEvent()
+    view?.subscribeRealtimeBatteryStateEvents()
         ?.ui()
         ?.subscribe { event ->
-          Timber.d("view.subscribeForceFetchedBatteryStateEvent.onNext, event: $event")
+          Timber.d("view.subscribeRealtimeBatteryStateEvents.onNext, event: $event")
           view?.renderBatteryState(event)
           view?.performOneShotAnimation()
         }
@@ -45,6 +47,7 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
         .subscribe { event ->
           Timber.d("model.subscribeBatteryStateEvent.onNext, event: $event")
           view?.renderBatteryState(event)
+          view?.performOneShotAnimation()
         }
 
     model.subscribeConnectivityEvents()
