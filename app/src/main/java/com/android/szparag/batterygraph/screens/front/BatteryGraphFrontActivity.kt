@@ -15,18 +15,12 @@ import com.android.szparag.batterygraph.common.utils.toPx
 import com.android.szparag.batterygraph.common.utils.unregisterReceiverFromContext
 import com.android.szparag.batterygraph.common.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
+import com.android.szparag.batterygraph.screens.front.widgets.BatteryStatsDetailsContainer
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_front.batteryAnimatedView
-import kotlinx.android.synthetic.main.activity_front.batteryStatusView
 import kotlinx.android.synthetic.main.activity_front.smallChartsView
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentHealth
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentPercentage
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSource
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryHealthSmallChart
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryPercentageSmallChart
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryTemperatureSmallChart
@@ -38,6 +32,7 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
   private val batteryChangedSubject: Subject<BatteryStateEvent> by lazy { PublishSubject.create<BatteryStateEvent>() }
   private lateinit var batteryChangedReceiver: BroadcastReceiver
+  private val batteryStatsDetailsContainer: BatteryStatsDetailsContainer by lazy { findViewById(R.layout.layout_batterystats_details) }
 
   //<editor-fold desc="Lifecycle">
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,13 +59,15 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
 
   //<editor-fold desc="Central UI elements rendering">
   override fun renderBatteryState(event: BatteryStateEvent) {
-    Timber.d("renderBatteryState, event: $event")
-    batteryStatusView.contentPercentage.text = event.batteryPercentage.toString()
-    batteryStatusView.contentHealth.text = event.batteryHealth.name.toLowerCase()
-    batteryStatusView.contentSource.text = event.batteryPowerSource.name.toLowerCase()
-    batteryStatusView.contentStatus.text = event.batteryStatus.name.toLowerCase()
-    batteryStatusView.contentVoltage.text = event.batteryVoltage.toString()
-    batteryStatusView.contentTemperature.text = event.batteryTemperature.toString()
+    Timber.d("renderBatteryState, event: $event, batteryStatsDetailsContainer: $batteryStatsDetailsContainer")
+    batteryStatsDetailsContainer.let {
+      batteryStatsDetailsContainer.renderPercentage(event.batteryPercentage)
+      batteryStatsDetailsContainer.renderHealth(event.batteryHealth.name.toLowerCase())
+      batteryStatsDetailsContainer.renderPowerSource(event.batteryPowerSource.name.toLowerCase())
+      batteryStatsDetailsContainer.renderStatus(event.batteryStatus.name.toLowerCase())
+      batteryStatsDetailsContainer.renderVoltage(event.batteryVoltage)
+      batteryStatsDetailsContainer.renderTemperature(event.batteryTemperature)
+    }
   }
 
   override fun performOneShotAnimation() {
