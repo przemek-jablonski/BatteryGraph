@@ -6,13 +6,14 @@
 <!--https://stackoverflow.com/a/25984466/6942800-->
 
 
-<com.android.szparag.batterygraph.screens.front.widgets.BatteryStatsDetailsContainer
+<merge
     android:id="@+id/batteryStatsDetailsContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:parentTag="android.support.constraint.ConstraintLayout"
     >
 
   <android.support.constraint.Guideline
@@ -246,4 +247,4 @@
       app:layout_constraintStart_toStartOf="@+id/guideline"
       tools:text="9000"
       />
-</com.android.szparag.batterygraph.screens.front.widgets.BatteryStatsDetailsContainer>
+</merge>

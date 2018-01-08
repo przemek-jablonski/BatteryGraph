@@ -29,8 +29,7 @@
         app:srcCompat="@drawable/ic_icon_battery"
         />
 
-    <include
-        layout="@layout/layout_batterystats_details"
+    <com.android.szparag.batterygraph.screens.front.widgets.BatteryStatsDetailsContainer
         android:id="@+id/batteryStatusView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

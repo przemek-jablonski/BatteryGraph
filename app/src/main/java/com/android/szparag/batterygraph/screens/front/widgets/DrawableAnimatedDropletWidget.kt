@@ -79,89 +79,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //todo: drawable layoutParams in xml - maybe someone wants drawable to be WRAP_CONTENT?
   //todo: parse so that srcCompat / src can be used to specify Drawable used
 
-  constructor(context: Context) : this(context, null)
-  constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-  constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-    Timber.v("ctor")
-    setupView()
-    parseCustomAttributes()
-    applyCustomAtrributes()
-
-    drawableView = createFrontDrawableView(drawable)
-    drawableView.imageTintList = ColorStateList.valueOf(R.color.colorPrimaryDark)
-    addView(drawableView)
-  }
-
-  private fun setupView() {
-    Timber.v("setupView")
-    addOnLayoutChangeListener(this::onLayoutBoundsChanged)
-    clipChildren = false
-    drawable = R.drawable.ic_icon_battery //todo hardcoded
-  }
-
-  //todo: typedarray as input
-  @CallSuper protected fun parseCustomAttributes() {
-    Timber.v("parseCustomAttributes")
-  }
-
-  @CallSuper protected fun applyCustomAtrributes() {
-    Timber.v("applyCustomAtrributes")
-  }
-
-  @RequiresApi(VERSION_CODES.LOLLIPOP) //todo remove
-  @CallSuper protected fun onLayoutFirstMeasurementApplied() {
-    Timber.v("onLayoutFirstMeasurementApplied")
-
-    createCircularDropletsLayers(6)
-
-    circularDropletBackgroundView1 = createCircularBackgroundView(R.color.colorAccent1)
-    circularDropletBackgroundView1.hide()
-    addView(circularDropletBackgroundView1)
-    animateCircularBackground(
-        targetView = circularDropletBackgroundView1,
-        startTime = 0L,
-        duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
-        repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
-        pathRandomFactor = 0.002f
-    )
-
-
-    circularDropletBackgroundView2 = createCircularBackgroundView(R.color.colorAccent1)
-    circularDropletBackgroundView2.hide()
-    addView(circularDropletBackgroundView2)
-    animateCircularBackground(
-        targetView = circularDropletBackgroundView2,
-        startTime = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS / 2,
-        duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
-        repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
-        pathRandomFactor = 0.01f
-    )
-  }
-
-
-  private fun createCircularDropletsLayers(layerCount: Int) {
-    Timber.v("createCircularDropletsLayers, layerCount: $layerCount")
-    (0 until layerCount).mapTo(circularDropletViewLayers) { layerIndex ->
-      createCircularDropletView(
-          thickness = BASE_OVAL_STROKE_THICKNESS - (layerIndex * BASE_OVAL_STROKE_THICKNESS / layerCount),
-          colourId = R.color.colorAccent1
-      )
-    }
-
-    addViews(children = circularDropletViewLayers, childApply = { child, index ->
-      child.hide()
-      animateCircularDroplet(child, index, layerCount, 1.0f)
-    })
-  }
-
-  private fun createCircularDropletView(thickness: Float, @ColorRes colourId: ResourceId)
-      = createImageViewWithDrawable(context, createCircularDropletDrawable(thickness, colourId))
-      .also { Timber.v("createCircularDropletView, thickness: $thickness, view: ${it.asString()}") }
-
-  private fun createCircularBackgroundView(@ColorRes colourId: ResourceId)
-      = createImageViewWithDrawable(context, createCircularBackgroundDrawable(colourId))
-      .also { Timber.v("createCircularBackgroundView, view: ${it.asString()}") }
-
   //todo: callback (with default implementation) onUserClicked()
   //todo: callback (with default implementation) onUserLongPressed()
   //todo: performOneShotDroplet
@@ -175,6 +92,160 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //todo: make method oneShotCircle, so that when battery status changes, it is reflected in animation as well!
   //todo:
 
+  constructor(context: Context) : this(context, null)
+  constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+  constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    Timber.v("ctor")
+    setupView()
+    parseCustomAttributes()
+    applyCustomAtrributes()
+
+    drawableView = createFrontDrawableView(drawable)
+    drawableView.imageTintList = ColorStateList.valueOf(R.color.colorPrimaryDark)
+    addView(drawableView)
+  }
+
+  //<editor-fold desc="Parsing xml attributes (if any)">
+  //todo: typedarray as input
+  @CallSuper protected fun parseCustomAttributes() {
+    Timber.v("parseCustomAttributes")
+  }
+
+  @CallSuper protected fun applyCustomAtrributes() {
+    Timber.v("applyCustomAtrributes")
+  }
+  //</editor-fold>
+
+  private fun setupView() {
+    Timber.v("setupView")
+    addOnLayoutChangeListener(this::onLayoutBoundsChanged)
+    clipChildren = false
+    drawable = R.drawable.ic_icon_battery //todo hardcoded
+  }
+
+  private fun onLayoutBoundsChanged(view: View, left: Int, top: Int, right: Int, bottom: Int,
+      oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+    if (oldLeft == 0 && oldRight == 0 && oldTop == 0 && oldBottom == 0 && left != 0 && right != 0 && top != 0 && bottom != 0) {
+      onLayoutFirstMeasurementApplied()
+    }
+  }
+
+
+  @RequiresApi(VERSION_CODES.LOLLIPOP) //todo remove
+  @CallSuper protected fun onLayoutFirstMeasurementApplied() {
+    Timber.v("onLayoutFirstMeasurementApplied")
+    createCircularDropletsLayers(6)
+    circularDropletBackgroundView1 = createCircularBackgroundView(R.color.colorAccent1)
+    circularDropletBackgroundView1.hide()
+    addView(circularDropletBackgroundView1)
+    animateCircularBackground(
+        targetView = circularDropletBackgroundView1,
+        startTime = 0L,
+        duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
+        repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
+        pathRandomFactor = 0.002f
+    )
+
+    circularDropletBackgroundView2 = createCircularBackgroundView(R.color.colorAccent1)
+    circularDropletBackgroundView2.hide()
+    addView(circularDropletBackgroundView2)
+    animateCircularBackground(
+        targetView = circularDropletBackgroundView2,
+        startTime = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS / 2,
+        duration = BASE_ANIMATION_BACKGROUND_LENGTH_MILLIS,
+        repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
+        pathRandomFactor = 0.01f
+    )
+  }
+
+  private fun createCircularDropletsLayers(layerCount: Int) {
+    Timber.v("createCircularDropletsLayers, layerCount: $layerCount")
+    (0 until layerCount).mapTo(circularDropletViewLayers) { layerIndex ->
+      createCircularDropletView(
+          thickness = BASE_OVAL_STROKE_THICKNESS - (layerIndex * BASE_OVAL_STROKE_THICKNESS / layerCount),
+          colourId = R.color.colorAccent1
+      )
+    }
+    addViews(children = circularDropletViewLayers, childApply = { child, index ->
+      child.hide()
+      animateCircularDroplet(child, index, layerCount, 1.0f)
+    })
+  }
+
+  //<editor-fold desc="Creating views">
+  private fun createCircularDropletView(thickness: Float, @ColorRes colourId: ResourceId)
+      = createImageViewWithDrawable(context, createCircularDropletDrawable(thickness, colourId))
+      .also { Timber.v("createCircularDropletView, thickness: $thickness, view: ${it.asString()}") }
+
+  private fun createCircularBackgroundView(@ColorRes colourId: ResourceId)
+      = createImageViewWithDrawable(context, createCircularBackgroundDrawable(colourId))
+      .also { Timber.v("createCircularBackgroundView, view: ${it.asString()}") }
+  //</editor-fold>
+
+  //<editor-fold desc="Creating animations">
+  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+  @SuppressLint("BinaryOperationInTimber")
+  private fun createScalingAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
+      xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
+      = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
+      .also { animation ->
+        Timber.v("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
+        animation.duration = duration
+        animation.startOffset = startTime
+        animation.repeatCount = Animation.INFINITE
+        animation.repeatMode = Animation.RESTART
+        animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
+        animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
+      }
+
+  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+  @SuppressLint("BinaryOperationInTimber")
+  private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
+      alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float) =
+      AlphaAnimation(alphaStart, alphaEnd)
+          .also { animation ->
+            Timber.v("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
+            animation.duration = duration
+            animation.startOffset = startTime
+            animation.repeatCount = Animation.INFINITE
+            animation.repeatMode = Animation.RESTART
+            animation.isFillEnabled = true
+            animation.fillAfter = true
+            animation.fillBefore = false
+            animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
+            animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
+          }
+  //</editor-fold>
+
+  //<editor-fold desc="Creating drawables">
+  private fun createCircularDropletDrawable(strokeThickness: Float, @ColorRes colourId: ResourceId) =
+      ShapeDrawable(OvalShape()).apply {
+        this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
+        this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
+        this.paint.strokeWidth = strokeThickness
+        this.paint.style = STROKE
+        this.paint.color = resources.getColor(colourId)
+      }.also {
+        Timber.v("createCircularDropletDrawable, drawable: ${it.asString()}")
+      }
+
+  private fun createCircularBackgroundDrawable(@ColorRes colourId: ResourceId) =
+      ShapeDrawable(OvalShape()).apply {
+        this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
+        this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
+        this.paint.style = FILL
+        this.paint.color = resources.getColor(colourId)
+      }.also {
+        Timber.v("createCircularBackgroundDrawable, drawable: ${it.asString()}")
+      }
+
+  private fun createFrontDrawableView(@DrawableRes drawableRes: ResourceId?)
+      = createImageViewWithDrawable(context, drawableRes?.let { resources.getDrawable(drawableRes) })
+  //</editor-fold>
+
+  //<editor-fold desc="Animate views">
   @RequiresApi(VERSION_CODES.LOLLIPOP) //todo: remove, make function createInterpolator
   private fun animateCircularBackground(targetView: View, startTime: Millis, duration: Millis, repeatDelay: Millis,
       pathRandomFactor: Float) {
@@ -248,80 +319,11 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
           set.attach(targetView)
         }.start()
   }
-
-
-  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
-  @SuppressLint("BinaryOperationInTimber")
-  private fun createScalingAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
-      xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
-      = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
-      .also { animation ->
-        Timber.v("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
-        animation.duration = duration
-        animation.startOffset = startTime
-        animation.repeatCount = Animation.INFINITE
-        animation.repeatMode = Animation.RESTART
-        animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
-        animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
-      }
-
-  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
-  @SuppressLint("BinaryOperationInTimber")
-  private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
-      alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float) =
-      AlphaAnimation(alphaStart, alphaEnd)
-          .also { animation ->
-            Timber.v("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
-            animation.duration = duration
-            animation.startOffset = startTime
-            animation.repeatCount = Animation.INFINITE
-            animation.repeatMode = Animation.RESTART
-            animation.isFillEnabled = true
-            animation.fillAfter = true
-            animation.fillBefore = false
-//            animation.isFillEnabled = true
-            animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
-            animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
-          }
-
-  private fun createCircularDropletDrawable(strokeThickness: Float, @ColorRes colourId: ResourceId) =
-      ShapeDrawable(OvalShape()).apply {
-        this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
-        this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
-        this.paint.strokeWidth = strokeThickness
-        this.paint.style = STROKE
-        this.paint.color = resources.getColor(colourId)
-      }.also {
-        Timber.v("createCircularDropletDrawable, drawable: ${it.asString()}")
-      }
-
-  private fun createCircularBackgroundDrawable(@ColorRes colourId: ResourceId) =
-      ShapeDrawable(OvalShape()).apply {
-        this.intrinsicHeight = this@DrawableAnimatedDropletWidget.height
-        this.intrinsicWidth = this@DrawableAnimatedDropletWidget.width
-        this.paint.style = FILL
-        this.paint.color = resources.getColor(colourId)
-      }.also {
-        Timber.v("createCircularBackgroundDrawable, drawable: ${it.asString()}")
-      }
-
-  private fun createFrontDrawableView(@DrawableRes drawableRes: ResourceId?)
-      = createImageViewWithDrawable(context, drawableRes?.let { resources.getDrawable(drawableRes) })
+  //</editor-fold>
 
   fun performOneShotAnimation() {
+    Timber.d("performOneShotAnimation")
 
-  }
-
-  override final fun addView(child: View) {
-//    Timber.v("addView, child: ${child.asString()}")
-    super.addView(child)
-  }
-
-  override final fun addView(child: View, index: Int) {
-//    Timber.v("addView, child: ${child.asString()}, index: $index")
-    super.addView(child, index)
   }
 
   //todo index not used!
@@ -332,14 +334,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     }
   }
 
-  private fun onLayoutBoundsChanged(view: View, left: Int, top: Int, right: Int, bottom: Int,
-      oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-    if (oldLeft == 0 && oldRight == 0 && oldTop == 0 && oldBottom == 0 && left != 0 && right != 0 && top != 0 && bottom != 0) {
-      onLayoutFirstMeasurementApplied()
-    }
-  }
-
-  //proven that this feels good in the ui with serious laboratory testing. true story
+  //proven that this feels good on the ui with serious laboratory testing. true story
   private fun generateDropletBackgroundPath(random: Random, randomFactor: Float = 0.005f) = Path().apply {
     moveTo(0.000f, 0.000f)
     quadTo(0.065f, 0.325f, 0.150f, 0.400f.randomVariation(random, randomFactor))

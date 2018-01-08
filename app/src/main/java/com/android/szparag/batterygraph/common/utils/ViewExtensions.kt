@@ -104,7 +104,6 @@ fun inverseLerp(first: Double, second: Double, factor: Float)
 fun createImageViewWithDrawable(context: Context, drawable: Drawable?) = ImageView(context).apply { setImageDrawable(drawable) }
 
 
-
 fun AnimationSet.attach(targetView: View) {
   targetView.animation = this
 }
@@ -119,3 +118,5 @@ fun Float.randomVariation(random: Random, factor: Float) = random.nextFloat(this
 fun Double.randomVariation(random: Random, factor: Float) = random.nextDouble(this - this * factor, this + this * factor)
 fun Int.randomVariation(random: Random, factor: Float) = random.nextInt((this - this * factor).toInt(), (this + this * factor).toInt())
 fun Long.randomVariation(random: Random, factor: Float) = random.nextLong((this - this * factor).toLong(), (this + this * factor).toLong())
+
+fun View.getIdName() = resources.getResourceEntryName(id) ?: nullString()
