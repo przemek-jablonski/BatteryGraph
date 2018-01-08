@@ -119,4 +119,7 @@ fun Double.randomVariation(random: Random, factor: Float) = random.nextDouble(th
 fun Int.randomVariation(random: Random, factor: Float) = random.nextInt((this - this * factor).toInt(), (this + this * factor).toInt())
 fun Long.randomVariation(random: Random, factor: Float) = random.nextLong((this - this * factor).toLong(), (this + this * factor).toLong())
 
-fun View.getIdName() = resources.getResourceEntryName(id) ?: nullString()
+fun noIdString() = "NO-ID"
+
+//todo: make more extensions functions like this - extension val
+val View.idName: String get() = if (id != View.NO_ID) resources.getResourceEntryName(id) else noIdString()
