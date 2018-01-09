@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<!--https://stackoverflow.com/questions/2407281/custom-view-with-layout-->
+<!--http://trickyandroid.com/protip-inflating-layout-for-your-custom-view/-->
+<!--https://stackoverflow.com/a/25984466/6942800-->
+
+
+<merge
+    android:id="@+id/batteryStatsDetailsContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:parentTag="android.support.constraint.ConstraintLayout"
     >
 
   <android.support.constraint.Guideline
@@ -13,7 +24,7 @@
       app:layout_constraintGuide_percent="0.5"
       />
   <TextView
-      android:id="@+id/labelPercentage"
+      android:id="@+id/headerPercentage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -25,7 +36,7 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_percentage"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
@@ -35,7 +46,7 @@
   <TextView
       android:id="@+id/contentPercentage"
       android:layout_width="0dp"
-      android:layout_height="wrap_content"
+      android:layout_height="19dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:clickable="true"
@@ -43,12 +54,14 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelPercentage"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerPercentage"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="100"
       />
   <TextView
-      android:id="@+id/labelHealth"
+      android:id="@+id/headerHealth"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -60,12 +73,12 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_health"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/labelPercentage"
+      app:layout_constraintTop_toBottomOf="@+id/headerPercentage"
       />
   <TextView
       android:id="@+id/contentHealth"
@@ -78,12 +91,14 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelHealth"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerHealth"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="super najs"
       />
   <TextView
-      android:id="@+id/labelStatus"
+      android:id="@+id/headerStatus"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -95,12 +110,12 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_status"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/labelHealth"
+      app:layout_constraintTop_toBottomOf="@+id/headerHealth"
       />
   <TextView
       android:id="@+id/contentStatus"
@@ -113,12 +128,14 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelStatus"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerStatus"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="asdasd"
       />
   <TextView
-      android:id="@+id/labelSource"
+      android:id="@+id/headerPowerSource"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -130,15 +147,15 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_powersource"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/labelStatus"
+      app:layout_constraintTop_toBottomOf="@+id/headerStatus"
       />
   <TextView
-      android:id="@+id/contentSource"
+      android:id="@+id/contentPowerSource"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -148,12 +165,14 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelSource"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerPowerSource"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="asdadwdawd"
       />
   <TextView
-      android:id="@+id/labelVoltage"
+      android:id="@+id/headerVoltage"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
@@ -165,12 +184,12 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_voltage"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/labelSource"
+      app:layout_constraintTop_toBottomOf="@+id/headerPowerSource"
       />
   <TextView
       android:id="@+id/contentVoltage"
@@ -183,12 +202,14 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelVoltage"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerVoltage"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="2.4"
       />
   <TextView
-      android:id="@+id/labelTemperature"
+      android:id="@+id/headerTemperature"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
@@ -201,13 +222,13 @@
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
       android:text="@string/activity_front_title_battery_temperature"
-      android:textColor="@color/colorPrimary"
+      android:textColor="@color/batteryGraphTextColorHeader"
       android:textSize="24sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/guideline"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/labelVoltage"
+      app:layout_constraintTop_toBottomOf="@+id/headerVoltage"
       />
   <TextView
       android:id="@+id/contentTemperature"
@@ -220,8 +241,10 @@
       android:gravity="center_vertical|start"
       android:hapticFeedbackEnabled="true"
       android:longClickable="true"
-      app:layout_constraintBaseline_toBaselineOf="@+id/labelTemperature"
+      android:textColor="@color/batteryGraphTextColorContent"
+      app:layout_constraintBaseline_toBaselineOf="@+id/headerTemperature"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/guideline"
+      tools:text="9000"
       />
-</android.support.constraint.ConstraintLayout>
+</merge>

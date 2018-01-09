@@ -1,10 +1,13 @@
 package com.android.szparag.batterygraph.screens.front
 
+import com.android.szparag.batterygraph.common.events.BatteryStateEvent
 import com.android.szparag.batterygraph.common.presenters.BatteryGraphBasePresenter
 import com.android.szparag.batterygraph.common.utils.ui
 import timber.log.Timber
 
 class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePresenter<FrontView, FrontInteractor>(model), FrontPresenter {
+
+  private var currentBatteryStateEvent: BatteryStateEvent? = null
 
   override fun onAttached() {
     Timber.d("onAttached")
@@ -30,8 +33,7 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
         ?.ui()
         ?.subscribe { event ->
           Timber.d("view.subscribeRealtimeBatteryStateEvents.onNext, event: $event")
-          view?.renderBatteryState(event)
-          view?.performOneShotAnimation()
+          renderBatteryState(event)
         }
 
     model.subscribeBatteryStateEvents()
@@ -39,15 +41,13 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
         .subscribe { events ->
           Timber.d("model.subscribeBatteryStateEvents.onNext, events: $events")
           view?.renderSmallChartBatteryPercentage(events)
-          view?.performOneShotAnimation()
         }
 
     model.subscribeBatteryStateEvent()
         .ui()
         .subscribe { event ->
           Timber.d("model.subscribeBatteryStateEvent.onNext, event: $event")
-          view?.renderBatteryState(event)
-          view?.performOneShotAnimation()
+          renderBatteryState(event)
         }
 
     model.subscribeConnectivityEvents()
@@ -57,6 +57,15 @@ class BatteryGraphFrontPresenter(model: FrontInteractor) : BatteryGraphBasePrese
           view?.renderSmallChartConnectivity(events)
         }
 
+  }
+
+  //todo: here, this event should be decomposed into simpler pieces and pushed onto view
+  override fun renderBatteryState(event: BatteryStateEvent) {
+    Timber.d("renderBatteryState, event: $event, currentBatteryStateEvent: $currentBatteryStateEvent")
+    if (currentBatteryStateEvent != event) {
+      view?.renderBatteryState(event)
+      view?.performOneShotAnimation()
+    }
   }
 
 }

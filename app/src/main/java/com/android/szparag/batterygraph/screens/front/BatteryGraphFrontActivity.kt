@@ -21,12 +21,6 @@ import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_front.batteryAnimatedView
 import kotlinx.android.synthetic.main.activity_front.batteryStatusView
 import kotlinx.android.synthetic.main.activity_front.smallChartsView
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentHealth
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentPercentage
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentSource
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentStatus
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentTemperature
-import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentVoltage
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryHealthSmallChart
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryPercentageSmallChart
 import kotlinx.android.synthetic.main.layout_small_charts_group.batteryTemperatureSmallChart
@@ -65,12 +59,12 @@ class BatteryGraphFrontActivity : BatteryGraphBaseActivity<FrontPresenter>(), Fr
   //<editor-fold desc="Central UI elements rendering">
   override fun renderBatteryState(event: BatteryStateEvent) {
     Timber.d("renderBatteryState, event: $event")
-    batteryStatusView.contentPercentage.text = event.batteryPercentage.toString()
-    batteryStatusView.contentHealth.text = event.batteryHealth.name.toLowerCase()
-    batteryStatusView.contentSource.text = event.batteryPowerSource.name.toLowerCase()
-    batteryStatusView.contentStatus.text = event.batteryStatus.name.toLowerCase()
-    batteryStatusView.contentVoltage.text = event.batteryVoltage.toString()
-    batteryStatusView.contentTemperature.text = event.batteryTemperature.toString()
+    batteryStatusView.renderPercentage(event.batteryPercentage)
+    batteryStatusView.renderHealth(event.batteryHealth.name.toLowerCase())
+    batteryStatusView.renderPowerSource(event.batteryPowerSource.name.toLowerCase())
+    batteryStatusView.renderStatus(event.batteryStatus.name.toLowerCase())
+    batteryStatusView.renderVoltage(event.batteryVoltage)
+    batteryStatusView.renderTemperature(event.batteryTemperature)
   }
 
   override fun performOneShotAnimation() {

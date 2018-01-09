@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <color name="batteryGraphTextColorHeader">@color/colorPrimary</color>
+  <color name="batteryGraphTextColorContent">@color/colorGrey</color>
+  <color name="batteryGraphTextColorHighlighted">@color/colorAccent1</color>
+
   <color name="colorPrimary">#3f51b5</color>
   <color name="colorPrimaryDark">#303F9F</color>
 
@@ -15,5 +20,7 @@
   <color name="colorAccent2AlphaMore">#73fbc02d</color>
 
   <color name="colorGreyAlpha">#4b757575</color>
+
+  <color name="colorGrey">#757575</color>
 
 </resources>
