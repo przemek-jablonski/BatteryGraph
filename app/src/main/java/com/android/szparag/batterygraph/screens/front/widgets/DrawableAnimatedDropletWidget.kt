@@ -2,12 +2,12 @@ package com.android.szparag.batterygraph.screens.front.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.graphics.Path
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.support.annotation.CallSuper
 import android.support.annotation.ColorRes
@@ -16,6 +16,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.view.animation.FastOutLinearInInterpolator
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -104,7 +105,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     applyCustomAtrributes()
 
     drawableView = createFrontDrawableView(drawable)
-    drawableView.imageTintList = ColorStateList.valueOf(R.color.colorPrimaryDark)
     addView(drawableView)
   }
 
@@ -133,8 +133,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
     }
   }
 
-
-  @RequiresApi(VERSION_CODES.LOLLIPOP) //todo remove
   @CallSuper protected fun onLayoutFirstMeasurementApplied() {
     Timber.v("onLayoutFirstMeasurementApplied")
     createCircularDropletsLayers(6)
@@ -218,7 +216,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   //</editor-fold>
 
   //<editor-fold desc="Animate views">
-  @RequiresApi(VERSION_CODES.LOLLIPOP) //todo: remove, make function createInterpolator
   private fun animateCircularBackground(targetView: View, startTime: Millis, duration: Millis, repeatDelay: Millis,
       pathRandomFactor: Float) {
     Timber.v("animateCircularBackground, targetView: ${targetView.asString()}")
@@ -305,6 +302,7 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
       }
 
+
   private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
       alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float, oneShot: Boolean = false) =
       AlphaAnimation(alphaStart, alphaEnd)
@@ -365,6 +363,15 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       children[i].apply { childApply.invoke(this, i); addView(this) }
     }
   }
+
+  private fun createInterpolator(randomFactor: Float) =
+      if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) createInterpolatorApiLollipop(randomFactor)
+      else createInterpolatorPreApiLollipop()
+
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
+  private fun createInterpolatorApiLollipop(randomFactor: Float) = PathInterpolator(generateDropletBackgroundPath(random, randomFactor))
+
+  private fun createInterpolatorPreApiLollipop() = AccelerateDecelerateInterpolator()
 
   //proven that this feels good on the ui with serious laboratory testing. true story
   private fun generateDropletBackgroundPath(random: Random, randomFactor: Float = 0.005f) = Path().apply {

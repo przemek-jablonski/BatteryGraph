@@ -4,11 +4,13 @@ import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.TimeInterpolator
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewPropertyAnimator
+import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationSet
@@ -103,3 +105,19 @@ fun createImageViewWithDrawable(context: Context, drawable: Drawable?) =
 //todo: make more extensions functions like this - extension val
 val View.idName: String
   get() = if (id != View.NO_ID) resources.getResourceEntryName(id) else noIdString()
+
+
+inline fun View.setViewDimensions(itemWidth: Int?, itemHeight: Int?): View {
+  if (itemWidth == null && itemHeight == null) return this
+  this.layoutParams = this.layoutParams.apply {
+    itemWidth?.let { this.width = it }
+    itemHeight?.let { this.height = it }
+  }
+  return this
+}
+
+inline fun Window.getVisibleDisplayFrame(): Rect {
+  val displayFrame = Rect()
+  this.decorView.getWindowVisibleDisplayFrame(displayFrame)
+  return displayFrame
+}

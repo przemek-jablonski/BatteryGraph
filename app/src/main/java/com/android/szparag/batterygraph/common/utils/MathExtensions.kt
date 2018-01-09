@@ -14,6 +14,11 @@ fun Float.clamp(max: Float, min: Float) =
 fun Double.clamp(max: Double, min: Float) =
     this.coerceAtLeast(min.toDouble()).coerceAtMost(max)
 
+inline fun Int.abs() = Math.abs(this)
+inline fun Long.abs() = Math.abs(this)
+inline fun Float.abs() = Math.abs(this)
+inline fun Double.abs() = Math.abs(this)
+
 fun lerp(first: Int, second: Int, factor: Float) =
     first + factor * (second - first)
 
@@ -64,3 +69,7 @@ fun Int.randomVariation(random: Random, factor: Float) =
 
 fun Long.randomVariation(random: Random, factor: Float) =
     random.nextLong((this - this * factor).toLong(), (this + this * factor).toLong())
+
+
+inline fun <T : Comparable<T>> T.max(other: T) = if (this >= other) this else other
+inline fun <T : Comparable<T>> T.min(other: T) = if (this <= other) this else other
