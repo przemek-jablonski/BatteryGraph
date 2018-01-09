@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.android.szparag.batterygraph.R.layout
 import com.android.szparag.batterygraph.common.events.BatteryStateEvent
 import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
-import com.android.szparag.batterygraph.common.utils.safeLast
 import com.android.szparag.batterygraph.common.views.BatteryGraphBaseActivity
 import com.android.szparag.batterygraph.dagger.DaggerGlobalScopeWrapper
 import kotlinx.android.synthetic.main.activity_chart.chartView
@@ -32,12 +31,12 @@ class BatteryGraphChartActivity : BatteryGraphBaseActivity<ChartPresenter>(), Ch
   }
 
   override fun renderBatteryStatuses(events: List<BatteryStateEvent>) {
-    Timber.d("renderBatteryStatus, events.size: ${events.size}, events.last: ${events.safeLast()}")
+    Timber.d("renderBatteryStatus, events.size: ${events.size}, events.last: ${events.lastOrNull()}")
     chartView.setBatteryData(events)
   }
 
   override fun renderFlightModeStatuses(events: List<FlightModeStateEvent>) {
-    Timber.d("renderFlightModeStatuses, events.size: ${events.size}, events.last: ${events.safeLast()}")
+    Timber.d("renderFlightModeStatuses, events.size: ${events.size}, events.last: ${events.lastOrNull()}")
     chartView.setFlightModeData(events)
   }
 
