@@ -6,29 +6,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 
-fun Intent.asString() = StringBuilder(1024).append(
-    "Intent: [action: ${this.action}, cat: ${this.categories}, component: ${this.component}, flags: ${this.flags} bundle: ${this
-        .extras.asString(StringBuilder(1024))}]")
+fun Intent.asString() =
+    StringBuilder(1024).append("Intent: [action: ${this.action}, cat: ${this.categories}, component: ${this.component}, " +
+        "flags: ${this.flags} bundle: ${this.extras.asString(StringBuilder(1024))}]").toString()
 
-fun Bundle?.asString(stringBuilder: StringBuilder): StringBuilder {
-  if (this == null) return stringBuilder.append("[null]")
+fun Bundle?.asString(stringBuilder: StringBuilder): String {
+  if (this == null) return nullString()
   val keys = this.keySet()
   stringBuilder.append("[")
-  keys.forEach { key ->
-    stringBuilder.append("$key: ${this.get(key)}, ")
-  }
+  keys.forEach { key -> stringBuilder.append("$key: ${this.get(key)}, ") }
   stringBuilder.delete(stringBuilder.length - 2, stringBuilder.length - 1).append("]")
-  return stringBuilder
+  return stringBuilder.toString()
 }
 
-
 fun View.asString() = asShortString()
-
-//fun View.asString() = StringBuilder(DEBUG_VIEW_STRING_DEFAULT_CAPACITY).append(
-//    "${asShortString()}, id: ${this.id}, dimens: [${this.width}, ${this.height}], " +
-//        "location: ${Arrays.toString(this.getLocationOnScreen
-//    ())}"
-//).toString()
 
 fun View.asShortString() = "${this::class.java.simpleName}@${hashCode()}"
 

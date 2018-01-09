@@ -1,7 +1,6 @@
 package com.android.szparag.batterygraph.screens.chart
 
 import com.android.szparag.batterygraph.common.presenters.BatteryGraphBasePresenter
-import com.android.szparag.batterygraph.common.utils.safeLast
 import com.android.szparag.batterygraph.common.utils.ui
 import timber.log.Timber
 
@@ -31,7 +30,7 @@ class BatteryGraphChartPresenter(model: ChartInteractor) : BatteryGraphBasePrese
         .ui()
         .subscribe { events ->
           Timber.d(
-              "subscribeModelEvents.subscribeBatteryStateEvents.onNext: events.size: ${events.size}, events.last: ${events.safeLast()}")
+              "subscribeModelEvents.subscribeBatteryStateEvents.onNext: events.size: ${events.size}, events.last: ${events.lastOrNull()}")
           view?.renderBatteryStatuses(events)
         }
 
@@ -39,7 +38,7 @@ class BatteryGraphChartPresenter(model: ChartInteractor) : BatteryGraphBasePrese
         .ui()
         .subscribe { events ->
           Timber.d(
-              "subscribeModelEvents.subscribeFlightModeEvents.onNext, events.size: ${events.size}, events.last: ${events.safeLast()}")
+              "subscribeModelEvents.subscribeFlightModeEvents.onNext, events.size: ${events.size}, events.last: ${events.lastOrNull()}")
           view?.renderFlightModeStatuses(events)
         }
 

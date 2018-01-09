@@ -8,7 +8,6 @@ import com.android.szparag.batterygraph.R.drawable
 import com.android.szparag.batterygraph.common.events.BatteryStateEvent
 import com.android.szparag.batterygraph.common.events.FlightModeStateEvent
 import com.android.szparag.batterygraph.common.utils.map
-import com.android.szparag.batterygraph.common.utils.safeLast
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -45,7 +44,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
   }
 
   fun setBatteryData(data: List<BatteryStateEvent>) {
-    Timber.d("setBatteryData, data.size: ${data.size}, data.last: ${data.safeLast()}")
+    Timber.d("setBatteryData, data.size: ${data.size}, data.last: ${data.lastOrNull()}")
     if (data.isEmpty()) return
     batteryEntries = batteryListToEntryList(data)
     batteryDataSet = LineDataSet(batteryEntries, "BatteryPercentage") //todo literal
@@ -56,7 +55,7 @@ class BatteryGraphChartWidget @JvmOverloads constructor(
 
   //todo wtf is this, this should be PowerOnOffEvent
   fun setFlightModeData(data: List<FlightModeStateEvent>) {
-    Timber.d("setFlightModeData, data.size: ${data.size}, data.last: ${data.safeLast()}")
+    Timber.d("setFlightModeData, data.size: ${data.size}, data.last: ${data.lastOrNull()}")
     if (data.isEmpty()) return
     flightModeEntries = flightModeListToEntryList(data)
     flightModeDataSet = LineDataSet(flightModeEntries, "Flight Mode State") //todo literal

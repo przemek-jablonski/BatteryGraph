@@ -5,7 +5,6 @@ package com.android.szparag.batterygraph.common.utils
  */
 
 
-import hu.akarnokd.rxjava.interop.RxJavaInterop
 import io.reactivex.Completable
 import io.reactivex.CompletableEmitter
 import io.reactivex.Flowable
@@ -15,14 +14,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.realm.RealmModel
-import io.realm.RealmResults
 
 
 private val onNextStub: (Any) -> Unit = {}
-private val onErrorStub: (Throwable) -> Unit = {
-  throw RuntimeException(it)
-}
+private val onErrorStub: (Throwable) -> Unit = { throw RuntimeException(it) }
 private val onCompleteStub: () -> Unit = {}
 
 //private val realmOnSuccessStub by lazy { OnSuccess { } }
@@ -40,28 +35,10 @@ val DISPOSABLE_CONTAINER_NULL_THROWABLE: Throwable by lazy {
       DISPOSABLE_CONTAINER_NULL_THROWABLE)
 }
 
-
-//inline fun RecyclerView.scrollEvents(linearLayoutManager: LinearLayoutManager): Flowable<ListScrollEvent> {
-//
-//}
-
-fun <E : RealmModel> RealmResults<E>.asFlowable() = RxJavaInterop.toV2Flowable(
-    this.asObservable()).map { realmResults -> realmResults.toList() }
-
-//fun <E : RealmModel> E.asFlowable() = RxJavaInterop.toV2Flowable(
-//    this<E>()).map { realmResults -> realmResults.toList() }
-//fun <E : RealmModel> RealmResults<E>.asFlowable() = RxJavaInterop.toV2Flowable(
-//    this.asObservable()).map { realmResults -> realmResults.toList() }
-
 fun CompositeDisposable.add(disposable: Disposable?): Boolean {
   disposable?.let { this.add(disposable); return true }
   return false
 }
-
-//fun <E : RealmModel> RealmResults<E>.asFlowable(): Flowable<List<E>> {
-//  return RxJavaInterop.toV2Flowable(
-//      this.asObservable()).map { realmResults -> realmResults.toList() }
-//}
 
 /**
  * Extension function that pushes error value from Completable object into stream,
@@ -73,9 +50,6 @@ fun Completable?.nonNull()
 fun CompletableEmitter.safeOnError(throwable: Throwable?) =
     this.onError(throwable ?: Throwable(REALM_COMPLETABLE_NULL_EXCEPTION_THROWABLE_TEXT))
 
-//fun <T, R> Observable<T>.flatMap(mapper: Function<>) {
-//
-//}
 
 fun <T> Observable<T>.flatMap(completable: Completable, onComplete: () -> Unit = onCompleteStub,
     onError: (Throwable) -> Unit =
@@ -151,7 +125,3 @@ fun Completable.computation() = this.subscribeOn(Schedulers.computation())
 
 fun ui() = AndroidSchedulers.mainThread()
 
-//yo dawg, i herd u like observabelz
-fun <E : RealmModel> RealmResults<E>.toObservable() = this.asObservable().toObservable()
-
-fun <E> rx.Observable<E>.toObservable() = RxJavaInterop.toV2Observable(this)
