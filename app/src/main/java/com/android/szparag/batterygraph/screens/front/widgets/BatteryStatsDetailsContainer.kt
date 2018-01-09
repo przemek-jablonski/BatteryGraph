@@ -11,7 +11,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.android.szparag.batterygraph.R
-import com.android.szparag.batterygraph.common.utils.getIdName
+import com.android.szparag.batterygraph.common.utils.idName
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentHealth
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentPercentage
 import kotlinx.android.synthetic.main.layout_batterystats_details.view.contentPowerSource
@@ -55,7 +55,7 @@ class BatteryStatsDetailsContainer @JvmOverloads constructor(
   @SuppressLint("BinaryOperationInTimber")
   private fun renderSingleBatteryStat(value: String, headerTextView: TextView?, contentTextView: TextView?) {
     val cachedContentText = contentTextView?.text
-    Timber.d("renderSingleBatteryStat, headerTextView: ${headerTextView?.getIdName()}, contentTextView: ${contentTextView?.getIdName()}, " +
+    Timber.d("renderSingleBatteryStat, headerTextView: ${headerTextView?.idName}, contentTextView: ${contentTextView?.idName}, " +
         "value: $value, cache: $cachedContentText")
     if (headerTextView == null || contentTextView == null) return
     contentTextView.text = value

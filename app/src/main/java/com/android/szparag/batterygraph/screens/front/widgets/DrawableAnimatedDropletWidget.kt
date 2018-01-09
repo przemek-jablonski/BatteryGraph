@@ -59,17 +59,20 @@ typealias Millis = Long
 typealias ResourceId = Int
 typealias Percentage = Float
 
+//https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
+@SuppressLint("BinaryOperationInTimber")
 open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
 
   //todo: unify - there are vars, lateinit vars and vals here
   private var drawableView: ImageView
-  private lateinit var circularDropletBackgroundView1: View
-  private lateinit var circularDropletBackgroundView2: View
+  private lateinit var circularDropletBackgroundView1: View //todo: 1? 2? wtf
+  private lateinit var circularDropletBackgroundView2: View //todo: to layers with layer count as a parameter
   //  private val circularBackgroundViewLayers = arrayListOf<View>()
   private val circularDropletViewLayers = arrayListOf<View>()
 
+  private var oneShotDropletView: View? = null
+
   private val random by lazy { Random() }
-//  private val circularDropletBackgroundPath by lazy { generateDropletBackgroundPath() }
 
   @DrawableRes private var drawable = android.R.color.transparent
 
@@ -156,6 +159,11 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         repeatDelay = BASE_ANIMATION_BACKGROUND_REPEAT_DELAY_MILLIS,
         pathRandomFactor = 0.01f
     )
+    oneShotDropletView = createCircularDropletView(BASE_OVAL_STROKE_THICKNESS, android.R.color.holo_purple)
+        .apply {
+          hide()
+          addView(this)
+        }
   }
 
   private fun createCircularDropletsLayers(layerCount: Int) {
@@ -182,42 +190,6 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
       .also { Timber.v("createCircularBackgroundView, view: ${it.asString()}") }
   //</editor-fold>
 
-  //<editor-fold desc="Creating animations">
-  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
-  @SuppressLint("BinaryOperationInTimber")
-  private fun createScalingAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
-      xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f)
-      = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
-      .also { animation ->
-        Timber.v("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
-        animation.duration = duration
-        animation.startOffset = startTime
-        animation.repeatCount = Animation.INFINITE
-        animation.repeatMode = Animation.RESTART
-        animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
-        animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
-      }
-
-  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
-  @SuppressLint("BinaryOperationInTimber")
-  private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
-      alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float) =
-      AlphaAnimation(alphaStart, alphaEnd)
-          .also { animation ->
-            Timber.v("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
-                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
-            animation.duration = duration
-            animation.startOffset = startTime
-            animation.repeatCount = Animation.INFINITE
-            animation.repeatMode = Animation.RESTART
-            animation.isFillEnabled = true
-            animation.fillAfter = true
-            animation.fillBefore = false
-            animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
-            animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
-          }
-  //</editor-fold>
 
   //<editor-fold desc="Creating drawables">
   private fun createCircularDropletDrawable(strokeThickness: Float, @ColorRes colourId: ResourceId) =
@@ -277,12 +249,9 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
         }.start()
   }
 
-  //https://github.com/JakeWharton/timber/issues/132#issuecomment-347117478
-  @SuppressLint("BinaryOperationInTimber")
   private fun animateCircularDroplet(targetView: View, layerIndex: Int, layerCount: Int, layerDependency: Float) {
     val startTime = random.nextInt(ANIMATION_RANDOM_START_TIME_BOUND_MILLIS.toInt()).toLong()
-    val repeatDelayAddition = random.nextInt(
-        ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
+    val repeatDelayAddition = random.nextInt(ANIMATION_RANDOM_REPEAT_DELAY_BOUND_MILLIS.toInt()).toLong()
     val layerValuesMultiplier = layerIndex / layerCount * layerDependency
     val inverseLerp = inverseLerp(0, layerCount, layerIndex.toFloat())
     Timber.v("animateCircularDroplet, layerIndex: $layerIndex, layerCount: $layerCount, layerDependency: $layerDependency, inverseLerp: " +
@@ -321,9 +290,72 @@ open class DrawableAnimatedDropletWidget : FrameLayout, DrawableAnimatedWidget {
   }
   //</editor-fold>
 
+  //<editor-fold desc="Animations builders">
+  private fun createScalingAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
+      xyStart: Float, xyEnd: Float, interpolator: Interpolator, timeCutoff: Float = 1.0f, oneShot: Boolean = false)
+      = ScaleAnimation(xyStart, xyEnd, xyStart, xyEnd, parentContainer.width / 2f, parentContainer.height / 2f)
+      .also { animation ->
+        Timber.v("createScalingAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+            "xyStart: $xyStart, xyEnd: $xyEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
+        animation.duration = duration
+        animation.startOffset = startTime
+        animation.repeatCount = if (oneShot) 0 else Animation.INFINITE
+        animation.repeatMode = Animation.RESTART
+        animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
+        animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
+      }
+
+  private fun createFadeoutAnimation(parentContainer: View, duration: Millis, startTime: Millis, repeatDelay: Millis,
+      alphaStart: Float, alphaEnd: Float, interpolator: Interpolator, timeCutoff: Float, oneShot: Boolean = false) =
+      AlphaAnimation(alphaStart, alphaEnd)
+          .also { animation ->
+            Timber.v("createFadeoutAnimation, duration: $duration, startTime: $startTime, repeatDelay: $repeatDelay, " +
+                "alphaStart: $alphaStart, alphaEnd: $alphaEnd, interpolator: ${interpolator::class.java.simpleName}, timeCutoff: $timeCutoff")
+            animation.duration = duration
+            animation.startOffset = startTime
+            animation.repeatCount = if (oneShot) 0 else Animation.INFINITE
+            animation.repeatMode = Animation.RESTART
+            animation.isFillEnabled = true
+            animation.fillAfter = true
+            animation.fillBefore = false
+            animation.interpolator = CutoffInterpolator(sourceInterpolator = interpolator, cutoff = timeCutoff)
+            animation.setListenerBy(onRepeat = { animation.startOffset = repeatDelay })
+          }
+  //</editor-fold>
+
   fun performOneShotAnimation() {
     Timber.d("performOneShotAnimation")
-
+    oneShotDropletView?.let {
+      this.show()
+      AnimationSet(false)
+          .also { set ->
+            set.fillAfter = true
+            set.isFillEnabled = true
+            set.addAnimation(createScalingAnimation(
+                parentContainer = this,
+                duration = BASE_ANIMATION_LENGTH_MILLIS,
+                startTime = 0,
+                repeatDelay = 0,
+                xyStart = 0.00f,
+                xyEnd = 1.00f,
+                interpolator = AnticipateOvershootInterpolator(0.80f),
+                timeCutoff = 1.00f,
+                oneShot = true
+            ))
+            set.addAnimation(createFadeoutAnimation(
+                parentContainer = this,
+                duration = BASE_ANIMATION_LENGTH_MILLIS,
+                repeatDelay = 0,
+                startTime = 0,
+                alphaStart = 1.00f,
+                alphaEnd = 0.00f,
+                interpolator = AccelerateInterpolator(0.5f),
+                timeCutoff = 1.0f,
+                oneShot = true
+            ))
+            set.attach(this)
+          }.start()
+    }
   }
 
   //todo index not used!
